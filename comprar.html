@@ -1,1 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar movimiento · NipinFinan</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-wrapper">
 
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="listado_tabla.html" class="nav-link">Categorías</a>
+          <a href="comprar.html" class="nav-link nav-link--cta is-active">+ Registrar movimiento</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <div class="container" style="padding-top:2rem; padding-bottom:3rem;">
+
+        <div style="margin-bottom:2rem;">
+          <h1 style="font-size:1.6rem; font-weight:700;">Registrar movimiento</h1>
+          <p class="page-header__sub">Completá tus datos y los del ingreso o gasto que querés registrar.</p>
+        </div>
+
+        <form class="form-layout" action="#" method="post">
+          <!-- ===== Formulario ===== -->
+          <div class="card form-card">
+
+            <div class="form-group">
+              <span class="form-label">Tipo de movimiento</span>
+              <div class="type-toggle">
+                <input type="radio" name="tipo" id="tipo-gasto" value="gasto" checked>
+                <label for="tipo-gasto" class="type-toggle__gasto"><span class="type-toggle__arrow">↓</span>Gasto</label>
+                <input type="radio" name="tipo" id="tipo-ingreso" value="ingreso">
+                <label for="tipo-ingreso" class="type-toggle__ingreso"><span class="type-toggle__arrow">↑</span>Ingreso</label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label for="nombre" class="form-label">Nombre del cliente</label>
+                <input class="text-field" type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" required>
+              </div>
+              <div>
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input class="text-field" type="tel" id="telefono" name="telefono" placeholder="+54 9 376 ...">
+              </div>
+              <div>
+                <label for="email" class="form-label">E-mail</label>
+                <input class="text-field" type="email" id="email" name="email" placeholder="nombre@correo.com" required>
+              </div>
+              <div>
+                <label for="direccion" class="form-label">Dirección</label>
+                <input class="text-field" type="text" id="direccion" name="direccion" placeholder="Calle, número, ciudad">
+              </div>
+              <div>
+                <label for="monto" class="form-label">Monto</label>
+                <input class="text-field" type="number" id="monto" name="monto" min="0" step="1" placeholder="0" required>
+              </div>
+              <div>
+                <label for="fecha" class="form-label">Fecha</label>
+                <input class="text-field" type="date" id="fecha" name="fecha" value="2026-08-31" required>
+              </div>
+              <div>
+                <label for="categoria" class="form-label">Categoría</label>
+                <select class="text-field" id="categoria" name="categoria" required>
+                  <option value="alimentacion">🛒 Alimentación</option>
+                  <option value="transporte">🚗 Transporte</option>
+                  <option value="entretenimiento">🎬 Entretenimiento</option>
+                  <option value="servicios">💡 Servicios del hogar</option>
+                  <option value="salud">🏥 Salud</option>
+                  <option value="educacion">📚 Educación</option>
+                  <option value="alquiler">🏠 Alquiler</option>
+                  <option value="indumentaria">👕 Indumentaria</option>
+                </select>
+              </div>
+              <div class="span-2">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <input class="text-field" type="text" id="descripcion" name="descripcion" placeholder="Ej: Supermercado Coto, sueldo de agosto...">
+              </div>
+              <div class="span-2">
+                <span class="form-label">Medio de pago</span>
+                <div class="payment-grid">
+                  <input type="radio" name="pago" id="pago-efectivo" value="efectivo" checked>
+                  <label for="pago-efectivo">Efectivo</label>
+                  <input type="radio" name="pago" id="pago-debito" value="debito">
+                  <label for="pago-debito">Tarjeta débito</label>
+                  <input type="radio" name="pago" id="pago-credito" value="credito">
+                  <label for="pago-credito">Tarjeta crédito</label>
+                  <input type="radio" name="pago" id="pago-transferencia" value="transferencia">
+                  <label for="pago-transferencia">Transferencia</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <button type="submit" class="btn btn--primary btn--block">Confirmar movimiento</button>
+              <p class="form-footnote">Completá usuario, monto, categoría y descripción para continuar.</p>
+            </div>
+          </div>
+
+          <!-- ===== Vista previa ===== -->
+          <div>
+            <p class="preview-label">Vista previa</p>
+            <div class="preview-card preview-card--gasto">
+              <div class="preview-card__top">
+                <span class="badge badge--gasto"><span class="badge__dot" style="background:var(--color-rose);"></span>Gasto</span>
+                <span class="preview-card__date">31/08/2026</span>
+              </div>
+              <div class="preview-card__cat">
+                <div class="cat-icon cat-icon--md" style="background:#f59e0b40;">🛒</div>
+                <div>
+                  <p class="preview-card__cat-label">Categoría</p>
+                  <p class="preview-card__cat-name">Alimentación</p>
+                </div>
+              </div>
+              <div>
+                <p class="preview-card__amount-label">Monto</p>
+                <p class="preview-card__amount preview-card__amount--gasto">$ —</p>
+              </div>
+              <div class="preview-card__details">
+                <div class="preview-card__detail-row"><span>Descripción</span><span>—</span></div>
+                <div class="preview-card__detail-row"><span>Medio de pago</span><span>Efectivo</span></div>
+                <div class="preview-card__detail-row"><span>Cliente</span><span>—</span></div>
+              </div>
+            </div>
+
+            <div class="card budget-impact">
+              <p class="budget-impact__label">Impacto en presupuesto</p>
+              <div class="budget-impact__row"><span>Alimentación</span><span>$ 18.400 / $ 25.000</span></div>
+              <div class="progress"><div class="progress__bar progress__bar--ok" style="width:74%"></div></div>
+              <p class="budget-impact__note">Luego de este gasto: 74 % ejecutado</p>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
+        <nav class="footer-nav">
+          <a href="index.html">Inicio</a>
+          <a href="listado_tabla.html">Categorías</a>
+          <a href="comprar.html">Registrar movimiento</a>
+        </nav>
+        <p class="footer-copy">© 2026 NipinFinan</p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

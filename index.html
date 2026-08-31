@@ -1,1 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NipinFinan — Gestioná tu economía personal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-wrapper">
 
+    <!-- ===== Header ===== -->
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a href="index.html" class="logo">
+          <span class="logo__icon">$</span>
+          NipinFinan
+        </a>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link is-active">Inicio</a>
+          <a href="listado_tabla.html" class="nav-link">Categorías</a>
+          <a href="comprar.html" class="nav-link nav-link--cta">+ Registrar movimiento</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-main">
+
+      <!-- ===== Hero ===== -->
+      <section class="hero">
+        <div class="container hero__inner">
+          <div>
+            <span class="hero__eyebrow"><span class="badge__dot"></span> Finanzas personales, sin complicaciones</span>
+            <h1 class="hero__title">Tomá el control<br>de <span>tu dinero</span></h1>
+            <p class="hero__lead">
+              NipinFinan te ayuda a registrar ingresos y gastos, gestionar presupuestos
+              por categoría, visualizar estadísticas y alcanzar tus objetivos de ahorro.
+            </p>
+            <div class="hero__actions">
+              <a href="comprar.html" class="btn btn--primary">Empezar ahora</a>
+              <a href="listado_box.html" class="btn btn--secondary">Ver categorías</a>
+            </div>
+          </div>
+
+          <div class="hero-panel">
+            <div class="hero-panel__top">
+              <div>
+                <p class="hero-panel__label">Agosto 2026</p>
+                <p class="hero-panel__amount">$ 110.000</p>
+                <p class="hero-panel__sub">ingresos del mes</p>
+              </div>
+              <span class="badge badge--ok">+18% vs julio</span>
+            </div>
+
+            <div class="mini-stat">
+              <div class="mini-stat__row"><span>Alimentación</span><span>$ 18.400</span></div>
+              <div class="progress progress--sm"><div class="progress__bar progress__bar--ok" style="width:74%"></div></div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat__row"><span>Transporte</span><span>$ 7.100</span></div>
+              <div class="progress progress--sm"><div class="progress__bar progress__bar--cerca" style="width:89%"></div></div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat__row"><span>Entretenimiento</span><span>$ 6.200</span></div>
+              <div class="progress progress--sm"><div class="progress__bar progress__bar--superado" style="width:100%"></div></div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat__row"><span>Servicios</span><span>$ 12.800</span></div>
+              <div class="progress progress--sm"><div class="progress__bar progress__bar--cerca" style="width:85%"></div></div>
+            </div>
+
+            <div class="hero-panel__totals">
+              <div class="hero-panel__totals-row"><span>Total gastado</span><span style="color:var(--color-rose); font-family:var(--font-mono); font-weight:600;">$ 83.200</span></div>
+              <div class="hero-panel__totals-row"><span>Disponible</span><span style="color:var(--color-primary-dark); font-family:var(--font-mono); font-weight:600;">$ 26.800</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Barra de estadísticas ===== -->
+      <section class="stats-bar">
+        <div class="container">
+          <div class="stats-bar__grid">
+            <div class="stats-bar__item">
+              <p class="stats-bar__label">Ingresos del mes</p>
+              <p class="stats-bar__value">$ 110.000</p>
+              <p class="stats-bar__sub">Agosto 2026</p>
+            </div>
+            <div class="stats-bar__item">
+              <p class="stats-bar__label">Gastos del mes</p>
+              <p class="stats-bar__value">$ 83.200</p>
+              <p class="stats-bar__sub">75,6 % del ingreso</p>
+            </div>
+            <div class="stats-bar__item">
+              <p class="stats-bar__label">Balance disponible</p>
+              <p class="stats-bar__value">$ 26.800</p>
+              <p class="stats-bar__sub">Para ahorro o gastos</p>
+            </div>
+            <div class="stats-bar__item">
+              <p class="stats-bar__label">Categorías activas</p>
+              <p class="stats-bar__value">10</p>
+              <p class="stats-bar__sub">3 con alertas</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Features ===== -->
+      <section class="features">
+        <div class="container">
+          <div class="features__head">
+            <h2>Todo lo que necesitás</h2>
+            <p>Las herramientas justas para mantener tus finanzas ordenadas, sin curva de aprendizaje.</p>
+          </div>
+          <div class="features__grid">
+            <div class="card feature-card">
+              <div class="feature-card__icon">✏️</div>
+              <h3>Registrá cada movimiento</h3>
+              <p>Anotá ingresos y gastos en segundos, con categoría, medio de pago y descripción. Todo en un solo formulario.</p>
+            </div>
+            <div class="card feature-card">
+              <div class="feature-card__icon">📊</div>
+              <h3>Presupuestos y alertas</h3>
+              <p>Definí cuánto querés gastar por categoría. Recibís alertas visuales cuando te acercás o superás el límite.</p>
+            </div>
+            <div class="card feature-card">
+              <div class="feature-card__icon">📈</div>
+              <h3>Estadísticas en tiempo real</h3>
+              <p>Visualizá en qué gastás más, cómo evolucionan tus finanzas y comparás períodos de forma simple y clara.</p>
+            </div>
+            <div class="card feature-card">
+              <div class="feature-card__icon">🎯</div>
+              <h3>Objetivos de ahorro</h3>
+              <p>Creá metas con monto y fecha límite. Seguí el progreso mes a mes y celebrá cada hito alcanzado.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CTA ===== -->
+      <section class="cta">
+        <div class="container cta__inner">
+          <div class="cta__icon">+</div>
+          <h2>¿Listo para empezar?</h2>
+          <p>Registrá tu primer movimiento ahora y comenzá a tener claridad total sobre tu economía personal.</p>
+          <a href="comprar.html" class="btn btn--primary">Registrar primer movimiento</a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <a href="index.html" class="logo">
+          <span class="logo__icon">$</span>
+          NipinFinan
+        </a>
+        <nav class="footer-nav">
+          <a href="index.html">Inicio</a>
+          <a href="listado_tabla.html">Categorías</a>
+          <a href="comprar.html">Registrar movimiento</a>
+        </nav>
+        <p class="footer-copy">© 2026 NipinFinan</p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entretenimiento · NipinFinan</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="listado_tabla.html" class="nav-link is-active">Categorías</a>
+          <a href="comprar.html" class="nav-link nav-link--cta">+ Registrar movimiento</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <div class="container" style="max-width:56rem; padding-top:2rem; padding-bottom:3rem;">
+
+        <nav class="breadcrumb" aria-label="Miga de pan">
+          <a href="listado_tabla.html">Categorías</a>
+          <span>›</span>
+          <strong>Entretenimiento</strong>
+        </nav>
+
+        <!-- Alerta: presupuesto superado -->
+        <div class="alert-banner alert-banner--rose">
+          <div class="alert-banner__icon">⚠️</div>
+          <div>
+            <p class="alert-banner__title">Presupuesto superado</p>
+            <p>Gastaste <strong>$ 1.200</strong> más del límite mensual establecido para Entretenimiento.</p>
+          </div>
+        </div>
+
+        <!-- Encabezado de la categoría -->
+        <div class="card detail-header">
+          <div class="detail-header__id">
+            <div class="cat-icon cat-icon--lg" style="background:#8b5cf633;">🎬</div>
+            <div>
+              <div class="detail-header__title-row">
+                <h1>Entretenimiento</h1>
+                <span class="badge badge--gasto">Gasto</span>
+              </div>
+              <span class="badge badge--superado"><span class="badge__dot"></span>Superado</span>
+            </div>
+          </div>
+          <a href="comprar.html" class="btn btn--primary">+ Registrar movimiento</a>
+        </div>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="stat-grid">
+          <div class="card stat-card">
+            <p class="stat-card__label">Presupuesto asignado</p>
+            <p class="stat-card__value">$ 5.000</p>
+            <p class="stat-card__sub">por mes · agosto 2026</p>
+          </div>
+          <div class="card stat-card stat-card--danger">
+            <p class="stat-card__label">Gasto acumulado</p>
+            <p class="stat-card__value" style="color:var(--color-rose-text);">$ 6.200</p>
+            <p class="stat-card__sub">124 % del presupuesto</p>
+          </div>
+        </div>
+
+        <!-- Barra de progreso destacada -->
+        <div class="card progress-card">
+          <div class="progress-card__top">
+            <p style="font-size:0.9rem; font-weight:500; color:var(--color-slate-700);">Ejecución del presupuesto</p>
+            <span class="progress-card__pct" style="color:var(--color-rose);">124 %</span>
+          </div>
+          <div class="progress progress--lg"><div class="progress__bar progress__bar--superado" style="width:100%"></div></div>
+          <div class="progress-card__scale"><span>$ 0</span><span>$ 5.000</span></div>
+        </div>
+
+        <!-- Historial de movimientos -->
+        <div class="card">
+          <div class="history-card__head">
+            <h2>Historial de movimientos</h2>
+            <span class="history-card__count">3 registros</span>
+          </div>
+
+          <div class="movement-row">
+            <div class="movement-row__left">
+              <div class="movement-row__icon">↓</div>
+              <div>
+                <p class="movement-row__desc">Entradas de cine</p>
+                <p class="movement-row__meta">20/08/2026 · Efectivo</p>
+              </div>
+            </div>
+            <span class="movement-row__amount">− $ 3.900</span>
+          </div>
+          <div class="movement-row">
+            <div class="movement-row__left">
+              <div class="movement-row__icon">↓</div>
+              <div>
+                <p class="movement-row__desc">Netflix</p>
+                <p class="movement-row__meta">05/08/2026 · Tarjeta crédito</p>
+              </div>
+            </div>
+            <span class="movement-row__amount">− $ 1.500</span>
+          </div>
+          <div class="movement-row">
+            <div class="movement-row__left">
+              <div class="movement-row__icon">↓</div>
+              <div>
+                <p class="movement-row__desc">Spotify</p>
+                <p class="movement-row__meta">05/08/2026 · Tarjeta crédito</p>
+              </div>
+            </div>
+            <span class="movement-row__amount">− $ 800</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
+        <nav class="footer-nav">
+          <a href="index.html">Inicio</a>
+          <a href="listado_tabla.html">Categorías</a>
+          <a href="comprar.html">Registrar movimiento</a>
+        </nav>
+        <p class="footer-copy">© 2026 NipinFinan</p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
