@@ -9,19 +9,8 @@ Programación III** — Comisión "A" — Universidad de la Cuenca del Plata.
 
 ## Equipo
 
-<<<<<<< HEAD
-- Abente Juan Carlos
-- Auras María Emilia
-- Fohrholtz Luciano
-- Gonzalez Santiago
-
-## Estado actual — TP1
-=======
-- Fohrholtz Luciano
-- Gonzalez Santiago
-
-## Estado actual — AE1
->>>>>>> 34a205010558ef1c7d3b66555086978d860ccf33
+- Luciano Fohrholtz
+- Santiago Gonzalez
 
 Este avance corresponde a la maquetación en HTML5 y CSS3 de las siguientes
 pantallas, cubriendo los requisitos funcionales de gestión de categorías y
@@ -39,42 +28,13 @@ registro de movimientos:
 
 - HTML5 semántico
 - CSS3 (variables CSS, Flexbox, CSS Grid)
-<<<<<<< HEAD
-- Sin frameworks externos
+
 
 ## Estructura del proyecto
 
 ```
-=======
 
-## Estructura de archivos
 
->>>>>>> 34a205010558ef1c7d3b66555086978d860ccf33
-NipinFinan/
-├── assets/
-├── css/
-│   └── style.css
-├── index.html
-├── listado_tabla.html
-├── listado_box.html
-├── producto.html
-├── comprar.html
-└── README.md
-<<<<<<< HEAD
-```
-
-## Cómo verlo localmente
-
-1. Cloná el repositorio:
-   ```
-   git clone https://github.com/LuchoFohrholtz/NipinFinan.git
-   ```
-2. Abrí la carpeta en VS Code.
-3. Abrí cualquiera de los archivos `.html` con la extensión **Live Server**
-   (clic derecho → "Open with Live Server"), o abrilo directamente en el
-   navegador.
-=======
->>>>>>> 34a205010558ef1c7d3b66555086978d860ccf33
 
 ## Documento de análisis y diseño
 
