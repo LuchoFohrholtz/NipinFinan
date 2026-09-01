@@ -12,6 +12,8 @@ Programación III** — Comisión "A" — Universidad de la Cuenca del Plata.
 - Luciano Fohrholtz
 - Santiago Gonzalez
 
+## Estado Actual - AE1
+
 Este avance corresponde a la maquetación en HTML5 y CSS3 de las siguientes
 pantallas, cubriendo los requisitos funcionales de gestión de categorías y
 registro de movimientos:
@@ -28,13 +30,6 @@ registro de movimientos:
 
 - HTML5 semántico
 - CSS3 (variables CSS, Flexbox, CSS Grid)
-
-
-## Estructura del proyecto
-
-```
-
-
 
 ## Documento de análisis y diseño
 
