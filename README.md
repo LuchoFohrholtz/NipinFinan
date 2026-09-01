@@ -31,19 +31,6 @@ registro de movimientos:
 - HTML5 semántico
 - CSS3 (variables CSS, Flexbox, CSS Grid)
 
-## Estructura del proyecto
-
-NipinFinan/
-├── assets
-├── css/
-│ └── style.css
-├── index.html
-├── listado_tabla.html
-├── listado_box.html
-├── producto.html
-├── comprar.html
-└── README.md
-
 ## Documento de análisis y diseño
 
 El documento con el análisis funcional y el diseño de la aplicación
