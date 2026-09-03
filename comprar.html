@@ -1,208 +1,203 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar movimiento · NipinFinan</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar movimiento - NipinFinan</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <div class="page-wrapper">
 
-    <header class="site-header">
-      <div class="container site-header__inner">
-        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
-        <input type="checkbox" id="nav-toggle" class="nav-toggle">
-        <label for="nav-toggle" class="nav-toggle__btn" aria-label="Abrir menú">
-          <span></span><span></span><span></span>
-        </label>
-        <nav class="main-nav">
-          <a href="index.html" class="nav-link">Inicio</a>
-          <a href="listado_tabla.html" class="nav-link">Categorías</a>
-          <a href="comprar.html" class="nav-link nav-link--cta is-active">+ Registrar movimiento</a>
+<header>
+    <div class="contenedor">
+        <a href="index.html" class="logo">NipinFinan</a>
+
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="listado_tabla.html">Movimientos</a>
+            <a href="listado_box.html">Categorías</a>
+            <a href="comprar.html">Registrar</a>
         </nav>
-      </div>
-    </header>
+    </div>
+</header>
 
-    <main class="page-main">
-      <div class="container" style="padding-top:2rem; padding-bottom:3rem;">
 
-        <div style="margin-bottom:2rem;">
-          <h1 style="font-size:1.6rem; font-weight:700;">Registrar movimiento</h1>
-          <p class="page-header__sub">Completá tus datos y los del ingreso o gasto que querés registrar.</p>
+<main class="contenedor pagina">
+
+    <h1>Registrar movimiento</h1>
+
+    <p>
+        Completá los datos para registrar un gasto o ingreso.
+    </p>
+
+
+    <form class="formulario">
+
+        <h2>Datos del movimiento</h2>
+
+
+        <div class="tipo">
+
+            <label>
+                <input type="radio" name="tipo" value="gasto" checked>
+                Gasto
+            </label>
+
+            <label>
+                <input type="radio" name="tipo" value="ingreso">
+                Ingreso
+            </label>
+
         </div>
 
-        <form class="form-layout" action="#" method="post">
-          <!-- ===== Formulario ===== -->
-          <div class="card form-card">
 
-            <div class="form-group">
-              <span class="form-label">Tipo de movimiento</span>
-              <div class="type-toggle">
-                <input type="radio" name="tipo" id="tipo-gasto" value="gasto" checked>
-                <label for="tipo-gasto" class="type-toggle__gasto"><span class="type-toggle__arrow">↓</span>Gasto</label>
-                <input type="radio" name="tipo" id="tipo-ingreso" value="ingreso">
-                <label for="tipo-ingreso" class="type-toggle__ingreso"><span class="type-toggle__arrow">↑</span>Ingreso</label>
-              </div>
+        <div class="campo">
+
+            <label for="descripcion">
+                Descripción
+            </label>
+
+            <input
+                type="text"
+                id="descripcion"
+                name="descripcion"
+                placeholder="Ej: Compra en supermercado"
+                required
+            >
+
+        </div>
+
+
+        <div class="fila">
+
+            <div class="campo">
+
+                <label for="monto">
+                    Monto
+                </label>
+
+                <input
+                    type="number"
+                    id="monto"
+                    name="monto"
+                    placeholder="0"
+                    required
+                >
+
             </div>
 
-            <div class="form-row">
-              <div>
-                <label for="nombre" class="form-label">Nombre del cliente</label>
-                <input class="text-field" type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" required>
-              </div>
-              <div>
-                <label for="telefono" class="form-label">Teléfono</label>
-                <input class="text-field" type="tel" id="telefono" name="telefono" placeholder="+54 9 376 ...">
-              </div>
-              <div>
-                <label for="email" class="form-label">E-mail</label>
-                <input class="text-field" type="email" id="email" name="email" placeholder="nombre@correo.com" required>
-              </div>
-              <div>
-                <label for="direccion" class="form-label">Dirección</label>
-                <input class="text-field" type="text" id="direccion" name="direccion" placeholder="Calle, número, ciudad">
-              </div>
-              <div>
-                <label for="monto" class="form-label">Monto</label>
-                <input class="text-field" type="number" id="monto" name="monto" min="0" step="1" placeholder="0" required>
-              </div>
-              <div>
-                <label for="fecha" class="form-label">Fecha</label>
-                <input class="text-field" type="date" id="fecha" name="fecha" value="2026-08-31" required>
-              </div>
-              <div class="span-2">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <input class="text-field" type="text" id="descripcion" name="descripcion" placeholder="Ej: Supermercado Coto, sueldo de agosto...">
-              </div>
-              <div class="span-2">
-                <span class="form-label">Listado de productos / categorías</span>
-                <div class="product-list">
-                  <table class="product-list__table">
-                    <thead>
-                      <tr>
-                        <th class="align-center">Sel.</th>
-                        <th>Categoría</th>
-                        <th class="align-right">Presupuesto</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="alimentacion" checked></td>
-                        <td>🛒 Alimentación</td>
-                        <td class="align-right">$ 25.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="transporte"></td>
-                        <td>🚗 Transporte</td>
-                        <td class="align-right">$ 8.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="entretenimiento"></td>
-                        <td>🎬 Entretenimiento</td>
-                        <td class="align-right">$ 5.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="servicios"></td>
-                        <td>💡 Servicios del hogar</td>
-                        <td class="align-right">$ 15.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="salud"></td>
-                        <td>🏥 Salud</td>
-                        <td class="align-right">$ 10.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="educacion"></td>
-                        <td>📚 Educación</td>
-                        <td class="align-right">$ 12.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="alquiler"></td>
-                        <td>🏠 Alquiler</td>
-                        <td class="align-right">$ 45.000</td>
-                      </tr>
-                      <tr>
-                        <td class="align-center"><input type="checkbox" name="productos" value="indumentaria"></td>
-                        <td>👕 Indumentaria</td>
-                        <td class="align-right">$ 6.000</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
 
-              <div class="span-2">
-                <span class="form-label">Medio de pago</span>
-                <div class="payment-grid">
-                  <input type="radio" name="pago" id="pago-efectivo" value="efectivo" checked>
-                  <label for="pago-efectivo">Efectivo</label>
-                  <input type="radio" name="pago" id="pago-debito" value="debito">
-                  <label for="pago-debito">Tarjeta débito</label>
-                  <input type="radio" name="pago" id="pago-credito" value="credito">
-                  <label for="pago-credito">Tarjeta crédito</label>
-                  <input type="radio" name="pago" id="pago-transferencia" value="transferencia">
-                  <label for="pago-transferencia">Transferencia</label>
-                </div>
-              </div>
+            <div class="campo">
+
+                <label for="fecha">
+                    Fecha
+                </label>
+
+                <input
+                    type="date"
+                    id="fecha"
+                    name="fecha"
+                    required
+                >
+
             </div>
 
-            <div class="form-footer">
-              <button type="submit" class="btn btn--primary btn--block">Confirmar movimiento</button>
-              <p class="form-footnote">Completá usuario, monto, categoría y descripción para continuar.</p>
-            </div>
-          </div>
+        </div>
 
-          <!-- ===== Vista previa ===== -->
-          <div>
-            <p class="preview-label">Vista previa</p>
-            <div class="preview-card preview-card--gasto">
-              <div class="preview-card__top">
-                <span class="badge badge--gasto"><span class="badge__dot" style="background:var(--color-rose);"></span>Gasto</span>
-                <span class="preview-card__date">31/08/2026</span>
-              </div>
-              <div class="preview-card__cat">
-                <div class="cat-icon cat-icon--md" style="background:#f59e0b40;">🛒</div>
-                <div>
-                  <p class="preview-card__cat-label">Categoría</p>
-                  <p class="preview-card__cat-name">Alimentación</p>
-                </div>
-              </div>
-              <div>
-                <p class="preview-card__amount-label">Monto</p>
-                <p class="preview-card__amount preview-card__amount--gasto">$ —</p>
-              </div>
-              <div class="preview-card__details">
-                <div class="preview-card__detail-row"><span>Descripción</span><span>—</span></div>
-                <div class="preview-card__detail-row"><span>Medio de pago</span><span>Efectivo</span></div>
-                <div class="preview-card__detail-row"><span>Cliente</span><span>—</span></div>
-              </div>
+
+        <div class="fila">
+
+            <div class="campo">
+
+                <label for="categoria">
+                    Categoría
+                </label>
+
+                <select id="categoria" name="categoria" required>
+
+                    <option value="">
+                        Seleccionar
+                    </option>
+
+                    <option>Alimentación</option>
+                    <option>Transporte</option>
+                    <option>Entretenimiento</option>
+                    <option>Servicios</option>
+                    <option>Salud</option>
+                    <option>Educación</option>
+                    <option>Alquiler</option>
+                    <option>Indumentaria</option>
+
+                </select>
+
             </div>
 
-            <div class="card budget-impact">
-              <p class="budget-impact__label">Impacto en presupuesto</p>
-              <div class="budget-impact__row"><span>Alimentación</span><span>$ 18.400 / $ 25.000</span></div>
-              <div class="progress"><div class="progress__bar progress__bar--ok" style="width:74%"></div></div>
-              <p class="budget-impact__note">Luego de este gasto: 74 % ejecutado</p>
+
+            <div class="campo">
+
+                <label for="pago">
+                    Medio de pago
+                </label>
+
+                <select id="pago" name="pago" required>
+
+                    <option value="">
+                        Seleccionar
+                    </option>
+
+                    <option>Efectivo</option>
+                    <option>Tarjeta de débito</option>
+                    <option>Tarjeta de crédito</option>
+                    <option>Mercado Pago</option>
+                    <option>Transferencia</option>
+
+                </select>
+
             </div>
-          </div>
-        </form>
 
-      </div>
-    </main>
+        </div>
 
-    <footer class="site-footer">
-      <div class="container site-footer__inner">
-        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
-        <nav class="footer-nav">
-          <a href="index.html">Inicio</a>
-          <a href="listado_tabla.html">Categorías</a>
-          <a href="comprar.html">Registrar movimiento</a>
-        </nav>
-        <p class="footer-copy">© 2026 NipinFinan</p>
-      </div>
-    </footer>
 
-  </div>
+        <div class="campo">
+
+            <label for="comentario">
+                Comentario
+            </label>
+
+            <textarea
+                id="comentario"
+                name="comentario"
+                rows="4"
+                placeholder="Información adicional"
+            ></textarea>
+
+        </div>
+
+
+        <div class="formulario-botones">
+
+            <a href="index.html" class="boton secundario">
+                Cancelar
+            </a>
+
+            <button type="submit" class="boton">
+                Guardar
+            </button>
+
+        </div>
+
+    </form>
+
+</main>
+
+
+<footer>
+    <div class="contenedor">
+        <p>NipinFinan - Finanzas personales</p>
+        <p>© 2026</p>
+    </div>
+</footer>
+
 </body>
 </html>
