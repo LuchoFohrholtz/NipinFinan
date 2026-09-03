@@ -1,264 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Categorías (tarjetas) · NipinFinan</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - NipinFinan</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <div class="page-wrapper">
 
-    <header class="site-header">
-      <div class="container site-header__inner">
-        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
-        <input type="checkbox" id="nav-toggle" class="nav-toggle">
-        <label for="nav-toggle" class="nav-toggle__btn" aria-label="Abrir menú">
-          <span></span><span></span><span></span>
-        </label>
-        <nav class="main-nav">
-          <a href="index.html" class="nav-link">Inicio</a>
-          <a href="listado_tabla.html" class="nav-link is-active">Categorías</a>
-          <a href="comprar.html" class="nav-link nav-link--cta">+ Registrar movimiento</a>
+<header>
+    <div class="contenedor">
+        <a href="index.html" class="logo">NipinFinan</a>
+
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="listado_tabla.html">Movimientos</a>
+            <a href="listado_box.html">Categorías</a>
+            <a href="comprar.html">Registrar</a>
         </nav>
-      </div>
-    </header>
+    </div>
+</header>
 
-    <main class="page-main">
-      <div class="container" style="padding-top:2rem; padding-bottom:3rem;">
 
-        <div class="page-header">
-          <div>
-            <h1>Categorías</h1>
-            <p class="page-header__sub">10 categorías · 8 de gastos · 2 de ingresos</p>
-          </div>
-          <div class="view-toggle">
-            <a href="listado_tabla.html" class="view-toggle__btn">☰ Tabla</a>
-            <a href="listado_box.html" class="view-toggle__btn is-active">▦ Tarjetas</a>
-          </div>
-        </div>
+<main class="contenedor pagina">
 
-        <form class="filters" role="search">
-          <div class="search-field">
-            <label for="buscar" class="visually-hidden">Buscar categoría</label>
-            <input type="search" id="buscar" name="buscar" placeholder="Buscar categoría...">
-          </div>
-          <div class="filter-buttons">
-            <button type="button" class="filter-btn is-active">Todos</button>
-            <button type="button" class="filter-btn">Gastos</button>
-            <button type="button" class="filter-btn">Ingresos</button>
-          </div>
-        </form>
+    <h1>Categorías</h1>
 
-        <div class="category-grid">
+    <p>
+        Categorías utilizadas para organizar los movimientos.
+    </p>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#f59e0b33;">🛒</div>
-                <div>
-                  <p class="category-card__name">Alimentación</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--ok"><span class="badge__dot"></span>OK</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--ok" style="width:74%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 18.400</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 25.000</div>
-            </div>
-            <div class="category-card__footer"><span>74 % ejecutado</span><span>$ 6.600 disponible</span></div>
-          </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#3b82f633;">🚗</div>
-                <div>
-                  <p class="category-card__name">Transporte</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--cerca"><span class="badge__dot"></span>Cerca del límite</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--cerca" style="width:89%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 7.100</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 8.000</div>
-            </div>
-            <div class="category-card__footer"><span>89 % ejecutado</span><span>$ 900 disponible</span></div>
-          </a>
+    <div class="categorias">
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#8b5cf633;">🎬</div>
-                <div>
-                  <p class="category-card__name">Entretenimiento</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--superado"><span class="badge__dot"></span>Superado</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--superado" style="width:100%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 6.200</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 5.000</div>
-            </div>
-            <div class="category-card__footer"><span>124 % ejecutado</span><span class="excedido">+$ 1.200 excedido</span></div>
-          </a>
+        <a href="producto.html" class="categoria">
+            <div class="icono">A</div>
+            <h2>Alimentación</h2>
+            <p>Comida y supermercado.</p>
+            <strong>$32.500</strong>
+        </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#06b6d433;">💡</div>
-                <div>
-                  <p class="category-card__name">Servicios del hogar</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--cerca"><span class="badge__dot"></span>Cerca del límite</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--cerca" style="width:85%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 12.800</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 15.000</div>
-            </div>
-            <div class="category-card__footer"><span>85 % ejecutado</span><span>$ 2.200 disponible</span></div>
-          </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#ef444433;">🏥</div>
-                <div>
-                  <p class="category-card__name">Salud</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--ok"><span class="badge__dot"></span>OK</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--ok" style="width:32%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 3.200</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 10.000</div>
-            </div>
-            <div class="category-card__footer"><span>32 % ejecutado</span><span>$ 6.800 disponible</span></div>
-          </a>
+        <a href="producto.html" class="categoria">
+            <div class="icono">T</div>
+            <h2>Transporte</h2>
+            <p>Combustible y viajes.</p>
+            <strong>$18.000</strong>
+        </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#10b98133;">📚</div>
-                <div>
-                  <p class="category-card__name">Educación</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--ok"><span class="badge__dot"></span>OK</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--ok" style="width:38%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 4.500</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 12.000</div>
-            </div>
-            <div class="category-card__footer"><span>38 % ejecutado</span><span>$ 7.500 disponible</span></div>
-          </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#f9731633;">🏠</div>
-                <div>
-                  <p class="category-card__name">Alquiler</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--cerca"><span class="badge__dot"></span>Cerca del límite</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--superado" style="width:100%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 45.000</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 45.000</div>
-            </div>
-            <div class="category-card__footer"><span>100 % ejecutado</span><span>$ 0 disponible</span></div>
-          </a>
+        <a href="producto.html" class="categoria">
+            <div class="icono">E</div>
+            <h2>Entretenimiento</h2>
+            <p>Cine, música y juegos.</p>
+            <strong>$6.200</strong>
+        </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#ec489933;">👕</div>
-                <div>
-                  <p class="category-card__name">Indumentaria</p>
-                  <span class="badge badge--gasto">Gasto</span>
-                </div>
-              </div>
-              <span class="badge badge--cerca"><span class="badge__dot"></span>Cerca del límite</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--cerca" style="width:97%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Gastado</p><p class="category-card__amount">$ 5.800</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Presupuesto</p>$ 6.000</div>
-            </div>
-            <div class="category-card__footer"><span>97 % ejecutado</span><span>$ 200 disponible</span></div>
-          </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#05966933;">💼</div>
-                <div>
-                  <p class="category-card__name">Sueldo</p>
-                  <span class="badge badge--ingreso">Ingreso</span>
-                </div>
-              </div>
-              <span class="badge badge--ok"><span class="badge__dot"></span>OK</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--ok" style="width:100%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Recibido</p><p class="category-card__amount category-card__amount--emerald">$ 85.000</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Esperado</p>$ 85.000</div>
-            </div>
-            <div class="category-card__footer"><span>100 % recibido</span></div>
-          </a>
+        <a href="producto.html" class="categoria">
+            <div class="icono">S</div>
+            <h2>Servicios</h2>
+            <p>Luz, agua e internet.</p>
+            <strong>$15.500</strong>
+        </a>
 
-          <a href="producto.html" class="card category-card">
-            <div class="category-card__head">
-              <div class="category-card__title-row">
-                <div class="cat-icon cat-icon--md" style="background:#05966933;">💻</div>
-                <div>
-                  <p class="category-card__name">Freelance</p>
-                  <span class="badge badge--ingreso">Ingreso</span>
-                </div>
-              </div>
-              <span class="badge badge--ok"><span class="badge__dot"></span>OK</span>
-            </div>
-            <div class="progress"><div class="progress__bar progress__bar--ok" style="width:83%"></div></div>
-            <div class="category-card__amounts">
-              <div><p class="category-card__amount-label">Recibido</p><p class="category-card__amount category-card__amount--emerald">$ 25.000</p></div>
-              <div class="category-card__budget"><p class="category-card__amount-label">Esperado</p>$ 30.000</div>
-            </div>
-            <div class="category-card__footer"><span>83 % recibido</span></div>
-          </a>
 
-        </div>
+        <a href="producto.html" class="categoria">
+            <div class="icono">S</div>
+            <h2>Salud</h2>
+            <p>Farmacia y consultas.</p>
+            <strong>$6.200</strong>
+        </a>
 
-      </div>
-    </main>
 
-    <footer class="site-footer">
-      <div class="container site-footer__inner">
-        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
-        <nav class="footer-nav">
-          <a href="index.html">Inicio</a>
-          <a href="listado_tabla.html">Categorías</a>
-          <a href="comprar.html">Registrar movimiento</a>
-        </nav>
-        <p class="footer-copy">© 2026 NipinFinan</p>
-      </div>
-    </footer>
+        <a href="producto.html" class="categoria">
+            <div class="icono">Ed</div>
+            <h2>Educación</h2>
+            <p>Cursos y materiales.</p>
+            <strong>$8.000</strong>
+        </a>
 
-  </div>
+
+        <a href="producto.html" class="categoria">
+            <div class="icono">Al</div>
+            <h2>Alquiler</h2>
+            <p>Alquiler de vivienda.</p>
+            <strong>$0</strong>
+        </a>
+
+
+        <a href="producto.html" class="categoria">
+            <div class="icono">I</div>
+            <h2>Indumentaria</h2>
+            <p>Ropa y calzado.</p>
+            <strong>$15.000</strong>
+        </a>
+
+
+        <a href="producto.html" class="categoria">
+            <div class="icono">Su</div>
+            <h2>Sueldo</h2>
+            <p>Ingresos laborales.</p>
+            <strong class="ingreso">+$150.000</strong>
+        </a>
+
+
+        <a href="producto.html" class="categoria">
+            <div class="icono">F</div>
+            <h2>Freelance</h2>
+            <p>Trabajos independientes.</p>
+            <strong class="ingreso">+$0</strong>
+        </a>
+
+    </div>
+
+</main>
+
+
+<footer>
+    <div class="contenedor">
+        <p>NipinFinan - Finanzas personales</p>
+        <p>© 2026</p>
+    </div>
+</footer>
+
 </body>
 </html>
