@@ -1,140 +1,125 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Entretenimiento · NipinFinan</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alimentación - NipinFinan</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <div class="page-wrapper">
 
-    <header class="site-header">
-      <div class="container site-header__inner">
-        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
-        <input type="checkbox" id="nav-toggle" class="nav-toggle">
-        <label for="nav-toggle" class="nav-toggle__btn" aria-label="Abrir menú">
-          <span></span><span></span><span></span>
-        </label>
-        <nav class="main-nav">
-          <a href="index.html" class="nav-link">Inicio</a>
-          <a href="listado_tabla.html" class="nav-link is-active">Categorías</a>
-          <a href="comprar.html" class="nav-link nav-link--cta">+ Registrar movimiento</a>
+<header>
+    <div class="contenedor">
+        <a href="index.html" class="logo">NipinFinan</a>
+
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="listado_tabla.html">Movimientos</a>
+            <a href="listado_box.html">Categorías</a>
+            <a href="comprar.html">Registrar</a>
         </nav>
-      </div>
-    </header>
+    </div>
+</header>
 
-    <main class="page-main">
-      <div class="container" style="max-width:56rem; padding-top:2rem; padding-bottom:3rem;">
 
-        <nav class="breadcrumb" aria-label="Miga de pan">
-          <a href="listado_tabla.html">Categorías</a>
-          <span>›</span>
-          <strong>Entretenimiento</strong>
-        </nav>
+<main class="contenedor pagina">
 
-        <!-- Alerta: presupuesto superado -->
-        <div class="alert-banner alert-banner--rose">
-          <div class="alert-banner__icon">⚠️</div>
-          <div>
-            <p class="alert-banner__title">Presupuesto superado</p>
-            <p>Gastaste <strong>$ 1.200</strong> más del límite mensual establecido para Entretenimiento.</p>
-          </div>
+    <a href="listado_box.html">← Volver a categorías</a>
+
+
+    <section class="detalle">
+
+        <div class="icono grande">A</div>
+
+        <div>
+            <p class="etiqueta">CATEGORÍA DE GASTOS</p>
+
+            <h1>Alimentación</h1>
+
+            <p>
+                En esta categoría se registran los gastos relacionados
+                con comida y supermercado.
+            </p>
+
+            <a href="comprar.html" class="boton">
+                Registrar gasto
+            </a>
         </div>
 
-        <!-- Encabezado de la categoría -->
-        <div class="card detail-header">
-          <div class="detail-header__id">
-            <div class="cat-icon cat-icon--lg" style="background:#8b5cf633;">🎬</div>
+    </section>
+
+
+    <section>
+
+        <h2>Resumen</h2>
+
+        <div class="tarjetas">
+
+            <div class="tarjeta">
+                <p>Presupuesto</p>
+                <h3>$40.000</h3>
+            </div>
+
+            <div class="tarjeta">
+                <p>Gastado</p>
+                <h3 class="gasto">$32.500</h3>
+            </div>
+
+            <div class="tarjeta">
+                <p>Disponible</p>
+                <h3 class="ingreso">$7.500</h3>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="historial">
+
+        <h2>Movimientos</h2>
+
+        <div class="movimiento">
             <div>
-              <div class="detail-header__title-row">
-                <h1>Entretenimiento</h1>
-                <span class="badge badge--gasto">Gasto</span>
-              </div>
-              <span class="badge badge--superado"><span class="badge__dot"></span>Superado</span>
+                <strong>Supermercado</strong>
+                <p>02/09/2026 · Tarjeta de débito</p>
             </div>
-          </div>
-          <a href="comprar.html" class="btn btn--primary">+ Registrar movimiento</a>
+
+            <strong class="gasto">-$18.500</strong>
         </div>
 
-        <!-- Tarjetas de estadísticas -->
-        <div class="stat-grid">
-          <div class="card stat-card">
-            <p class="stat-card__label">Presupuesto asignado</p>
-            <p class="stat-card__value">$ 5.000</p>
-            <p class="stat-card__sub">por mes · agosto 2026</p>
-          </div>
-          <div class="card stat-card stat-card--danger">
-            <p class="stat-card__label">Gasto acumulado</p>
-            <p class="stat-card__value" style="color:var(--color-rose-text);">$ 6.200</p>
-            <p class="stat-card__sub">124 % del presupuesto</p>
-          </div>
+
+        <div class="movimiento">
+            <div>
+                <strong>Compra de comida</strong>
+                <p>31/08/2026 · Efectivo</p>
+            </div>
+
+            <strong class="gasto">-$8.000</strong>
         </div>
 
-        <!-- Barra de progreso destacada -->
-        <div class="card progress-card">
-          <div class="progress-card__top">
-            <p style="font-size:0.9rem; font-weight:500; color:var(--color-slate-700);">Ejecución del presupuesto</p>
-            <span class="progress-card__pct" style="color:var(--color-rose);">124 %</span>
-          </div>
-          <div class="progress progress--lg"><div class="progress__bar progress__bar--superado" style="width:100%"></div></div>
-          <div class="progress-card__scale"><span>$ 0</span><span>$ 5.000</span></div>
+
+        <div class="movimiento">
+            <div>
+                <strong>Delivery</strong>
+                <p>29/08/2026 · Mercado Pago</p>
+            </div>
+
+            <strong class="gasto">-$6.000</strong>
         </div>
 
-        <!-- Historial de movimientos -->
-        <div class="card">
-          <div class="history-card__head">
-            <h2>Historial de movimientos</h2>
-            <span class="history-card__count">3 registros</span>
-          </div>
+    </section>
 
-          <div class="movement-row">
-            <div class="movement-row__left">
-              <div class="movement-row__icon">↓</div>
-              <div>
-                <p class="movement-row__desc">Entradas de cine</p>
-                <p class="movement-row__meta">20/08/2026 · Efectivo</p>
-              </div>
-            </div>
-            <span class="movement-row__amount">− $ 3.900</span>
-          </div>
-          <div class="movement-row">
-            <div class="movement-row__left">
-              <div class="movement-row__icon">↓</div>
-              <div>
-                <p class="movement-row__desc">Netflix</p>
-                <p class="movement-row__meta">05/08/2026 · Tarjeta crédito</p>
-              </div>
-            </div>
-            <span class="movement-row__amount">− $ 1.500</span>
-          </div>
-          <div class="movement-row">
-            <div class="movement-row__left">
-              <div class="movement-row__icon">↓</div>
-              <div>
-                <p class="movement-row__desc">Spotify</p>
-                <p class="movement-row__meta">05/08/2026 · Tarjeta crédito</p>
-              </div>
-            </div>
-            <span class="movement-row__amount">− $ 800</span>
-          </div>
-        </div>
+</main>
 
-      </div>
-    </main>
 
-    <footer class="site-footer">
-      <div class="container site-footer__inner">
-        <a href="index.html" class="logo"><span class="logo__icon">$</span> NipinFinan</a>
-        <nav class="footer-nav">
-          <a href="index.html">Inicio</a>
-          <a href="listado_tabla.html">Categorías</a>
-          <a href="comprar.html">Registrar movimiento</a>
-        </nav>
-        <p class="footer-copy">© 2026 NipinFinan</p>
-      </div>
-    </footer>
+<footer>
+    <div class="contenedor">
+        <p>NipinFinan - Finanzas personales</p>
+        <p>© 2026</p>
+    </div>
+</footer>
 
-  </div>
 </body>
 </html>
