@@ -14,10 +14,12 @@
         <a href="index.html" class="logo">NipinFinan</a>
 
         <nav>
-            <a href="index.html">Inicio</a>
-            <a href="listado_tabla.html">Movimientos</a>
-            <a href="listado_box.html">Categorías</a>
-            <a href="comprar.html">Registrar</a>
+            <ul class="nav-lista">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="listado_tabla.html">Movimientos</a></li>
+                <li><a href="listado_box.html">Categorías</a></li>
+                <li><a href="comprar.html">Registrar</a></li>
+            </ul>
         </nav>
     </div>
 </header>
@@ -30,7 +32,7 @@
 
     <section class="detalle">
 
-        <div class="icono grande">A</div>
+        <div class="icono grande" aria-hidden="true">A</div>
 
         <div>
             <p class="etiqueta">CATEGORÍA DE GASTOS</p>
@@ -54,24 +56,24 @@
 
         <h2>Resumen</h2>
 
-        <div class="tarjetas">
+        <ul class="tarjetas">
 
-            <div class="tarjeta">
+            <li class="tarjeta">
                 <p>Presupuesto</p>
                 <h3>$40.000</h3>
-            </div>
+            </li>
 
-            <div class="tarjeta">
+            <li class="tarjeta">
                 <p>Gastado</p>
                 <h3 class="gasto">$32.500</h3>
-            </div>
+            </li>
 
-            <div class="tarjeta">
+            <li class="tarjeta">
                 <p>Disponible</p>
                 <h3 class="ingreso">$7.500</h3>
-            </div>
+            </li>
 
-        </div>
+        </ul>
 
     </section>
 
@@ -80,34 +82,38 @@
 
         <h2>Movimientos</h2>
 
-        <div class="movimiento">
-            <div>
-                <strong>Supermercado</strong>
-                <p>02/09/2026 · Tarjeta de débito</p>
-            </div>
+        <ul class="historial-lista">
 
-            <strong class="gasto">-$18.500</strong>
-        </div>
+            <li class="movimiento">
+                <div>
+                    <strong>Supermercado</strong>
+                    <p>02/09/2026 · Tarjeta de débito</p>
+                </div>
 
-
-        <div class="movimiento">
-            <div>
-                <strong>Compra de comida</strong>
-                <p>31/08/2026 · Efectivo</p>
-            </div>
-
-            <strong class="gasto">-$8.000</strong>
-        </div>
+                <strong class="gasto">-$18.500</strong>
+            </li>
 
 
-        <div class="movimiento">
-            <div>
-                <strong>Delivery</strong>
-                <p>29/08/2026 · Mercado Pago</p>
-            </div>
+            <li class="movimiento">
+                <div>
+                    <strong>Compra de comida</strong>
+                    <p>31/08/2026 · Efectivo</p>
+                </div>
 
-            <strong class="gasto">-$6.000</strong>
-        </div>
+                <strong class="gasto">-$8.000</strong>
+            </li>
+
+
+            <li class="movimiento">
+                <div>
+                    <strong>Delivery</strong>
+                    <p>29/08/2026 · Mercado Pago</p>
+                </div>
+
+                <strong class="gasto">-$6.000</strong>
+            </li>
+
+        </ul>
 
     </section>
 
