@@ -69,16 +69,13 @@
                 placeholder="Ej: Compra en supermercado"
                 required
             >
-
-        </div>
-
-
-        <div class="fila">
+       
+            <div class="fila">
 
             <div class="campo">
 
                 <label for="monto">
-                    Monto
+                    Monto por cuota
                 </label>
 
                 <input
@@ -94,6 +91,28 @@
 
             <div class="campo">
 
+                <label for="cuotas">
+                    Cantidad de cuotas
+                </label>
+
+                <input
+                    type="number"
+                    id="cuotas"
+                    name="cuotas"
+                    placeholder="1"
+                    min="1"
+                    value="1"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="fila">
+
+            <div class="campo">
+
                 <label for="fecha">
                     Fecha
                 </label>
@@ -104,6 +123,17 @@
                     name="fecha"
                     required
                 >
+
+            </div>
+
+
+            <div class="campo">
+
+                <p>Total a pagar: <span id="subtotal">$0</span></p>
+
+            </div>
+
+        </div>
 
             </div>
 
@@ -202,6 +232,8 @@
         <p>© 2026</p>
     </div>
 </footer>
+
+<script src="js/comprar.js"></script>
 
 </body>
 </html>
