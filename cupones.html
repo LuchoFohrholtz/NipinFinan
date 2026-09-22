@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cupones - NipinFinan</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="contenedor">
+        <a href="index.html" class="logo">NipinFinan</a>
+
+        <nav>
+            <ul class="nav-lista">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="listado_tabla.html">Movimientos</a></li>
+                <li><a href="listado_box.html">Categorías</a></li>
+                <li><a href="comprar.html">Registrar</a></li>
+                <li><a href="cupones.html" aria-current="page">Cupones</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="contenedor pagina">
+    <h1>Cupones</h1>
+    <p>Verificá un código de descuento antes de hacer una compra.</p>
+
+    <form class="formulario" id="formulario-cupon" novalidate>
+        <h2>Validar cupón</h2>
+
+        <div class="campo">
+            <label for="cupon">Código de descuento</label>
+            <input type="text" id="cupon" name="cupon" placeholder="Ej: UCP10" autocomplete="off">
+        </div>
+
+        <button type="submit" class="boton">Validar cupón</button>
+        <p id="mensaje-cupon" role="status" aria-live="polite"></p>
+    </form>
+</main>
+
+<footer>
+    <div class="contenedor">
+        <p>NipinFinan - Finanzas personales</p>
+        <p>© 2026</p>
+    </div>
+</footer>
+
+<script src="js/cupones.js"></script>
+</body>
+</html>

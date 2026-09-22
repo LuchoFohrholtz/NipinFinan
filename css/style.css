@@ -378,6 +378,22 @@ th {
 }
 
 
+/* CUPONES */
+
+#mensaje-cupon:not(:empty) {
+    margin: 16px 0 0;
+    font-weight: bold;
+}
+
+.mensaje-error {
+    color: #dc2626;
+}
+
+.mensaje-exito {
+    color: #16a34a;
+}
+
+
 /* FOOTER */
 
 footer {
@@ -402,7 +418,7 @@ footer p {
         padding: 20px 0;
     }
 
-    nav {
+    .nav-lista {
         flex-wrap: wrap;
         justify-content: center;
     }
