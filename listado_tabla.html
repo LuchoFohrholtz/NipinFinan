@@ -9,6 +9,7 @@
 
 <body>
 
+<!-- ========== ENCABEZADO Y NAVEGACION ========== -->
 <header>
     <div class="contenedor">
         <a href="index.html" class="logo">NipinFinan</a>
@@ -16,7 +17,7 @@
         <nav>
             <ul class="nav-lista">
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="listado_tabla.html">Movimientos</a></li>
+                <li><a href="listado_tabla.html" aria-current="page">Movimientos</a></li>
                 <li><a href="listado_box.html">Categorías</a></li>
                 <li><a href="comprar.html">Registrar</a></li>
                 <li><a href="cupones.html">Cupones</a></li>
@@ -26,6 +27,7 @@
 </header>
 
 
+<!-- ========== CONTENIDO PRINCIPAL ========== -->
 <main class="contenedor pagina">
 
     <h1>Movimientos</h1>
@@ -35,27 +37,36 @@
     </p>
 
 
+    <!-- Totales: los calcula js/listado.js con lo guardado en localStorage -->
     <ul class="tabla-resumen">
 
         <li>
             <span>Ingresos</span>
-            <strong class="ingreso">+$150.000</strong>
+            <strong class="ingreso" id="total-ingresos">$0</strong>
         </li>
 
         <li>
             <span>Gastos</span>
-            <strong class="gasto">-$103.200</strong>
+            <strong class="gasto" id="total-gastos">$0</strong>
         </li>
 
         <li>
             <span>Disponible</span>
-            <strong>$46.800</strong>
+            <strong id="total-disponible">$0</strong>
         </li>
 
     </ul>
 
 
-    <div class="tabla-contenedor">
+    <!-- Aviso cuando todavia no hay movimientos -->
+    <p id="sin-movimientos" hidden>
+        Todavía no registraste movimientos.
+        <a href="comprar.html">Registrar el primero</a>
+    </p>
+
+
+    <!-- Tabla de movimientos -->
+    <div class="tabla-contenedor" id="tabla-contenedor">
 
         <table>
 
@@ -69,73 +80,8 @@
                 </tr>
             </thead>
 
-            <tbody>
-
-                <tr>
-                    <td>Supermercado</td>
-                    <td>Alimentación</td>
-                    <td>Gasto</td>
-                    <td>02/09/2026</td>
-                    <td class="gasto">-$18.500</td>
-                </tr>
-
-                <tr>
-                    <td>Combustible</td>
-                    <td>Transporte</td>
-                    <td>Gasto</td>
-                    <td>01/09/2026</td>
-                    <td class="gasto">-$12.000</td>
-                </tr>
-
-                <tr>
-                    <td>Netflix</td>
-                    <td>Entretenimiento</td>
-                    <td>Gasto</td>
-                    <td>30/08/2026</td>
-                    <td class="gasto">-$1.500</td>
-                </tr>
-
-                <tr>
-                    <td>Internet</td>
-                    <td>Servicios</td>
-                    <td>Gasto</td>
-                    <td>29/08/2026</td>
-                    <td class="gasto">-$8.500</td>
-                </tr>
-
-                <tr>
-                    <td>Compra de ropa</td>
-                    <td>Indumentaria</td>
-                    <td>Gasto</td>
-                    <td>27/08/2026</td>
-                    <td class="gasto">-$15.000</td>
-                </tr>
-
-                <tr>
-                    <td>Sueldo</td>
-                    <td>Sueldo</td>
-                    <td>Ingreso</td>
-                    <td>25/08/2026</td>
-                    <td class="ingreso">+$150.000</td>
-                </tr>
-
-                <tr>
-                    <td>Spotify</td>
-                    <td>Entretenimiento</td>
-                    <td>Gasto</td>
-                    <td>24/08/2026</td>
-                    <td class="gasto">-$800</td>
-                </tr>
-
-                <tr>
-                    <td>Farmacia</td>
-                    <td>Salud</td>
-                    <td>Gasto</td>
-                    <td>22/08/2026</td>
-                    <td class="gasto">-$6.200</td>
-                </tr>
-
-            </tbody>
+            <!-- Las filas se agregan desde js/listado.js -->
+            <tbody id="tbody-movimientos"></tbody>
 
         </table>
 
@@ -144,12 +90,16 @@
 </main>
 
 
+<!-- ========== PIE DE PAGINA ========== -->
 <footer>
     <div class="contenedor">
         <p>NipinFinan - Finanzas personales</p>
         <p>© 2026</p>
     </div>
 </footer>
+
+<!-- ========== SCRIPTS ========== -->
+<script src="js/listado.js" defer></script>
 
 </body>
 </html>

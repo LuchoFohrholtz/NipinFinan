@@ -1,3 +1,8 @@
+/* ===============================
+   NipinFinan - Hoja de estilos
+   =============================== */
+
+
 /* ESTILOS GENERALES */
 
 * {
@@ -393,7 +398,9 @@ th {
     color: #16a34a;
 }
 
+
 /* RESULTADO DE LA CALCULADORA */
+
 .resultado {
     margin-bottom: 20px;
     padding: 15px 20px;
@@ -406,7 +413,9 @@ th {
     margin-bottom: 10px;
 }
 
-/* MENSAJES DE ÉXITO / ERROR */
+
+/* MENSAJES DE ÉXITO / ERROR (formulario de registro) */
+
 #mensaje:empty {
     display: none;
 }
@@ -428,6 +437,7 @@ th {
     color: #991b1b;
     border: 1px solid #fca5a5;
 }
+
 
 /* FOOTER */
 

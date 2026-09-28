@@ -9,6 +9,7 @@
 
 <body>
 
+<!-- ========== ENCABEZADO Y NAVEGACION ========== -->
 <header>
     <div class="contenedor">
         <a href="index.html" class="logo">NipinFinan</a>
@@ -25,10 +26,13 @@
     </div>
 </header>
 
+
+<!-- ========== CONTENIDO PRINCIPAL ========== -->
 <main class="contenedor pagina">
     <h1>Cupones</h1>
     <p>Verificá un código de descuento antes de hacer una compra.</p>
 
+    <!-- Formulario del cupon: se valida en js/cupones.js contra data/tarifas.json -->
     <form class="formulario" id="formulario-cupon" novalidate>
         <h2>Validar cupón</h2>
 
@@ -38,10 +42,14 @@
         </div>
 
         <button type="submit" class="boton">Validar cupón</button>
+
+        <!-- Resultado de la validacion -->
         <p id="mensaje-cupon" role="status" aria-live="polite"></p>
     </form>
 </main>
 
+
+<!-- ========== PIE DE PAGINA ========== -->
 <footer>
     <div class="contenedor">
         <p>NipinFinan - Finanzas personales</p>
@@ -49,6 +57,8 @@
     </div>
 </footer>
 
-<script src="js/cupones.js"></script>
+<!-- ========== SCRIPTS ========== -->
+<script src="js/cupones.js" defer></script>
+
 </body>
 </html>

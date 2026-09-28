@@ -11,5 +11,9 @@
     "3": 0.08,
     "6": 0.18,
     "12": 0.35
+  },
+  "cupones": {
+    "UCP10": { "descuento": 0.10, "vigente": true },
+    "VERANO25": { "descuento": 0.25, "vigente": false }
   }
 }
