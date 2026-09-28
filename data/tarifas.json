@@ -1,0 +1,15 @@
+{
+  "medios_pago": {
+    "Efectivo": { "descuento": 0.10 },
+    "Transferencia": { "descuento": 0.05 },
+    "Tarjeta de débito": { "descuento": 0 },
+    "Mercado Pago": { "descuento": 0 },
+    "Tarjeta de crédito": { "descuento": 0 }
+  },
+  "cuotas": {
+    "1": 0,
+    "3": 0.08,
+    "6": 0.18,
+    "12": 0.35
+  }
+}

@@ -393,6 +393,41 @@ th {
     color: #16a34a;
 }
 
+/* RESULTADO DE LA CALCULADORA */
+.resultado {
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: #f1f5f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.resultado h3 {
+    margin-bottom: 10px;
+}
+
+/* MENSAJES DE ÉXITO / ERROR */
+#mensaje:empty {
+    display: none;
+}
+
+.mensaje {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 6px;
+}
+
+.mensaje.exito {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.mensaje.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
 
 /* FOOTER */
 
