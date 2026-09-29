@@ -150,14 +150,16 @@ Esta implementación es individual y complementa la opción 5 de Santiago.
 | Archivo | Responsabilidad |
 |---------|-----------------|
 | `index.html` | Sección del resumen, controles y carga de los archivos nuevos |
-| `js/metricas/app.js` | Eventos, lectura de movimientos, fetch y cálculo de métricas |
+| `js/app.js` | Script compartido: registro/calculadora y módulo del resumen |
 | `css/resumen.css` | Estilos adicionales limitados a `#resumen` |
 | `data/metricas.json` | Movimientos ficticios de julio, agosto y septiembre de 2026 |
 
-El `js/app.js` original, los módulos de registro/listado/cupones, las tarifas,
-los estilos compartidos y los PDF se conservaron sin modificaciones.
-Los eventos del tablero están en un **nuevo archivo llamado app.js**, dentro
-de `js/metricas/`, para cumplir la consigna sin modificar el caso 5.
+Se unificaron el registro y el resumen en **un único `js/app.js`** por pedido
+posterior de Luciano. Cada módulo se ejecuta únicamente si existe el elemento
+de su pantalla: `#form-movimiento` o `#resumen`. El código de la calculadora
+se conserva dentro de su módulo, con sus fórmulas, eventos y guardado.
+Los archivos de listado/cupones, las tarifas, los estilos compartidos y los
+PDF siguen sin modificaciones. Se eliminó `js/metricas/app.js`.
 
 ### Dos fuentes de datos, sin mezclarlas
 
@@ -180,14 +182,15 @@ el JSON, según el modo. Los filtros operan sobre los datos cargados en memoria.
 
 | Requisito | Implementación |
 |-----------|----------------|
-| Desacoplamiento | `addEventListener('click', ...)` para los botones y `addEventListener('change', ...)` para los selectores, en `js/metricas/app.js` |
+| Desacoplamiento | `addEventListener('click', ...)` para los botones y `addEventListener('change', ...)` para los selectores, en `js/app.js` |
 | Asincronía | `cargarEjemplo()` solicita el JSON mediante `fetch()` y `async/await` |
 | Totales acumulados | `sumar()` agrupa importes del período; `gastosPorCategoria()` agrupa gastos |
 | DOM dinámico | `mostrarResumen()` actualiza tarjetas; `mostrarBarras()` crea elementos con texto e importes |
 | Manejo de errores | Avisos de carga/error, reintento, validación de registros y conservación de la última vista correcta |
 
-No hay atributos `onclick` ni `onsubmit` en el HTML. La página inicial
-no carga el `js/app.js` original, que depende del formulario de registro.
+No hay atributos `onclick` ni `onsubmit` en el HTML. El inicio y el registro
+cargan el mismo `js/app.js`; las comprobaciones de pantalla evitan ejecutar
+el código de un módulo donde no están sus elementos del DOM.
 Los textos procedentes de datos se muestran con `textContent`. Las barras
 se construyen con HTML y CSS, sin librerías de gráficos.
 
@@ -295,3 +298,6 @@ con el proyecto servido por HTTP y datos de prueba en un navegador aislado:
 
 No se detectaron errores JavaScript sin capturar durante estas verificaciones.
 El informe individual de Luciano se realizará en una entrega posterior.
+
+Después de la unificación en un solo app.js se repitieron los diez grupos
+de verificaciones, incluida la integración con el registro y los cupones.
