@@ -1,0 +1,67 @@
+/* AE2 - Luciano Fohrholtz. Estilos limitados al resumen del inicio. */
+#resumen [hidden] { display: none !important; }
+#resumen .resumen-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+#resumen h2 { margin: 0 0 8px; }
+#resumen .resumen-cabecera p { margin: 0; color: #64748b; }
+#resumen .resumen-modo { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+#resumen .resumen-etiqueta {
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 6px 10px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 14px;
+    font-weight: bold;
+}
+#resumen .resumen-filtros {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+#resumen .campo { flex: 1 1 180px; margin: 0; }
+#resumen .boton { font: inherit; }
+#resumen .boton:disabled { cursor: wait; opacity: .65; }
+#resumen .resumen-aviso {
+    padding: 12px 16px;
+    margin: 0 0 20px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    color: #1e40af;
+}
+#resumen .resumen-aviso.error {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #9a3412;
+}
+#resumen .resumen-contexto { color: #64748b; margin: 0 0 16px; }
+#resumen .tarjeta { min-width: 0; }
+#resumen .tarjeta p { margin: 0 0 12px; }
+#resumen .tarjeta h3 { font-size: 26px; overflow-wrap: anywhere; margin: 0; }
+#resumen .tarjeta small { display: block; margin-top: 10px; color: #64748b; line-height: 1.5; }
+#resumen .resumen-categoria { font-size: 21px !important; }
+#resumen .resumen-vacio { margin-top: 20px; }
+#resumen .resumen-grafico { margin-top: 24px; }
+#resumen .resumen-grafico h3, #resumen .resumen-comparacion h3 { margin-top: 0; }
+#resumen .resumen-barras { list-style: none; padding: 0; margin: 0; }
+#resumen .resumen-barras li + li { margin-top: 18px; }
+#resumen .resumen-barra-texto { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+#resumen .resumen-barra-base { height: 12px; background: #dbeafe; border-radius: 6px; overflow: hidden; }
+#resumen .resumen-barra-valor { display: block; height: 100%; background: #2563eb; }
+#resumen .resumen-comparacion { margin-top: 24px; }
+#resumen .resumen-comparacion p { margin-bottom: 0; }
+#resumen a:focus-visible, #resumen button:focus-visible, #resumen select:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+@media (max-width: 700px) {
+    #resumen .resumen-filtros { flex-direction: column; align-items: stretch; }
+    #resumen .campo { flex: auto; }
+    #resumen .resumen-cabecera { align-items: flex-start; }
+}

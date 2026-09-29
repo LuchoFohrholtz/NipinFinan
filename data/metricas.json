@@ -1,0 +1,181 @@
+{
+    "descripcion": "Datos ficticios para demostrar el tablero AE2. No son movimientos del usuario.",
+    "movimientos": [
+        {
+            "id": 1,
+            "tipo": "ingreso",
+            "descripcion": "Ejemplo: Sueldo",
+            "fecha": "2026-07-01",
+            "categoria": "Sueldo",
+            "total": 150000
+        },
+        {
+            "id": 2,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Alimentación",
+            "fecha": "2026-07-04",
+            "categoria": "Alimentación",
+            "total": 28000
+        },
+        {
+            "id": 3,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Transporte",
+            "fecha": "2026-07-09",
+            "categoria": "Transporte",
+            "total": 16000
+        },
+        {
+            "id": 4,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Servicios",
+            "fecha": "2026-07-13",
+            "categoria": "Servicios",
+            "total": 22000
+        },
+        {
+            "id": 5,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Entretenimiento",
+            "fecha": "2026-07-22",
+            "categoria": "Entretenimiento",
+            "total": 6000
+        },
+        {
+            "id": 6,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Salud",
+            "fecha": "2026-07-25",
+            "categoria": "Salud",
+            "total": 8500
+        },
+        {
+            "id": 7,
+            "tipo": "ingreso",
+            "descripcion": "Ejemplo: Sueldo",
+            "fecha": "2026-08-01",
+            "categoria": "Sueldo",
+            "total": 155000
+        },
+        {
+            "id": 8,
+            "tipo": "ingreso",
+            "descripcion": "Ejemplo: Freelance",
+            "fecha": "2026-08-12",
+            "categoria": "Freelance",
+            "total": 20000
+        },
+        {
+            "id": 9,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Alimentación",
+            "fecha": "2026-08-04",
+            "categoria": "Alimentación",
+            "total": 32000
+        },
+        {
+            "id": 10,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Transporte",
+            "fecha": "2026-08-10",
+            "categoria": "Transporte",
+            "total": 18000
+        },
+        {
+            "id": 11,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Servicios",
+            "fecha": "2026-08-14",
+            "categoria": "Servicios",
+            "total": 25000
+        },
+        {
+            "id": 12,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Educación",
+            "fecha": "2026-08-18",
+            "categoria": "Educación",
+            "total": 15000
+        },
+        {
+            "id": 13,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Entretenimiento",
+            "fecha": "2026-08-23",
+            "categoria": "Entretenimiento",
+            "total": 7000
+        },
+        {
+            "id": 14,
+            "tipo": "ingreso",
+            "descripcion": "Ejemplo: Sueldo",
+            "fecha": "2026-09-01",
+            "categoria": "Sueldo",
+            "total": 160000
+        },
+        {
+            "id": 15,
+            "tipo": "ingreso",
+            "descripcion": "Ejemplo: Freelance",
+            "fecha": "2026-09-15",
+            "categoria": "Freelance",
+            "total": 25000
+        },
+        {
+            "id": 16,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Alimentación",
+            "fecha": "2026-09-03",
+            "categoria": "Alimentación",
+            "total": 18500
+        },
+        {
+            "id": 17,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Alimentación",
+            "fecha": "2026-09-05",
+            "categoria": "Alimentación",
+            "total": 16500
+        },
+        {
+            "id": 18,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Transporte",
+            "fecha": "2026-09-07",
+            "categoria": "Transporte",
+            "total": 18000
+        },
+        {
+            "id": 19,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Servicios",
+            "fecha": "2026-09-11",
+            "categoria": "Servicios",
+            "total": 27000
+        },
+        {
+            "id": 20,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Salud",
+            "fecha": "2026-09-16",
+            "categoria": "Salud",
+            "total": 9500.75
+        },
+        {
+            "id": 21,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Entretenimiento",
+            "fecha": "2026-09-20",
+            "categoria": "Entretenimiento",
+            "total": 6200
+        },
+        {
+            "id": 22,
+            "tipo": "gasto",
+            "descripcion": "Ejemplo: Indumentaria",
+            "fecha": "2026-09-24",
+            "categoria": "Indumentaria",
+            "total": 20000
+        }
+    ]
+}

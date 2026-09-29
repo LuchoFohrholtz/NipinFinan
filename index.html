@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NipinFinan</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/resumen.css">
+    <script src="js/metricas/app.js" defer></script>
 </head>
 
 <body>
@@ -53,31 +55,87 @@
     </section>
 
 
-    <!-- Resumen del mes (datos de ejemplo) -->
-    <section class="seccion">
+    <!-- AE2 - Tablero de indicadores de Luciano Fohrholtz -->
+    <section class="seccion" id="resumen" aria-labelledby="resumen-titulo">
         <div class="contenedor">
+            <div class="resumen-cabecera">
+                <div>
+                    <h2 id="resumen-titulo">Resumen de tus movimientos</h2>
+                    <p>Elegí un período y mirá cómo se distribuye tu dinero.</p>
+                </div>
+                <div class="resumen-modo">
+                    <span class="resumen-etiqueta" id="resumen-fuente">Mis movimientos</span>
+                    <button type="button" class="boton secundario" id="resumen-demo" aria-pressed="false">Ver demostración</button>
+                </div>
+            </div>
 
-            <h2>Resumen del mes</h2>
+            <div class="resumen-filtros">
+                <div class="campo">
+                    <label for="resumen-mes">Período</label>
+                    <select id="resumen-mes"></select>
+                </div>
+                <div class="campo">
+                    <label for="resumen-filtro-categoria">Categoría</label>
+                    <select id="resumen-filtro-categoria"></select>
+                </div>
+                <button type="button" class="boton" id="resumen-actualizar">Actualizar resumen</button>
+            </div>
+
+            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" hidden></p>
+            <p class="resumen-contexto" id="resumen-contexto"></p>
 
             <ul class="tarjetas">
-
                 <li class="tarjeta">
                     <p>Ingresos</p>
-                    <h3 class="ingreso">+$150.000</h3>
+                    <h3 class="ingreso" id="resumen-ingresos">$0</h3>
+                    <small>Total recibido en el período.</small>
                 </li>
-
                 <li class="tarjeta">
                     <p>Gastos</p>
-                    <h3 class="gasto">-$103.200</h3>
+                    <h3 class="gasto" id="resumen-gastos">$0</h3>
+                    <small>Importe final de los gastos registrados.</small>
                 </li>
-
                 <li class="tarjeta">
-                    <p>Disponible</p>
-                    <h3>$46.800</h3>
+                    <p>Saldo del período</p>
+                    <h3 id="resumen-saldo">$0</h3>
+                    <small>Ingresos menos gastos de la selección.</small>
                 </li>
-
+                <li class="tarjeta">
+                    <p>Porcentaje disponible</p>
+                    <h3 id="resumen-porcentaje">—</h3>
+                    <small>Parte de tus ingresos que queda disponible.</small>
+                </li>
+                <li class="tarjeta">
+                    <p>Movimientos</p>
+                    <h3 id="resumen-cantidad">0</h3>
+                    <small>Cantidad de ingresos y gastos registrados.</small>
+                </li>
+                <li class="tarjeta">
+                    <p>Categoría de mayor gasto</p>
+                    <h3 class="resumen-categoria" id="resumen-categoria-mayor">Sin gastos</h3>
+                    <small id="resumen-categoria-importe">Todavía no hay una categoría de mayor gasto.</small>
+                </li>
             </ul>
 
+            <div class="resumen-vacio" id="resumen-vacio">
+                <p id="resumen-vacio-texto">Todavía no hay movimientos para mostrar.</p>
+                <a href="comprar.html" id="resumen-registrar">Registrar un movimiento →</a>
+            </div>
+
+            <div class="tarjeta resumen-grafico">
+                <h3>Gastos por categoría</h3>
+                <p>Importe y porcentaje del total de gastos de la selección.</p>
+                <p id="resumen-sin-gastos">No hay gastos para graficar con estos filtros.</p>
+                <ul id="resumen-barras" class="resumen-barras" aria-label="Distribución de gastos por categoría"></ul>
+            </div>
+
+            <div class="tarjeta resumen-comparacion" id="resumen-comparacion">
+                <h3 id="resumen-comparacion-titulo">Comparación con el mes anterior</h3>
+                <p>Ingresos: <strong id="resumen-diferencia-ingresos">Sin cambios</strong></p>
+                <p>Gastos: <strong id="resumen-diferencia-gastos">Sin cambios</strong></p>
+                <small id="resumen-comparacion-nota"></small>
+            </div>
+            <noscript><p>Activá JavaScript para cargar y actualizar el resumen de tus movimientos.</p></noscript>
         </div>
     </section>
 
