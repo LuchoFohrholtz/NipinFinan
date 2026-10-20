@@ -439,6 +439,43 @@ th {
 }
 
 
+/* SESIÓN (login, registro y estado en el header) */
+
+/* hidden siempre oculta, aunque la clase tenga display (por ejemplo .fila) */
+[hidden] {
+    display: none !important;
+}
+
+.mensaje:empty {
+    display: none;
+}
+
+.sesion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sesion .boton {
+    padding: 8px 14px;
+}
+
+.acceso-pestanas {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.aviso-sesion {
+    text-align: center;
+}
+
+.aviso-sesion p {
+    color: #64748b;
+}
+
+
 /* FOOTER */
 
 footer {

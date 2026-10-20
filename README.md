@@ -22,6 +22,7 @@ Programación III** — Comisión "A" — Universidad de la Cuenca del Plata.
 | `producto.html`        | Ficha detallada de una categoría en particular              |
 | `comprar.html`         | Registro de un movimiento + calculadora de tarifas          |
 | `cupones.html`         | Validación de cupones de descuento                          |
+| `login.html`           | Ingreso y creación de cuenta                                |
 
 ## AE2 - Calculador de Tarifas, Presupuestos y Descuentos (Opción 5)
 
@@ -116,15 +117,76 @@ valor de cuota = total / cantidad de cuotas
 Ejemplo: $10.000 en efectivo → $9.000. $10.000 con crédito en 12 cuotas →
 $13.500 (12 cuotas de $1.125).
 
+## Autenticación y endpoints privados (PHP + MySQL)
+
+Los movimientos dejaron de guardarse en `localStorage`: ahora cada usuario
+tiene su cuenta y sus movimientos se guardan en MySQL.
+
+### Cómo levantarlo
+
+1. Copiar la carpeta del proyecto a `C:\xampp\htdocs\NipinFinan`.
+2. Iniciar **Apache** y **MySQL** desde el panel de XAMPP.
+3. En phpMyAdmin, pestaña **Importar**, subir `sql/nipinfinan.sql`
+   (crea la base `nipinfinan` con las tablas `usuarios` y `movimientos`).
+4. Abrir `http://localhost/NipinFinan/`.
+
+Si MySQL tiene otro usuario o contraseña, cambiarlo en `config/conexion.php`.
+
+### Paso 1 - Capa de datos
+
+`sql/nipinfinan.sql` crea la tabla `usuarios` con `password VARCHAR(255)`
+para guardar el hash BCRYPT, y la tabla `movimientos`, relacionada con
+`usuarios` por `usuario_id` (clave foránea).
+
+### Paso 2 - Servicios de autenticación
+
+| Archivo | Qué hace |
+|---------|----------|
+| `api/registro.php` | Recibe JSON, valida, hashea con `password_hash($pass, PASSWORD_BCRYPT)` e inserta con PDO + prepared statements. Responde 201, 400 o 409 si el correo ya existe |
+| `api/login.php` | Busca el usuario, compara con `password_verify()`, hace `session_start()`, `session_regenerate_id(true)` y guarda `$_SESSION['usuario_id']`. Responde 200 o 401 |
+| `api/logout.php` | Vacía y destruye la sesión |
+| `config/sesion.php` | `session_start()` con cookie `HttpOnly` y `SameSite=Lax` |
+
+### Paso 3 - Endpoint privado: `api/mis_movimientos.php`
+
+- Guardián de sesión al principio: si `!isset($_SESSION['usuario_id'])`
+  responde `http_response_code(401)` y corta la ejecución.
+- `GET`: devuelve el nombre del usuario y **solo sus** movimientos.
+- `POST`: registra un movimiento. El `usuario_id` sale de la sesión (nunca
+  del cliente) y el total se vuelve a calcular en el servidor con
+  `data/tarifas.json`, así no se puede mandar un total falso.
+
+### Paso 4 - Frontend (`js/app.js`) y XSS
+
+- `consultarSesion()` hace `fetch()` a `api/mis_movimientos.php` al cargar
+  cada página: con 200 hay sesión, con 401 no.
+- El header muestra **Ingresar** o **Hola, nombre** + **Cerrar sesión**.
+- `comprar.html` muestra el formulario solo con sesión; sin sesión muestra
+  un aviso para ingresar. Lo mismo `listado_tabla.html`. El resumen del
+  inicio muestra los movimientos del usuario o invita a iniciar sesión
+  (la demostración funciona igual).
+- El nombre del usuario y los datos de los movimientos se escriben siempre
+  con `textContent`: si alguien se registra con el nombre
+  `<img src=x onerror=alert(1)>` se ve ese texto y no se ejecuta nada.
+
 ## Estructura
 
 ```
 NipinFinan/
+├── api/
+│   ├── registro.php         # alta de usuario (BCRYPT)
+│   ├── login.php            # login + sesión
+│   ├── logout.php           # cierre de sesión
+│   └── mis_movimientos.php  # endpoint privado (401 sin sesión)
+├── config/
+│   ├── conexion.php         # conexión PDO
+│   └── sesion.php           # session_start() con cookie segura
+├── sql/nipinfinan.sql       # base de datos y tablas
 ├── css/style.css
-├── data/tarifas.json    # tabla de tarifas, cuotas y cupones
-├── js/app.js            # calculadora y registro de movimientos
-├── js/listado.js        # listado de movimientos (localStorage)
-├── js/cupones.js        # validación de cupones
+├── data/tarifas.json        # tabla de tarifas, cuotas y cupones
+├── js/app.js                # sesión, login, calculadora, registro y resumen
+├── js/listado.js            # listado de movimientos (desde la API)
+├── js/cupones.js            # validación de cupones
 └── *.html
 ```
 
@@ -132,7 +194,8 @@ NipinFinan/
 
 - HTML5 semántico
 - CSS3 (Flexbox, CSS Grid)
-- JavaScript (addEventListener, fetch + async/await, localStorage)
+- JavaScript (addEventListener, fetch + async/await)
+- PHP (PDO, sesiones, BCRYPT) y MySQL
 
 ## Documento de análisis y diseño
 

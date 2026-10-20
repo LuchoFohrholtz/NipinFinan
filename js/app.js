@@ -1,5 +1,170 @@
-// NipinFinan - app.js compartido por el registro y el resumen.
+// NipinFinan - app.js compartido por todas las pantallas.
 // Cada módulo comprueba que su pantalla esté presente antes de ejecutarse.
+
+
+// =============================
+// SESIÓN (compartido)
+// =============================
+
+// Consulta el endpoint privado api/mis_movimientos.php.
+// Devuelve { usuario, movimientos } si hay sesión, null si el servidor
+// responde 401 (sin sesión) y lanza un error ante cualquier otra falla.
+// El primer pedido se reutiliza; con recargar = true se vuelve a pedir.
+let pedidoSesion = null;
+
+function consultarSesion(recargar = false) {
+    if (!pedidoSesion || recargar) {
+        pedidoSesion = (async () => {
+            const respuesta = await fetch("api/mis_movimientos.php", { cache: "no-store" });
+            if (respuesta.status === 401) return null;
+            if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
+            return respuesta.json();
+        })();
+    }
+    return pedidoSesion;
+}
+
+
+// Header: muestra "Ingresar" o "Hola, nombre" + "Cerrar sesión"
+(function iniciarSesion() {
+    const caja = document.querySelector("#sesion");
+    if (!caja) return;
+
+    const linkIngresar = caja.querySelector("#sesion-ingresar");
+    const spanUsuario = caja.querySelector("#sesion-usuario");
+    const spanNombre = caja.querySelector("#sesion-nombre");
+    const btnSalir = caja.querySelector("#sesion-salir");
+
+    function mostrar(usuario) {
+        linkIngresar.hidden = Boolean(usuario);
+        spanUsuario.hidden = !usuario;
+        btnSalir.hidden = !usuario;
+        // textContent: si el nombre trae etiquetas HTML se muestran como texto (evita XSS)
+        spanNombre.textContent = usuario ? usuario.nombre : "";
+    }
+
+    consultarSesion()
+        .then(sesion => mostrar(sesion && sesion.usuario))
+        .catch(() => mostrar(null));
+
+    btnSalir.addEventListener("click", async () => {
+        btnSalir.disabled = true;
+        try {
+            await fetch("api/logout.php", { method: "POST" });
+            location.href = "index.html";
+        } catch (err) {
+            console.error("Error al cerrar sesión:", err);
+            btnSalir.disabled = false;
+        }
+    });
+})();
+
+
+// Pantalla login.html: pestañas, login y registro de usuarios
+(function iniciarAcceso() {
+    const formLogin = document.querySelector("#form-login");
+    if (!formLogin) return;
+
+    const formRegistro = document.querySelector("#form-registro");
+    const tabIngresar = document.querySelector("#tab-ingresar");
+    const tabCrear = document.querySelector("#tab-crear");
+    const msgLogin = document.querySelector("#mensaje-login");
+    const msgRegistro = document.querySelector("#mensaje-registro");
+
+    // Si ya hay sesión no tiene sentido mostrar el login
+    consultarSesion()
+        .then(sesion => { if (sesion) location.replace("index.html"); })
+        .catch(() => {});
+
+    function mostrarMensaje(elemento, texto, tipo) {
+        elemento.textContent = texto;
+        elemento.className = "mensaje " + tipo; // tipo: "exito" o "error"
+    }
+
+    function mostrarPestana(pestana) {
+        const ingresar = pestana === "ingresar";
+        formLogin.hidden = !ingresar;
+        formRegistro.hidden = ingresar;
+        tabIngresar.classList.toggle("secundario", !ingresar);
+        tabCrear.classList.toggle("secundario", ingresar);
+        tabIngresar.setAttribute("aria-pressed", String(ingresar));
+        tabCrear.setAttribute("aria-pressed", String(!ingresar));
+        mostrarMensaje(msgLogin, "", "");
+        mostrarMensaje(msgRegistro, "", "");
+    }
+
+    // POST con JSON; devuelve el código HTTP y la respuesta del servidor
+    async function enviar(url, datos) {
+        const respuesta = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+        });
+        const resultado = await respuesta.json().catch(() => ({}));
+        return { ok: respuesta.ok, resultado };
+    }
+
+    tabIngresar.addEventListener("click", () => mostrarPestana("ingresar"));
+    tabCrear.addEventListener("click", () => mostrarPestana("crear"));
+
+    formLogin.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const datos = {
+            email: formLogin.querySelector("#login-email").value.trim(),
+            password: formLogin.querySelector("#login-pass").value
+        };
+        if (!datos.email || !datos.password) {
+            return mostrarMensaje(msgLogin, "Ingresá tu correo y tu contraseña.", "error");
+        }
+
+        const boton = formLogin.querySelector('button[type="submit"]');
+        boton.disabled = true;
+        try {
+            const { ok, resultado } = await enviar("api/login.php", datos);
+            if (ok) {
+                location.href = "index.html";
+                return;
+            }
+            mostrarMensaje(msgLogin, resultado.mensaje || "No se pudo iniciar sesión.", "error");
+        } catch (err) {
+            mostrarMensaje(msgLogin, "Error de conexión con el servidor.", "error");
+        }
+        boton.disabled = false;
+    });
+
+    formRegistro.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const datos = {
+            nombre: formRegistro.querySelector("#reg-nombre").value.trim(),
+            email: formRegistro.querySelector("#reg-email").value.trim(),
+            password: formRegistro.querySelector("#reg-pass").value
+        };
+        if (!datos.nombre || !datos.email || !datos.password) {
+            return mostrarMensaje(msgRegistro, "Completá todos los campos.", "error");
+        }
+        if (datos.password.length < 6) {
+            return mostrarMensaje(msgRegistro, "La contraseña debe tener al menos 6 caracteres.", "error");
+        }
+
+        const boton = formRegistro.querySelector('button[type="submit"]');
+        boton.disabled = true;
+        try {
+            const { ok, resultado } = await enviar("api/registro.php", datos);
+            if (ok) {
+                formRegistro.reset();
+                mostrarPestana("ingresar");
+                formLogin.querySelector("#login-email").value = datos.email;
+                mostrarMensaje(msgLogin, "Cuenta creada. Ya podés ingresar.", "exito");
+            } else {
+                mostrarMensaje(msgRegistro, resultado.mensaje || "No se pudo crear la cuenta.", "error");
+            }
+        } catch (err) {
+            mostrarMensaje(msgRegistro, "Error de conexión con el servidor.", "error");
+        }
+        boton.disabled = false;
+    });
+})();
+
 
 (function iniciarRegistro() {
     if (!document.querySelector("#form-movimiento")) return;
@@ -7,13 +172,13 @@
 // NipinFinan - AE2
 // Calculadora de tarifas: descuento segun medio de pago e interes por cuotas.
 // Las tarifas se cargan con fetch desde data/tarifas.json
+// Los movimientos se guardan en MySQL con api/mis_movimientos.php (requiere sesión)
 
 
 // =============================
 // VARIABLES GLOBALES
 // =============================
 
-const CLAVE_STORAGE = "nipinfinan_movimientos";
 let tarifas = null; // se completa cuando termina el fetch
 
 
@@ -33,6 +198,7 @@ const radiosTipo = document.querySelectorAll('input[name="tipo"]');
 const inputComentario = document.getElementById("comentario");
 const btnGuardar = form.querySelector('button[type="submit"]');
 const divMensaje = document.getElementById("mensaje");
+const avisoSesion = document.getElementById("aviso-sesion");
 
 // Resumen del calculo
 const resSubtotal = document.getElementById("res-subtotal");
@@ -157,16 +323,27 @@ function actualizarResultado() {
 
 
 // =============================
-// GUARDADO (localStorage)
+// SESIÓN Y GUARDADO (api/mis_movimientos.php)
 // =============================
 
-function guardarMovimiento(movimiento) {
-    const guardados = JSON.parse(localStorage.getItem(CLAVE_STORAGE)) || [];
-    guardados.push(movimiento);
-    localStorage.setItem(CLAVE_STORAGE, JSON.stringify(guardados));
+// Con sesión se muestra el formulario; sin sesión, el aviso para ingresar
+function mostrarFormulario(haySesion) {
+    form.hidden = !haySesion;
+    avisoSesion.hidden = haySesion;
 }
 
-function manejarSubmit(e) {
+// El servidor vuelve a calcular el total con data/tarifas.json
+async function guardarMovimiento(movimiento) {
+    const respuesta = await fetch("api/mis_movimientos.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(movimiento)
+    });
+    const resultado = await respuesta.json().catch(() => ({}));
+    return { status: respuesta.status, ok: respuesta.ok, resultado };
+}
+
+async function manejarSubmit(e) {
     e.preventDefault();
 
     const descripcion = inputDescripcion.value.trim();
@@ -180,25 +357,26 @@ function manejarSubmit(e) {
     if (!selectPago.value) return mostrarMensaje("Seleccioná un medio de pago.", "error");
 
     const movimiento = {
-        id: Date.now(),
         tipo: tipoSeleccionado(),
         descripcion,
         monto: r.subtotal,
-        ajuste: r.ajuste,
-        total: r.total,
         cuotas: r.cuotas,
-        valorCuota: r.valorCuota,
         fecha: inputFecha.value,
         categoria: selectCategoria.value,
         medioPago: selectPago.value,
         comentario: inputComentario.value.trim()
     };
 
+    btnGuardar.disabled = true;
     try {
-        guardarMovimiento(movimiento);
+        const { status, ok, resultado } = await guardarMovimiento(movimiento);
+        if (status === 401) return mostrarFormulario(false); // la sesión venció
+        if (!ok) return mostrarMensaje(resultado.mensaje || "No se pudo guardar el movimiento.", "error");
     } catch (err) {
         console.error("Error al guardar:", err);
         return mostrarMensaje("No se pudo guardar el movimiento.", "error");
+    } finally {
+        btnGuardar.disabled = false;
     }
 
     // Limpio el formulario (reset no dispara eventos, por eso actualizo a mano)
@@ -214,6 +392,19 @@ function manejarSubmit(e) {
 // =============================
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // Al cargar la página se verifica la sesión contra el endpoint privado
+    try {
+        const sesion = await consultarSesion();
+        mostrarFormulario(sesion !== null);
+        if (sesion === null) return;
+    } catch (err) {
+        console.error("Error al verificar la sesión:", err);
+        mostrarFormulario(true);
+        mostrarMensaje("No se pudo conectar con el servidor. Intentá de nuevo más tarde.", "error");
+        btnGuardar.disabled = true;
+        return;
+    }
+
     inputFecha.value = fechaHoy();
     await cargarTarifas();
     actualizarResultado();
@@ -233,8 +424,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 // El resumen solo lee movimientos; la demostración usa un JSON separado.
 (function iniciarResumen() {
     if (!document.querySelector("#resumen")) return;
-    const CLAVE = "nipinfinan_movimientos";
     let modo = "real";
+    let sinSesion = false;
     let movimientos = [];
     let cargando = false;
 
@@ -289,12 +480,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    function leerMovimientos() {
-        const texto = localStorage.getItem(CLAVE);
-        return texto === null ? [] : JSON.parse(texto);
+    // Movimientos del usuario desde el endpoint privado (401 = sin sesión).
+    async function leerMovimientos() {
+        const sesion = await consultarSesion(true);
+        sinSesion = sesion === null;
+        return sesion ? sesion.movimientos : [];
     }
 
-    // Una petición HTTP real; los ejemplos nunca se guardan en localStorage.
+    // Una petición HTTP real; los ejemplos nunca se guardan en la cuenta.
     async function cargarEjemplo() {
         const respuesta = await fetch("data/metricas.json", { cache: "no-store" });
         if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
@@ -411,7 +604,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         botonDemo.setAttribute("aria-pressed", String(modo === "demo"));
         panel.querySelector("#resumen-vacio").hidden = lista.length > 0;
         panel.querySelector("#resumen-vacio-texto").textContent = movimientos.length ? "No hay movimientos para los filtros seleccionados." : "Todavía no hay movimientos para mostrar.";
-        panel.querySelector("#resumen-registrar").hidden = modo === "demo";
+        const registrar = panel.querySelector("#resumen-registrar");
+        registrar.hidden = modo === "demo";
+        registrar.href = sinSesion ? "login.html" : "comprar.html";
+        registrar.textContent = sinSesion ? "Iniciar sesión →" : "Registrar un movimiento →";
         mostrarBarras(grupos, gastos);
         mostrarComparacion(ingresos, gastos);
     }
@@ -424,7 +620,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         botonActualizar.disabled = true;
         mostrarAviso(destino === "demo" ? "Cargando datos de ejemplo…" : "Actualizando resumen…");
         try {
-            const datos = destino === "demo" ? await cargarEjemplo() : leerMovimientos();
+            const datos = destino === "demo" ? await cargarEjemplo() : await leerMovimientos();
             const validos = validarMovimientos(datos);
             modo = destino;
             movimientos = validos;
@@ -432,6 +628,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             mostrarResumen();
             const ignorados = datos.length - validos.length;
             mostrarAviso(ignorados ? "Se omitieron " + ignorados + " movimientos con datos incompletos o inválidos." : "", ignorados > 0);
+            if (modo === "real" && sinSesion) mostrarAviso("Iniciá sesión para ver tus movimientos. Mientras tanto podés ver la demostración.");
         } catch (error) {
             // Mantenemos la última vista correcta y ofrecemos reintentar.
             console.warn("No se pudo actualizar el resumen:", error.message);
@@ -451,9 +648,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     botonActualizar.addEventListener("click", () => actualizarDatos());
     botonDemo.addEventListener("click", () => actualizarDatos(modo === "real" ? "demo" : "real", true));
     window.addEventListener("pageshow", () => { if (modo === "real") actualizarDatos(); });
-    window.addEventListener("storage", evento => {
-        if (modo === "real" && (evento.key === CLAVE || evento.key === null)) actualizarDatos();
-    });
     prepararFiltros(true);
     mostrarResumen();
     actualizarDatos();

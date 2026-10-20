@@ -1,12 +1,6 @@
 // NipinFinan - Listado de movimientos
-// Muestra en la tabla lo que se guardo en localStorage desde comprar.html
-
-
-// =============================
-// VARIABLES GLOBALES
-// =============================
-
-const CLAVE_STORAGE = "nipinfinan_movimientos";
+// Muestra en la tabla los movimientos del usuario logueado.
+// Los pide al endpoint privado con consultarSesion() (definida en js/app.js).
 
 
 // =============================
@@ -26,16 +20,6 @@ function formatearPesos(valor) {
 function formatearFecha(iso) {
     const [anio, mes, dia] = iso.split("-");
     return `${dia}/${mes}/${anio}`;
-}
-
-function leerMovimientos() {
-    try {
-        const datos = JSON.parse(localStorage.getItem(CLAVE_STORAGE));
-        return Array.isArray(datos) ? datos : [];
-    } catch (err) {
-        console.error("Error al leer movimientos:", err);
-        return [];
-    }
 }
 
 function sumar(movimientos, tipo) {
@@ -78,9 +62,23 @@ function crearFila(mov) {
 // MOSTRAR MOVIMIENTOS Y TOTALES
 // =============================
 
-function mostrarMovimientos() {
+async function mostrarMovimientos() {
+    let sesion;
+    try {
+        sesion = await consultarSesion();
+    } catch (err) {
+        console.error("Error al leer movimientos:", err);
+        document.getElementById("mensaje").textContent = "No se pudieron cargar los movimientos. Intentá de nuevo más tarde.";
+        return;
+    }
+
+    // Sin sesion (401): oculto los datos y muestro el aviso para ingresar
+    document.getElementById("aviso-sesion").hidden = sesion !== null;
+    document.getElementById("tabla-resumen").hidden = sesion === null;
+    if (sesion === null) return;
+
     // Ordeno del mas reciente al mas viejo
-    const movimientos = leerMovimientos().sort(
+    const movimientos = sesion.movimientos.sort(
         (a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id
     );
 

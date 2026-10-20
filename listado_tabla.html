@@ -23,6 +23,13 @@
                 <li><a href="cupones.html">Cupones</a></li>
             </ul>
         </nav>
+
+        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
+        <div class="sesion" id="sesion">
+            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
+            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
+            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
+        </div>
     </div>
 </header>
 
@@ -37,8 +44,15 @@
     </p>
 
 
-    <!-- Totales: los calcula js/listado.js con lo guardado en localStorage -->
-    <ul class="tabla-resumen">
+    <!-- Sin sesión se muestra este aviso en lugar de los datos (lo alterna js/listado.js) -->
+    <div class="formulario aviso-sesion" id="aviso-sesion" hidden>
+        <h2>Iniciá sesión para ver tus movimientos</h2>
+        <p>Los movimientos son privados: solo los ve el dueño de la cuenta.</p>
+        <a href="login.html" class="boton">Ingresar o crear cuenta</a>
+    </div>
+
+    <!-- Totales: los calcula js/listado.js con lo que devuelve api/mis_movimientos.php -->
+    <ul class="tabla-resumen" id="tabla-resumen" hidden>
 
         <li>
             <span>Ingresos</span>
@@ -58,6 +72,9 @@
     </ul>
 
 
+    <!-- Error al consultar la API -->
+    <div id="mensaje" class="mensaje error" role="alert"></div>
+
     <!-- Aviso cuando todavia no hay movimientos -->
     <p id="sin-movimientos" hidden>
         Todavía no registraste movimientos.
@@ -66,7 +83,7 @@
 
 
     <!-- Tabla de movimientos -->
-    <div class="tabla-contenedor" id="tabla-contenedor">
+    <div class="tabla-contenedor" id="tabla-contenedor" hidden>
 
         <table>
 
@@ -99,6 +116,7 @@
 </footer>
 
 <!-- ========== SCRIPTS ========== -->
+<script src="js/app.js" defer></script>
 <script src="js/listado.js" defer></script>
 
 </body>

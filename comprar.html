@@ -23,6 +23,13 @@
                 <li><a href="cupones.html">Cupones</a></li>
             </ul>
         </nav>
+
+        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
+        <div class="sesion" id="sesion">
+            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
+            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
+            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
+        </div>
     </div>
 </header>
 
@@ -34,9 +41,17 @@
 
     <p>Completá los datos para registrar un gasto o ingreso.</p>
 
+    <!-- Sin sesión se muestra este aviso en lugar del formulario (lo alterna js/app.js) -->
+    <div class="formulario aviso-sesion" id="aviso-sesion" hidden>
+        <h2>Iniciá sesión para registrar</h2>
+        <p>Tus movimientos se guardan en tu cuenta, así podés verlos desde cualquier dispositivo.</p>
+        <a href="login.html" class="boton">Ingresar o crear cuenta</a>
+    </div>
+
     <!-- Formulario: el submit se maneja con addEventListener en js/app.js -->
     <!-- novalidate para que las validaciones las muestre app.js -->
-    <form class="formulario" id="form-movimiento" novalidate>
+    <!-- hidden hasta que app.js confirme que hay sesión -->
+    <form class="formulario" id="form-movimiento" novalidate hidden>
 
         <h2>Datos del movimiento</h2>
 

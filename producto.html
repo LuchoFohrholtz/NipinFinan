@@ -23,6 +23,13 @@
                 <li><a href="cupones.html">Cupones</a></li>
             </ul>
         </nav>
+
+        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
+        <div class="sesion" id="sesion">
+            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
+            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
+            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
+        </div>
     </div>
 </header>
 
@@ -133,6 +140,9 @@
         <p>© 2026</p>
     </div>
 </footer>
+
+<!-- ========== SCRIPTS ========== -->
+<script src="js/app.js" defer></script>
 
 </body>
 </html>
