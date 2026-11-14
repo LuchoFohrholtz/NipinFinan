@@ -43,3 +43,7 @@ La simulación de fallo renombró temporalmente la tabla de movimientos exclusiv
 Este incremento corresponde a S3/S4 y conserva la validación y el cálculo heredados. No acredita todavía todas las restricciones finales del contrato: faltan revisar tipos de entrada de movimientos, monto y precisión, rango de fechas, categoría por tipo y cuotas inválidas. Tampoco agrega PUT, DELETE, categorías o CSRF. Esas tareas requieren sus propios casos y su integración con la SPA.
 
 La comprobación de un comentario con etiquetas acredita almacenamiento como dato; no demuestra que el frontend prevenga XSS. Eso se verifica revisando el renderizado con textContent y probando la interfaz integrada. No se ejecutó Lighthouse en este bloque.
+
+## Actualización posterior S5/S6
+
+Las validaciones finales, PUT y DELETE fueron implementados y verificados después de este informe de S3/S4. El resultado vigente se documenta en [crud_movimientos.md](crud_movimientos.md). CSRF y API de categorías siguen pendientes.

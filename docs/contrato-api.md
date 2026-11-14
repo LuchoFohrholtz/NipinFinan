@@ -2,7 +2,7 @@
 
 ## Estado de implementación
 
-Especificación de AE4. Registro y login utilizan UsuarioModel. El listado y el alta de movimientos utilizan MovimientoModel; el controlador conserva validación, cálculos y respuestas. La extracción conserva la validación heredada: la adecuación completa a los límites finales de MovimientoEntrada se verificará en los siguientes incrementos. Las rutas de sesión/token CSRF, PUT, DELETE y categorías están especificadas para los siguientes incrementos y todavía no deben considerarse disponibles. Las respuestas actuales de registro, login y GET/POST de movimientos se conservan.
+Especificación de AE4. Registro y login utilizan UsuarioModel. GET, POST, PUT y DELETE de movimientos utilizan MovimientoModel. MovimientoService comparte validación y cálculos entre alta y edición usando tarifas.json y el catálogo categorias.json. La edición y la baja sólo actúan sobre movimientos del usuario de sesión. Las rutas de sesión/token CSRF y categorías todavía no están disponibles; el catálogo JSON ya existe como configuración de validación. La SPA y sus controles de edición/baja requieren integración del frontend. Se conservan campos y estructura de las respuestas existentes.
 
 ## Reglas comunes
 
@@ -19,7 +19,7 @@ Especificación de AE4. Registro y login utilizan UsuarioModel. El listado y el 
 
 | Método y ruta | Entrada | Respuesta de éxito |
 |---|---|---|
-| GET `api/sesion.php` **nuevo** | Sin cuerpo; público | 200: `estado`, `usuario` (nombre/email o null), `csrfToken` |
+| GET `api/sesion.php` **pendiente** | Sin cuerpo; público | 200: `estado`, `usuario` (nombre/email o null), `csrfToken` |
 | POST `api/registro.php` | JSON `nombre`, `email`, `password` | 201: `estado`, `mensaje`; no inicia sesión |
 | POST `api/login.php` | JSON `email`, `password` | 200: `estado`, `mensaje`, `usuario` con nombre/email; se agrega `csrfToken` |
 | POST `api/logout.php` | `{}` | 200: `estado`, `mensaje`; destruye sesión/cookie |
@@ -27,16 +27,16 @@ Especificación de AE4. Registro y login utilizan UsuarioModel. El listado y el 
 | POST `api/mis_movimientos.php` | MovimientoEntrada completo; privado | 201: `estado`, `mensaje`, `movimiento` calculado y guardado |
 | PUT `api/mis_movimientos.php?id=41` | MovimientoEntrada completo; privado | 200: `estado`, `mensaje`, `movimiento` actualizado |
 | DELETE `api/mis_movimientos.php?id=41` | Sin cuerpo; privado | 200: `estado`, `mensaje`, `id` eliminado |
-| GET `api/categorias.php` **nuevo** | Sin parámetros; privado | 200: `estado`, `categorias` con catálogo y resumen propio |
+| GET `api/categorias.php` **pendiente** | Sin parámetros; privado | 200: `estado`, `categorias` con catálogo y resumen propio |
 | GET `api/categorias.php?id=alimentacion` | ID de catálogo; privado | 200: `estado`, `categoria`, `movimientos` de esa categoría y esa cuenta |
 
-El catálogo y su detalle son parte de S8. No agregan tablas ni CRUD de categorías en esta entrega. El resumen sigue usando GET movimientos; no necesita otro endpoint. El archivo público `data/tarifas.json` conserva su estructura actual y se consume con fetch; no es una ruta privada con datos personales.
+El endpoint del catálogo y su detalle son parte de S8; el archivo de catálogo ya se usa en la validación de movimientos. No agregan tablas ni CRUD de categorías en esta entrega. El resumen sigue usando GET movimientos; no necesita otro endpoint. El archivo público `data/tarifas.json` conserva su estructura actual y se consume con fetch; no es una ruta privada con datos personales.
 
 **Registro:** nombre de 1 a 100 caracteres; email válido hasta 150; password de 8 a 72 bytes UTF-8 (sin truncar). Actualizar el mensaje y validación frontend al pasar del mínimo anterior de 6 a 8. Guardar BCRYPT con password_hash y verificar con password_verify; columna password VARCHAR(255). No almacenar ni devolver texto plano.
 
-**MovimientoEntrada:** `tipo`, `descripcion`, `monto`, `fecha`, `categoria`, `medioPago`, `cuotas`, `comentario`. Todos requeridos salvo comentario, que por defecto es vacío. tipo ingreso/gasto; descripción 1-150; comentario hasta 500. Categoría es el **nombre** exacto del catálogo y del tipo correspondiente. medioPago usa las claves exactas de tarifas.json. Cuotas permitidas 1/3/6/12; fuera de gasto con crédito debe ser 1. Datos inválidos: 400.
+**MovimientoEntrada:** `tipo`, `descripcion`, `monto`, `fecha`, `categoria`, `medioPago`, `cuotas`, `comentario`. Todos requeridos salvo comentario, que por defecto es vacío. tipo ingreso/gasto; descripción 1-150; comentario hasta 500. Categoría es el **nombre** exacto del catálogo y del tipo correspondiente. medioPago usa las claves exactas de tarifas.json. Cuotas permitidas 1/3/6/12; fuera de gasto con crédito debe ser 1. Los montos se reciben como números JSON y cuotas como entero; no se aceptan cadenas numéricas. Los nombres de categoría y medio de pago deben coincidir exactamente. Datos inválidos: 400.
 
-PUT reemplaza todos los campos editables, no es PATCH. El formulario de edición toma el movimiento del listado por id y envía el objeto completo. El backend recalcula `ajuste`, `total` y `valorCuota`, ignorando esos importes si el cliente intenta enviarlos. En éxito devuelve los valores persistidos. No se cambia el propietario.
+PUT reemplaza todos los campos editables, no es PATCH. El formulario de edición toma el movimiento del listado por id y envía el objeto completo. El backend recalcula `ajuste`, `total` y `valorCuota`, ignorando esos importes si el cliente intenta enviarlos. En éxito devuelve los valores persistidos. No se cambia el propietario. Un PUT idéntico al estado guardado también devuelve 200; no se interpreta un UPDATE sin valores modificados como recurso inexistente. Un ID ausente, inválido o fuera del rango 1 a 4294967295 produce 400 en PUT/DELETE. Un movimiento ajeno, inexistente o ya eliminado produce 404. Un segundo DELETE devuelve 404.
 
 ### 8.3 JSON de referencia
 
@@ -82,7 +82,7 @@ GET movimientos devuelve `{"estado":"exito","usuario":{"nombre":"Usuario de prue
 
 ### 8.4 Catálogo y detalle sin cifras inventadas
 
-Santi define el catálogo en `data/categorias.json` y lo lee mediante `models/CategoriaModel.php`. Usa estas entradas estables:
+El catálogo está definido en `data/categorias.json` y MovimientoService ya lo usa para validar altas y ediciones. En S8 se incorporará `models/CategoriaModel.php` para la consulta del catálogo y su detalle. Usa estas entradas estables:
 
 | id | nombre | tipo |
 |---|---|---|

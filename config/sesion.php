@@ -1,7 +1,5 @@
 <?php
-// Inicia la sesión con una cookie más segura:
-// - httponly: JavaScript no puede leer la cookie (si hubiera un XSS no la roba)
-// - samesite Lax: el navegador no la manda en POST desde otros sitios (CSRF)
+// Configura la cookie e inicia o recupera la sesión.
 session_set_cookie_params([
     'lifetime' => 0,
     'path'     => '/',
