@@ -6,25 +6,6 @@
 // SESIÓN (compartido)
 // =============================
 
-// Consulta el endpoint privado api/mis_movimientos.php.
-// Devuelve { usuario, movimientos } si hay sesión, null si el servidor
-// responde 401 (sin sesión) y lanza un error ante cualquier otra falla.
-// El primer pedido se reutiliza; con recargar = true se vuelve a pedir.
-let pedidoSesion = null;
-
-function consultarSesion(recargar = false) {
-    if (!pedidoSesion || recargar) {
-        pedidoSesion = (async () => {
-            const respuesta = await fetch("api/mis_movimientos.php", { cache: "no-store" });
-            if (respuesta.status === 401) return null;
-            if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-            return respuesta.json();
-        })();
-    }
-    return pedidoSesion;
-}
-
-
 // Header: muestra "Ingresar" o "Hola, nombre" + "Cerrar sesión"
 (function iniciarSesion() {
     const caja = document.querySelector("#sesion");
@@ -43,14 +24,14 @@ function consultarSesion(recargar = false) {
         spanNombre.textContent = usuario ? usuario.nombre : "";
     }
 
-    consultarSesion()
+    NipinAPI.consultarSesion()
         .then(sesion => mostrar(sesion && sesion.usuario))
         .catch(() => mostrar(null));
 
     btnSalir.addEventListener("click", async () => {
         btnSalir.disabled = true;
         try {
-            await fetch("api/logout.php", { method: "POST" });
+            await NipinAPI.cerrarSesion();
             location.href = "index.html";
         } catch (err) {
             console.error("Error al cerrar sesión:", err);
@@ -72,7 +53,7 @@ function consultarSesion(recargar = false) {
     const msgRegistro = document.querySelector("#mensaje-registro");
 
     // Si ya hay sesión no tiene sentido mostrar el login
-    consultarSesion()
+    NipinAPI.consultarSesion()
         .then(sesion => { if (sesion) location.replace("index.html"); })
         .catch(() => {});
 
@@ -93,17 +74,6 @@ function consultarSesion(recargar = false) {
         mostrarMensaje(msgRegistro, "", "");
     }
 
-    // POST con JSON; devuelve el código HTTP y la respuesta del servidor
-    async function enviar(url, datos) {
-        const respuesta = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
-        });
-        const resultado = await respuesta.json().catch(() => ({}));
-        return { ok: respuesta.ok, resultado };
-    }
-
     tabIngresar.addEventListener("click", () => mostrarPestana("ingresar"));
     tabCrear.addEventListener("click", () => mostrarPestana("crear"));
 
@@ -120,14 +90,11 @@ function consultarSesion(recargar = false) {
         const boton = formLogin.querySelector('button[type="submit"]');
         boton.disabled = true;
         try {
-            const { ok, resultado } = await enviar("api/login.php", datos);
-            if (ok) {
-                location.href = "index.html";
-                return;
-            }
-            mostrarMensaje(msgLogin, resultado.mensaje || "No se pudo iniciar sesión.", "error");
+            await NipinAPI.ingresar(datos);
+            location.href = "index.html";
+            return;
         } catch (err) {
-            mostrarMensaje(msgLogin, "Error de conexión con el servidor.", "error");
+            mostrarMensaje(msgLogin, err.message, "error");
         }
         boton.disabled = false;
     });
@@ -149,17 +116,13 @@ function consultarSesion(recargar = false) {
         const boton = formRegistro.querySelector('button[type="submit"]');
         boton.disabled = true;
         try {
-            const { ok, resultado } = await enviar("api/registro.php", datos);
-            if (ok) {
-                formRegistro.reset();
-                mostrarPestana("ingresar");
-                formLogin.querySelector("#login-email").value = datos.email;
-                mostrarMensaje(msgLogin, "Cuenta creada. Ya podés ingresar.", "exito");
-            } else {
-                mostrarMensaje(msgRegistro, resultado.mensaje || "No se pudo crear la cuenta.", "error");
-            }
+            await NipinAPI.solicitarJSON("api/registro.php", { method: "POST", datos });
+            formRegistro.reset();
+            mostrarPestana("ingresar");
+            formLogin.querySelector("#login-email").value = datos.email;
+            mostrarMensaje(msgLogin, "Cuenta creada. Ya podés ingresar.", "exito");
         } catch (err) {
-            mostrarMensaje(msgRegistro, "Error de conexión con el servidor.", "error");
+            mostrarMensaje(msgRegistro, err.message, "error");
         }
         boton.disabled = false;
     });
@@ -248,9 +211,7 @@ function mostrarMensaje(texto, tipo) {
 
 async function cargarTarifas() {
     try {
-        const respuesta = await fetch("data/tarifas.json");
-        if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-        tarifas = await respuesta.json();
+        tarifas = await NipinAPI.solicitarJSON("data/tarifas.json");
     } catch (err) {
         console.error("Error al cargar tarifas:", err);
         mostrarMensaje(
@@ -332,17 +293,6 @@ function mostrarFormulario(haySesion) {
     avisoSesion.hidden = haySesion;
 }
 
-// El servidor vuelve a calcular el total con data/tarifas.json
-async function guardarMovimiento(movimiento) {
-    const respuesta = await fetch("api/mis_movimientos.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(movimiento)
-    });
-    const resultado = await respuesta.json().catch(() => ({}));
-    return { status: respuesta.status, ok: respuesta.ok, resultado };
-}
-
 async function manejarSubmit(e) {
     e.preventDefault();
 
@@ -369,12 +319,11 @@ async function manejarSubmit(e) {
 
     btnGuardar.disabled = true;
     try {
-        const { status, ok, resultado } = await guardarMovimiento(movimiento);
-        if (status === 401) return mostrarFormulario(false); // la sesión venció
-        if (!ok) return mostrarMensaje(resultado.mensaje || "No se pudo guardar el movimiento.", "error");
+        await NipinAPI.guardarMovimiento(movimiento);
     } catch (err) {
+        if (err.status === 401) return mostrarFormulario(false); // la sesión venció
         console.error("Error al guardar:", err);
-        return mostrarMensaje("No se pudo guardar el movimiento.", "error");
+        return mostrarMensaje(err.message, "error");
     } finally {
         btnGuardar.disabled = false;
     }
@@ -394,7 +343,7 @@ async function manejarSubmit(e) {
 document.addEventListener("DOMContentLoaded", async () => {
     // Al cargar la página se verifica la sesión contra el endpoint privado
     try {
-        const sesion = await consultarSesion();
+        const sesion = await NipinAPI.consultarSesion();
         mostrarFormulario(sesion !== null);
         if (sesion === null) return;
     } catch (err) {
@@ -482,16 +431,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Movimientos del usuario desde el endpoint privado (401 = sin sesión).
     async function leerMovimientos() {
-        const sesion = await consultarSesion(true);
+        const sesion = await NipinAPI.consultarSesion(true);
         sinSesion = sesion === null;
         return sesion ? sesion.movimientos : [];
     }
 
     // Una petición HTTP real; los ejemplos nunca se guardan en la cuenta.
     async function cargarEjemplo() {
-        const respuesta = await fetch("data/metricas.json", { cache: "no-store" });
-        if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-        const datos = await respuesta.json();
+        const datos = await NipinAPI.solicitarJSON("data/metricas.json");
         return datos.movimientos;
     }
 

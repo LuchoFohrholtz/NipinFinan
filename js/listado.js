@@ -1,6 +1,6 @@
 // NipinFinan - Listado de movimientos
 // Muestra en la tabla los movimientos del usuario logueado.
-// Los pide al endpoint privado con consultarSesion() (definida en js/app.js).
+// Los pide al endpoint privado mediante la capa compartida js/api.js.
 
 
 // =============================
@@ -65,7 +65,7 @@ function crearFila(mov) {
 async function mostrarMovimientos() {
     let sesion;
     try {
-        sesion = await consultarSesion();
+        sesion = await NipinAPI.consultarSesion();
     } catch (err) {
         console.error("Error al leer movimientos:", err);
         document.getElementById("mensaje").textContent = "No se pudieron cargar los movimientos. Intentá de nuevo más tarde.";

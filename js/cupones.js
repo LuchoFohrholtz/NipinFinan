@@ -16,9 +16,7 @@ const mensajeCupon = document.getElementById("mensaje-cupon");
 // =============================
 
 async function obtenerCupones() {
-    const respuesta = await fetch("data/tarifas.json");
-    if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-    const datos = await respuesta.json();
+    const datos = await NipinAPI.solicitarJSON("data/tarifas.json");
     return datos.cupones || {};
 }
 
