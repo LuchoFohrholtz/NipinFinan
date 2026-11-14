@@ -2,7 +2,7 @@
 // Endpoint PRIVADO: movimientos (ingresos y gastos) del usuario logueado.
 //   GET  -> datos del usuario + lista de sus movimientos
 //   POST -> registra un movimiento nuevo para el usuario
-require_once '../config/sesion.php';
+require_once __DIR__ . '/../config/sesion.php';
 header('Content-Type: application/json; charset=utf-8');
 
 // === GUARDIÁN DE SESIÓN ===
@@ -13,11 +13,14 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../models/MovimientoModel.php';
+
+$movimientos = new MovimientoModel($pdo);
 
 // El id sale siempre de la sesión, nunca de lo que mande el cliente:
 // así nadie puede leer ni cargar movimientos de otro usuario.
-$usuarioId = $_SESSION['usuario_id'];
+$usuarioId = (int) $_SESSION['usuario_id'];
 
 function responder($codigo, $datos) {
     http_response_code($codigo);
@@ -50,14 +53,7 @@ function formatearMovimiento($fila) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        $stmt = $pdo->prepare(
-            'SELECT id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
-                    fecha, categoria, medio_pago, comentario
-             FROM movimientos
-             WHERE usuario_id = :usuario_id
-             ORDER BY fecha DESC, id DESC'
-        );
-        $stmt->execute(['usuario_id' => $usuarioId]);
+        $filas = $movimientos->listarPorUsuario($usuarioId);
 
         responder(200, [
             "estado"  => "exito",
@@ -65,9 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 "nombre" => $_SESSION['usuario_nombre'],
                 "email"  => $_SESSION['usuario_email']
             ],
-            "movimientos" => array_map('formatearMovimiento', $stmt->fetchAll())
+            "movimientos" => array_map('formatearMovimiento', $filas)
         ]);
     } catch (PDOException $e) {
+        error_log('Lectura de movimientos: ' . $e->getMessage());
         responder(500, ["estado" => "error", "mensaje" => "Error al leer los movimientos."]);
     }
 }
@@ -138,40 +135,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valorCuota = round($total / $cuotas, 2);
 
     try {
-        $stmt = $pdo->prepare(
-            'INSERT INTO movimientos
-                (usuario_id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
-                 fecha, categoria, medio_pago, comentario)
-             VALUES
-                (:usuario_id, :tipo, :descripcion, :monto, :ajuste, :total, :cuotas, :valor_cuota,
-                 :fecha, :categoria, :medio_pago, :comentario)'
-        );
-        $stmt->execute([
-            'usuario_id'  => $usuarioId,
-            'tipo'        => $tipo,
+        $movimiento = [
+            'tipo' => $tipo,
             'descripcion' => $descripcion,
-            'monto'       => $monto,
-            'ajuste'      => $ajuste,
-            'total'       => $total,
-            'cuotas'      => $cuotas,
+            'monto' => $monto,
+            'ajuste' => $ajuste,
+            'total' => $total,
+            'cuotas' => $cuotas,
             'valor_cuota' => $valorCuota,
-            'fecha'       => $fecha,
-            'categoria'   => $categoria,
-            'medio_pago'  => $medioPago,
-            'comentario'  => $comentario
-        ]);
+            'fecha' => $fecha,
+            'categoria' => $categoria,
+            'medio_pago' => $medioPago,
+            'comentario' => $comentario,
+        ];
+        $movimiento['id'] = $movimientos->crear($usuarioId, $movimiento);
 
         responder(201, [
             "estado"     => "exito",
             "mensaje"    => "Movimiento guardado correctamente.",
-            "movimiento" => formatearMovimiento([
-                'id' => $pdo->lastInsertId(), 'tipo' => $tipo, 'descripcion' => $descripcion,
-                'monto' => $monto, 'ajuste' => $ajuste, 'total' => $total, 'cuotas' => $cuotas,
-                'valor_cuota' => $valorCuota, 'fecha' => $fecha, 'categoria' => $categoria,
-                'medio_pago' => $medioPago, 'comentario' => $comentario
-            ])
+            "movimiento" => formatearMovimiento($movimiento)
         ]);
     } catch (PDOException $e) {
+        error_log('Alta de movimiento: ' . $e->getMessage());
         responder(500, ["estado" => "error", "mensaje" => "No se pudo guardar el movimiento."]);
     }
 }

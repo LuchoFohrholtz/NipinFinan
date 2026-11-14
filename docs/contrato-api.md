@@ -2,7 +2,7 @@
 
 ## Estado de implementación
 
-Especificación de AE4. Registro y login utilizan UsuarioModel. Las rutas de sesión/token CSRF, PUT, DELETE y categorías están especificadas para los siguientes incrementos y todavía no deben considerarse disponibles. Las respuestas actuales de registro, login y GET/POST de movimientos se conservan.
+Especificación de AE4. Registro y login utilizan UsuarioModel. El listado y el alta de movimientos utilizan MovimientoModel; el controlador conserva validación, cálculos y respuestas. La extracción conserva la validación heredada: la adecuación completa a los límites finales de MovimientoEntrada se verificará en los siguientes incrementos. Las rutas de sesión/token CSRF, PUT, DELETE y categorías están especificadas para los siguientes incrementos y todavía no deben considerarse disponibles. Las respuestas actuales de registro, login y GET/POST de movimientos se conservan.
 
 ## Reglas comunes
 
