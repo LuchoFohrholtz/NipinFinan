@@ -51,4 +51,49 @@ final class MovimientoModel
 
         return (int) $this->conexion->lastInsertId();
     }
+
+    public function actualizar(int $usuarioId, int $id, array $movimiento): ?array
+    {
+        $consulta = $this->conexion->prepare(
+            'UPDATE movimientos SET tipo = :tipo, descripcion = :descripcion,
+                monto = :monto, ajuste = :ajuste, total = :total, cuotas = :cuotas,
+                valor_cuota = :valor_cuota, fecha = :fecha, categoria = :categoria,
+                medio_pago = :medio_pago, comentario = :comentario
+             WHERE id = :id AND usuario_id = :usuario_id'
+        );
+        $consulta->execute([
+            'id' => $id,
+            'usuario_id' => $usuarioId,
+            'tipo' => $movimiento['tipo'],
+            'descripcion' => $movimiento['descripcion'],
+            'monto' => $movimiento['monto'],
+            'ajuste' => $movimiento['ajuste'],
+            'total' => $movimiento['total'],
+            'cuotas' => $movimiento['cuotas'],
+            'valor_cuota' => $movimiento['valor_cuota'],
+            'fecha' => $movimiento['fecha'],
+            'categoria' => $movimiento['categoria'],
+            'medio_pago' => $movimiento['medio_pago'],
+            'comentario' => $movimiento['comentario'],
+        ]);
+
+        // Recupera también los movimientos guardados sin cambios de valores.
+        $consulta = $this->conexion->prepare(
+            'SELECT id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
+                    fecha, categoria, medio_pago, comentario
+             FROM movimientos WHERE id = :id AND usuario_id = :usuario_id'
+        );
+        $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]);
+        $fila = $consulta->fetch(PDO::FETCH_ASSOC);
+        return $fila === false ? null : $fila;
+    }
+
+    public function eliminar(int $usuarioId, int $id): bool
+    {
+        $consulta = $this->conexion->prepare(
+            'DELETE FROM movimientos WHERE id = :id AND usuario_id = :usuario_id'
+        );
+        $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]);
+        return $consulta->rowCount() === 1;
+    }
 }
