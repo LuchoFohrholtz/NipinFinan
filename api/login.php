@@ -1,55 +1,64 @@
 <?php
+declare(strict_types=1);
+
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(["estado" => "error", "mensaje" => "Método no permitido."]);
+    header('Allow: POST');
+    echo json_encode(['estado' => 'error', 'mensaje' => 'Método no permitido.']);
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
-$email    = trim($input['email'] ?? '');
-$password = $input['password'] ?? '';
+$input = json_decode(file_get_contents('php://input'));
+if (!is_object($input)
+    || !isset($input->email, $input->password)
+    || !is_string($input->email)
+    || !is_string($input->password)) {
+    http_response_code(400);
+    echo json_encode(['estado' => 'error', 'mensaje' => 'Los datos de acceso no son válidos.']);
+    exit;
+}
+
+$email = trim($input->email);
+$password = $input->password;
 
 if ($email === '' || $password === '') {
     http_response_code(400);
-    echo json_encode(["estado" => "error", "mensaje" => "Ingresá correo y contraseña."]);
+    echo json_encode(['estado' => 'error', 'mensaje' => 'Ingresá correo y contraseña.']);
     exit;
 }
 
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../models/UsuarioModel.php';
 
 try {
-    $stmt = $pdo->prepare('SELECT id, nombre, email, password FROM usuarios WHERE email = :email');
-    $stmt->execute(['email' => $email]);
-    $usuario = $stmt->fetch();
+    $usuarios = new UsuarioModel($pdo);
+    $usuario = $usuarios->buscarPorEmail($email);
 
-    // password_verify compara la contraseña con el hash BCRYPT guardado
-    if ($usuario && password_verify($password, $usuario['password'])) {
-        require_once '../config/sesion.php'; // session_start()
-
-        // Nuevo id de sesión para evitar fijación de sesión (session fixation)
+    if ($usuario !== null && password_verify($password, $usuario['password'])) {
+        require_once __DIR__ . '/../config/sesion.php';
         session_regenerate_id(true);
 
-        $_SESSION['usuario_id']     = $usuario['id'];
+        $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nombre'] = $usuario['nombre'];
-        $_SESSION['usuario_email']  = $usuario['email'];
+        $_SESSION['usuario_email'] = $usuario['email'];
 
         http_response_code(200);
         echo json_encode([
-            "estado"  => "exito",
-            "mensaje" => "Autenticación exitosa.",
-            "usuario" => [
-                "nombre" => $usuario['nombre'],
-                "email"  => $usuario['email']
-            ]
+            'estado' => 'exito',
+            'mensaje' => 'Autenticación exitosa.',
+            'usuario' => [
+                'nombre' => $usuario['nombre'],
+                'email' => $usuario['email'],
+            ],
         ], JSON_UNESCAPED_UNICODE);
     } else {
-        // Mismo mensaje si falla el correo o la contraseña (no damos pistas)
-        http_response_code(401); // Unauthorized
-        echo json_encode(["estado" => "error", "mensaje" => "Correo o contraseña incorrectos."]);
+        http_response_code(401);
+        echo json_encode(['estado' => 'error', 'mensaje' => 'Correo o contraseña incorrectos.']);
     }
-} catch (PDOException $e) {
+} catch (PDOException $error) {
+    error_log('Inicio de sesión: ' . $error->getMessage());
     http_response_code(500);
-    echo json_encode(["estado" => "error", "mensaje" => "Error interno del servidor."]);
+    echo json_encode(['estado' => 'error', 'mensaje' => 'Error interno del servidor.']);
 }
