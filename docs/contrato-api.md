@@ -2,7 +2,7 @@
 
 ## Estado de implementación
 
-Especificación de AE4. Registro y login utilizan UsuarioModel. GET, POST, PUT y DELETE de movimientos utilizan MovimientoModel. MovimientoService comparte validación y cálculos entre alta y edición usando tarifas.json y el catálogo categorias.json. La edición y la baja sólo actúan sobre movimientos del usuario de sesión. Las rutas de sesión/token CSRF y categorías todavía no están disponibles; el catálogo JSON ya existe como configuración de validación. La SPA y sus controles de edición/baja requieren integración del frontend. Se conservan campos y estructura de las respuestas existentes.
+Implementados y verificados: registro/login/logout con sesiones y CSRF; GET de sesión/token; CRUD de movimientos propios; GET catálogo de categorías y detalle con totales e historial privados. SQL en modelos con PDO Singleton por petición. MovimientoService comparte validación y cálculos; MovimientoFormato conserva el JSON de movimientos en ambos endpoints. La SPA de Luciano se desarrolla en su rama; su helper debe activar CSRF_REQUERIDO al integrar. No se declara terminada la interfaz ni su auditoría por tener la API lista. El módulo de promociones fue retirado del alcance por decisión del equipo.
 
 ## Reglas comunes
 
@@ -19,18 +19,18 @@ Especificación de AE4. Registro y login utilizan UsuarioModel. GET, POST, PUT y
 
 | Método y ruta | Entrada | Respuesta de éxito |
 |---|---|---|
-| GET `api/sesion.php` **pendiente** | Sin cuerpo; público | 200: `estado`, `usuario` (nombre/email o null), `csrfToken` |
+| GET `api/sesion.php`  | Sin cuerpo; público | 200: `estado`, `usuario` (nombre/email o null), `csrfToken` |
 | POST `api/registro.php` | JSON `nombre`, `email`, `password` | 201: `estado`, `mensaje`; no inicia sesión |
-| POST `api/login.php` | JSON `email`, `password` | 200: `estado`, `mensaje`, `usuario` con nombre/email; se agrega `csrfToken` |
+| POST `api/login.php` | JSON `email`, `password` | 200: `estado`, `mensaje`, `usuario` con nombre/email; incluye `csrfToken` |
 | POST `api/logout.php` | `{}` | 200: `estado`, `mensaje`; destruye sesión/cookie |
 | GET `api/mis_movimientos.php` | Sin parámetros; privado | 200: `estado`, `usuario`, `movimientos` completos, fecha DESC e id DESC |
 | POST `api/mis_movimientos.php` | MovimientoEntrada completo; privado | 201: `estado`, `mensaje`, `movimiento` calculado y guardado |
 | PUT `api/mis_movimientos.php?id=41` | MovimientoEntrada completo; privado | 200: `estado`, `mensaje`, `movimiento` actualizado |
 | DELETE `api/mis_movimientos.php?id=41` | Sin cuerpo; privado | 200: `estado`, `mensaje`, `id` eliminado |
-| GET `api/categorias.php` **pendiente** | Sin parámetros; privado | 200: `estado`, `categorias` con catálogo y resumen propio |
+| GET `api/categorias.php`  | Sin parámetros; privado | 200: `estado`, `categorias` con catálogo y resumen propio |
 | GET `api/categorias.php?id=alimentacion` | ID de catálogo; privado | 200: `estado`, `categoria`, `movimientos` de esa categoría y esa cuenta |
 
-El endpoint del catálogo y su detalle son parte de S8; el archivo de catálogo ya se usa en la validación de movimientos. No agregan tablas ni CRUD de categorías en esta entrega. El resumen sigue usando GET movimientos; no necesita otro endpoint. El archivo público `data/tarifas.json` conserva su estructura actual y se consume con fetch; no es una ruta privada con datos personales.
+El endpoint del catálogo y su detalle están implementados (S8); el archivo de catálogo también se usa en la validación de movimientos. No agregan tablas ni CRUD de categorías en esta entrega. El resumen sigue usando GET movimientos; no necesita otro endpoint. El archivo público `data/tarifas.json` conserva su estructura actual y se consume con fetch; no es una ruta privada con datos personales.
 
 **Registro:** nombre de 1 a 100 caracteres; email válido hasta 150; password de 8 a 72 bytes UTF-8 (sin truncar). Actualizar el mensaje y validación frontend al pasar del mínimo anterior de 6 a 8. Guardar BCRYPT con password_hash y verificar con password_verify; columna password VARCHAR(255). No almacenar ni devolver texto plano.
 
@@ -82,7 +82,7 @@ GET movimientos devuelve `{"estado":"exito","usuario":{"nombre":"Usuario de prue
 
 ### 8.4 Catálogo y detalle sin cifras inventadas
 
-El catálogo está definido en `data/categorias.json` y MovimientoService ya lo usa para validar altas y ediciones. En S8 se incorporará `models/CategoriaModel.php` para la consulta del catálogo y su detalle. Usa estas entradas estables:
+El catálogo está definido en `data/categorias.json` y MovimientoService ya lo usa para validar altas y ediciones. `models/CategoriaModel.php` consulta los agregados propios y el detalle usa MovimientoModel para recuperar los movimientos. Usa estas entradas estables:
 
 | id | nombre | tipo |
 |---|---|---|
@@ -111,15 +111,15 @@ El catálogo es configuración del dominio, no información privada. El endpoint
 - Crédito en 1/3/6/12 cuotas: interés 0/8/18/35 %. Ingresos sin descuento ni interés y con una cuota.
 - `total = redondear(monto * (1 - descuento) * (1 + interes), 2)`; `ajuste = total - monto`; `valorCuota = redondear(total / cuotas, 2)`. Backend autoritativo; redondeo a centavos con mitades hacia arriba en PHP y frontend para importes no negativos. No duplicar valores de tarifas en una segunda configuración.
 - Resumen suma `total` de los movimientos filtrados, no monto original ni total multiplicado por cuotas. La fecha del movimiento determina el período. Sumas de interfaz en centavos.
-- Mantener demostración separada y señalizada. Los cupones solo verifican vigencia: no aplican descuento al movimiento en esta versión. Cambiar “Cupón aplicado” por “Cupón válido” si no hay aplicación efectiva.
+- Mantener demostración separada y señalizada. La aplicación no incluye promociones; no reincorporar ese módulo al integrar.
 
 ### 8.6 Sesión y CSRF compatibles por adición
 
-Santi incorpora GET `api/sesion.php`, que inicia o recupera la sesión y responde también sin usuario: `{"estado":"exito","usuario":null,"csrfToken":"token generado por el servidor"}`. Con sesión autenticada usuario incluye nombre/email. El token real se genera con `bin2hex(random_bytes(32))`, se guarda en sesión y no es el texto de ejemplo.
+Está implementado GET `api/sesion.php`, que inicia o recupera la sesión y responde también sin usuario: `{"estado":"exito","usuario":null,"csrfToken":"token generado por el servidor"}`. Con sesión autenticada usuario incluye nombre/email. El token real se genera con `bin2hex(random_bytes(32))`, se guarda en sesión y no es el texto de ejemplo.
 
 Lucho solicita esa ruta antes de habilitar envíos y guarda el token solo en memoria. Las peticiones POST/PUT/DELETE del frontend, incluido registro y login, envían `X-CSRF-Token`. PHP compara con `hash_equals`; falla=403 y mensaje genérico. En rutas privadas primero se comprueba identidad (401), después token (403). GET movimientos conserva su 401 anónimo actual. No habilitar controles con tokens ficticios.
 
 Login exitoso regenera el ID con `session_regenerate_id(true)`, rota el token y lo agrega a la respuesta actual. El frontend actualiza el token. Logout destruye sesión/cookie y luego el cliente obtiene una sesión anónima nueva. Cookie HttpOnly, SameSite=Lax y Secure cuando se usa HTTPS. Mantener mismo origen; no agregar CORS abierto.
 
-Las claves y respuestas previas permanecen; el endpoint/token son adiciones coordinadas. Lucho puede desarrollar el helper y el flujo con ejemplos mientras Santi los implementa. Antes de integrar S7 se prueban ambos lados juntos.
+Las claves y respuestas previas permanecen; el endpoint/token son adiciones coordinadas. Lucho puede desarrollar el helper y el flujo con ejemplos mientras Santi los implementa. La prueba conjunta de S7 usa el helper de la SPA con CSRF activo en una copia temporal; su activación debe conservarse al integrar.
 
