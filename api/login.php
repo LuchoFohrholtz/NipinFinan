@@ -10,6 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+require_once __DIR__ . '/../config/seguridad.php';
+validarTokenCsrf();
+
 $input = json_decode(file_get_contents('php://input'));
 if (!is_object($input)
     || !isset($input->email, $input->password)
@@ -39,6 +42,7 @@ try {
     if ($usuario !== null && password_verify($password, $usuario['password'])) {
         require_once __DIR__ . '/../config/sesion.php';
         session_regenerate_id(true);
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nombre'] = $usuario['nombre'];
@@ -48,6 +52,7 @@ try {
         echo json_encode([
             'estado' => 'exito',
             'mensaje' => 'Autenticación exitosa.',
+            'csrfToken' => obtenerTokenCsrf(),
             'usuario' => [
                 'nombre' => $usuario['nombre'],
                 'email' => $usuario['email'],

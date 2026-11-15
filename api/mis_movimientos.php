@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../config/sesion.php';
+require_once __DIR__ . '/../config/seguridad.php';
 header('Content-Type: application/json; charset=utf-8');
 
 function responder(int $codigo, array $datos): never
@@ -22,30 +22,17 @@ if (!in_array($metodo, ['GET', 'POST', 'PUT', 'DELETE'], true)) {
     responder(405, ['estado' => 'error', 'mensaje' => 'Método no permitido.']);
 }
 
+if ($metodo !== 'GET') {
+    validarTokenCsrf();
+}
+
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/MovimientoModel.php';
 require_once __DIR__ . '/../services/MovimientoService.php';
+require_once __DIR__ . '/../services/MovimientoFormato.php';
 
 $usuarioId = (int) $_SESSION['usuario_id'];
 $movimientos = new MovimientoModel($pdo);
-
-function formatearMovimiento(array $fila): array
-{
-    return [
-        'id' => (int) $fila['id'],
-        'tipo' => $fila['tipo'],
-        'descripcion' => $fila['descripcion'],
-        'monto' => (float) $fila['monto'],
-        'ajuste' => (float) $fila['ajuste'],
-        'total' => (float) $fila['total'],
-        'cuotas' => (int) $fila['cuotas'],
-        'valorCuota' => (float) $fila['valor_cuota'],
-        'fecha' => $fila['fecha'],
-        'categoria' => $fila['categoria'],
-        'medioPago' => $fila['medio_pago'],
-        'comentario' => $fila['comentario'],
-    ];
-}
 
 function leerIdMovimiento(): int
 {
@@ -80,7 +67,7 @@ try {
                 'nombre' => $_SESSION['usuario_nombre'],
                 'email' => $_SESSION['usuario_email'],
             ],
-            'movimientos' => array_map('formatearMovimiento', $filas),
+            'movimientos' => array_map([MovimientoFormato::class, 'desdeFila'], $filas),
         ]);
     }
 
@@ -105,7 +92,7 @@ try {
         responder(200, [
             'estado' => 'exito',
             'mensaje' => 'Movimiento actualizado correctamente.',
-            'movimiento' => formatearMovimiento($actualizado),
+            'movimiento' => MovimientoFormato::desdeFila($actualizado),
         ]);
     }
 
@@ -113,7 +100,7 @@ try {
     responder(201, [
         'estado' => 'exito',
         'mensaje' => 'Movimiento guardado correctamente.',
-        'movimiento' => formatearMovimiento($movimiento),
+        'movimiento' => MovimientoFormato::desdeFila($movimiento),
     ]);
 } catch (InvalidArgumentException $error) {
     responder(400, ['estado' => 'error', 'mensaje' => $error->getMessage()]);

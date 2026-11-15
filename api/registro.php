@@ -10,6 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+require_once __DIR__ . '/../config/seguridad.php';
+validarTokenCsrf();
+
 $input = json_decode(file_get_contents('php://input'));
 if (!is_object($input)
     || !isset($input->nombre, $input->email, $input->password)
