@@ -23,3 +23,13 @@ Las rutas, campos y códigos se describen en [contrato-api.md](contrato-api.md).
 Los cupones fueron retirados de la aplicación por decisión del equipo; conservar esa eliminación al combinar las ramas. No reincorporar enlaces, páginas, scripts ni datos de promoción. Las tarifas por medio de pago y cuotas siguen vigentes.
 
 La prueba conjunta cubre registro, login, alta y logout desde la SPA y consultas/edición/baja por su helper HTTP. Los controles visuales de categorías, editar y borrar continúan a cargo de la integración del frontend. Los tres integrantes deben recorrer y explicar el funcionamiento completo.
+
+## Resolución del enlace Registrar al combinar ramas
+
+La simulación de unión entre el backend 11c0386 y origin/ae4/lucho-spa 0f6217c detectó un único conflicto de contenido en index.html, limitado al enlace Registrar. Conservar la versión de la SPA:
+
+```html
+<li><a href="index.html#/registrar" data-ruta="registrar">Registrar</a></li>
+```
+
+No conservar el enlace anterior a comprar.html en ese menú ni reincorporar el módulo retirado. El resto de los archivos se combinó automáticamente en la simulación. No se realizó un merge real ni se modificaron las ramas del compañero o de integración. La vista previa utilizada en las pruebas ya usa ese enlace de la SPA.
