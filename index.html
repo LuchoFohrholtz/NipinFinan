@@ -16,6 +16,7 @@
     </style>
     <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/acceso.js" defer></script>
     <script src="js/navegacion.js" defer></script>
 </head>
 
@@ -39,7 +40,7 @@
 
         <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
         <div class="sesion" id="sesion">
-            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
             <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
             <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
         </div>
@@ -199,6 +200,78 @@
     </section>
 
     </div>
+
+    <section id="vista-acceso" class="contenedor pagina" data-vista="acceso" aria-labelledby="acceso-titulo" hidden>
+
+    <h1 id="acceso-titulo" tabindex="-1">Mi cuenta</h1>
+
+    <p>Ingresá o creá una cuenta para guardar tus movimientos.</p>
+
+    <p id="mensaje-acceso" role="status" aria-live="polite"></p>
+    <button type="button" class="boton secundario" id="acceso-reintentar" hidden>Reintentar acceso</button>
+
+    <!-- Pestañas y formularios: js/acceso.js, mediante NipinAPI. -->
+    <div class="acceso-pestanas">
+        <button type="button" class="boton" id="tab-ingresar" aria-pressed="true">Ingresar</button>
+        <button type="button" class="boton secundario" id="tab-crear" aria-pressed="false">Crear cuenta</button>
+    </div>
+
+
+    <!-- Login -->
+    <form class="formulario" id="form-login" novalidate>
+
+        <h2>Ingresar</h2>
+
+        <div id="mensaje-login" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div>
+
+        <div class="campo">
+            <label for="login-email">Correo electrónico</label>
+            <input type="email" id="login-email" name="email" placeholder="ejemplo@ucp.edu.ar" autocomplete="email" required>
+        </div>
+
+        <div class="campo">
+            <label for="login-pass">Contraseña</label>
+            <input type="password" id="login-pass" name="password" autocomplete="current-password" required>
+        </div>
+
+        <div class="formulario-botones">
+            <button type="submit" class="boton" disabled>Ingresar</button>
+        </div>
+
+    </form>
+
+
+    <!-- Registro -->
+    <form class="formulario" id="form-registro" novalidate hidden>
+
+        <h2>Crear cuenta</h2>
+
+        <div id="mensaje-registro" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div>
+
+        <div class="campo">
+            <label for="reg-nombre">Nombre</label>
+            <input type="text" id="reg-nombre" name="nombre" maxlength="100" placeholder="Juan Pérez" autocomplete="name" required>
+        </div>
+
+        <div class="campo">
+            <label for="reg-email">Correo electrónico</label>
+            <input type="email" id="reg-email" name="email" maxlength="150" placeholder="juan@ucp.edu.ar" autocomplete="email" required>
+        </div>
+
+        <div class="campo">
+            <label for="reg-pass">Contraseña</label>
+            <p id="reg-password-ayuda">Entre 8 y 72 bytes UTF-8. Una letra acentuada o un emoji puede ocupar más de un byte.</p>
+            <input type="password" id="reg-pass" name="password" aria-describedby="reg-password-ayuda" autocomplete="new-password" required>
+        </div>
+
+        <div class="formulario-botones">
+            <button type="submit" class="boton" disabled>Crear cuenta</button>
+        </div>
+
+    </form>
+
+
+    </section>
 
 </main>
 

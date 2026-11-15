@@ -1,133 +1,90 @@
-// NipinFinan - app.js compartido por todas las pantallas.
-// Cada módulo comprueba que su pantalla esté presente antes de ejecutarse.
+// NipinFinan - módulos compartidos y estado de sesión en memoria.
+const NipinSesion = (() => {
+    const caja = document.querySelector('#sesion');
+    const mensaje = document.querySelector('#mensaje-sesion') || document.createElement('p');
+    if (caja && !mensaje.id) {
+        mensaje.id = 'mensaje-sesion';
+        mensaje.className = 'mensaje error';
+        mensaje.setAttribute('role', 'alert');
+        caja.after(mensaje);
+    }
+    let usuario = null;
+    let revision = 0;
+    let errorConsulta = false;
 
-
-// =============================
-// SESIÓN (compartido)
-// =============================
-
-// Header: muestra "Ingresar" o "Hola, nombre" + "Cerrar sesión"
-(function iniciarSesion() {
-    const caja = document.querySelector("#sesion");
-    if (!caja) return;
-
-    const linkIngresar = caja.querySelector("#sesion-ingresar");
-    const spanUsuario = caja.querySelector("#sesion-usuario");
-    const spanNombre = caja.querySelector("#sesion-nombre");
-    const btnSalir = caja.querySelector("#sesion-salir");
-
-    function mostrar(usuario) {
-        linkIngresar.hidden = Boolean(usuario);
-        spanUsuario.hidden = !usuario;
-        btnSalir.hidden = !usuario;
-        // textContent: si el nombre trae etiquetas HTML se muestran como texto (evita XSS)
-        spanNombre.textContent = usuario ? usuario.nombre : "";
+    function mostrar() {
+        if (!caja) return;
+        caja.querySelector('#sesion-ingresar').hidden = Boolean(usuario);
+        caja.querySelector('#sesion-usuario').hidden = !usuario;
+        caja.querySelector('#sesion-salir').hidden = !usuario;
+        caja.querySelector('#sesion-nombre').textContent = usuario ? usuario.nombre : '';
     }
 
-    NipinAPI.consultarSesion()
-        .then(sesion => mostrar(sesion && sesion.usuario))
-        .catch(() => mostrar(null));
+    function establecer(nuevoUsuario) {
+        revision++;
+        usuario = nuevoUsuario;
+        errorConsulta = false;
+        mensaje.textContent = '';
+        if (document.querySelector('#resumen')) NipinResumen.limpiar();
+        if (document.querySelector('#form-login')) NipinAcceso.limpiar();
+        mostrar();
+    }
 
-    btnSalir.addEventListener("click", async () => {
-        btnSalir.disabled = true;
+    async function consultar(recargar = false) {
+        const consulta = revision;
+        let sesion;
         try {
-            await NipinAPI.cerrarSesion();
-            location.href = "index.html";
-        } catch (err) {
-            console.error("Error al cerrar sesión:", err);
-            btnSalir.disabled = false;
+            sesion = await NipinAPI.consultarSesion(recargar);
+        } catch (error) {
+            if (consulta === revision) {
+                errorConsulta = true;
+                mensaje.textContent = error.message;
+            }
+            throw error;
         }
-    });
+        if (consulta !== revision) return null; // Respuesta anterior a login/logout.
+        if (errorConsulta) {
+            errorConsulta = false;
+            mensaje.textContent = '';
+        }
+        if (usuario && usuario.email !== sesion?.usuario?.email) establecer(sesion ? sesion.usuario : null);
+        else {
+            usuario = sesion ? sesion.usuario : null;
+            mostrar();
+        }
+        return sesion;
+    }
+
+    if (caja) {
+        const salir = caja.querySelector('#sesion-salir');
+        salir.addEventListener('click', async () => {
+            if (salir.disabled) return;
+            salir.disabled = true;
+            errorConsulta = false;
+            mensaje.textContent = 'Cerrando sesión…';
+            try {
+                await NipinAPI.cerrarSesion();
+                establecer(null);
+                mensaje.textContent = '';
+                if (document.querySelector('#contenido')) {
+                    NipinNavegacion.ir('inicio', { reemplazar: true, recargar: true });
+                    // El token anónimo se solicita solo cuando se integra CSRF.
+                    await NipinAPI.prepararEnvios();
+                } else location.href = 'index.html';
+            } catch (error) {
+                mensaje.textContent = error.message;
+            } finally {
+                salir.disabled = false;
+            }
+        });
+    }
+    mostrar(); // Permite acceder también si la primera consulta falla por red.
+    return { consultar, establecer };
 })();
 
-
-// Pantalla login.html: pestañas, login y registro de usuarios
-(function iniciarAcceso() {
-    const formLogin = document.querySelector("#form-login");
-    if (!formLogin) return;
-
-    const formRegistro = document.querySelector("#form-registro");
-    const tabIngresar = document.querySelector("#tab-ingresar");
-    const tabCrear = document.querySelector("#tab-crear");
-    const msgLogin = document.querySelector("#mensaje-login");
-    const msgRegistro = document.querySelector("#mensaje-registro");
-
-    // Si ya hay sesión no tiene sentido mostrar el login
-    NipinAPI.consultarSesion()
-        .then(sesion => { if (sesion) location.replace("index.html"); })
-        .catch(() => {});
-
-    function mostrarMensaje(elemento, texto, tipo) {
-        elemento.textContent = texto;
-        elemento.className = "mensaje " + tipo; // tipo: "exito" o "error"
-    }
-
-    function mostrarPestana(pestana) {
-        const ingresar = pestana === "ingresar";
-        formLogin.hidden = !ingresar;
-        formRegistro.hidden = ingresar;
-        tabIngresar.classList.toggle("secundario", !ingresar);
-        tabCrear.classList.toggle("secundario", ingresar);
-        tabIngresar.setAttribute("aria-pressed", String(ingresar));
-        tabCrear.setAttribute("aria-pressed", String(!ingresar));
-        mostrarMensaje(msgLogin, "", "");
-        mostrarMensaje(msgRegistro, "", "");
-    }
-
-    tabIngresar.addEventListener("click", () => mostrarPestana("ingresar"));
-    tabCrear.addEventListener("click", () => mostrarPestana("crear"));
-
-    formLogin.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const datos = {
-            email: formLogin.querySelector("#login-email").value.trim(),
-            password: formLogin.querySelector("#login-pass").value
-        };
-        if (!datos.email || !datos.password) {
-            return mostrarMensaje(msgLogin, "Ingresá tu correo y tu contraseña.", "error");
-        }
-
-        const boton = formLogin.querySelector('button[type="submit"]');
-        boton.disabled = true;
-        try {
-            await NipinAPI.ingresar(datos);
-            location.href = "index.html";
-            return;
-        } catch (err) {
-            mostrarMensaje(msgLogin, err.message, "error");
-        }
-        boton.disabled = false;
-    });
-
-    formRegistro.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const datos = {
-            nombre: formRegistro.querySelector("#reg-nombre").value.trim(),
-            email: formRegistro.querySelector("#reg-email").value.trim(),
-            password: formRegistro.querySelector("#reg-pass").value
-        };
-        if (!datos.nombre || !datos.email || !datos.password) {
-            return mostrarMensaje(msgRegistro, "Completá todos los campos.", "error");
-        }
-        if (datos.password.length < 6) {
-            return mostrarMensaje(msgRegistro, "La contraseña debe tener al menos 6 caracteres.", "error");
-        }
-
-        const boton = formRegistro.querySelector('button[type="submit"]');
-        boton.disabled = true;
-        try {
-            await NipinAPI.solicitarJSON("api/registro.php", { method: "POST", datos });
-            formRegistro.reset();
-            mostrarPestana("ingresar");
-            formLogin.querySelector("#login-email").value = datos.email;
-            mostrarMensaje(msgLogin, "Cuenta creada. Ya podés ingresar.", "exito");
-        } catch (err) {
-            mostrarMensaje(msgRegistro, err.message, "error");
-        }
-        boton.disabled = false;
-    });
-})();
-
+if (document.querySelector('#sesion')) {
+    NipinSesion.consultar().catch(() => {}); // El módulo ya muestra el error.
+}
 
 (function iniciarRegistro() {
     if (!document.querySelector("#form-movimiento")) return;
@@ -379,6 +336,7 @@ const NipinResumen = (() => {
     let cargando = false;
     let activa = false;
     let actualizarAlTerminar = false;
+    let revisionDatos = 0;
 
     const panel = document.querySelector("#resumen");
     const mes = panel.querySelector("#resumen-mes");
@@ -429,13 +387,6 @@ const NipinResumen = (() => {
             const ultimoDia = new Date(anio, numero, 0).getDate();
             return anio >= 1000 && numero >= 1 && numero <= 12 && dia >= 1 && dia <= ultimoDia;
         });
-    }
-
-    // Movimientos del usuario desde el endpoint privado (401 = sin sesión).
-    async function leerMovimientos() {
-        const sesion = await NipinAPI.consultarSesion(true);
-        sinSesion = sesion === null;
-        return sesion ? sesion.movimientos : [];
     }
 
     // Una petición HTTP real; los ejemplos nunca se guardan en la cuenta.
@@ -555,7 +506,9 @@ const NipinResumen = (() => {
         panel.querySelector("#resumen-vacio-texto").textContent = movimientos.length ? "No hay movimientos para los filtros seleccionados." : "Todavía no hay movimientos para mostrar.";
         const registrar = panel.querySelector("#resumen-registrar");
         registrar.hidden = modo === "demo";
-        registrar.href = sinSesion ? "login.html" : "comprar.html";
+        registrar.href = sinSesion ? "index.html#/acceso" : "comprar.html";
+        if (sinSesion) registrar.dataset.ruta = "acceso";
+        else delete registrar.dataset.ruta;
         registrar.textContent = sinSesion ? "Iniciar sesión →" : "Registrar un movimiento →";
         mostrarBarras(grupos, gastos);
         mostrarComparacion(ingresos, gastos);
@@ -563,13 +516,22 @@ const NipinResumen = (() => {
 
     async function actualizarDatos(destino = modo, reiniciar = false) {
         if (cargando) return;
+        const revision = revisionDatos;
         cargando = true;
         panel.setAttribute("aria-busy", "true");
         botonDemo.disabled = true;
         botonActualizar.disabled = true;
         mostrarAviso(destino === "demo" ? "Cargando datos de ejemplo…" : "Actualizando resumen…");
         try {
-            const datos = destino === "demo" ? await cargarEjemplo() : await leerMovimientos();
+            let datos;
+            if (destino === "demo") datos = await cargarEjemplo();
+            else {
+                const sesion = await NipinSesion.consultar(true);
+                if (revision !== revisionDatos) return;
+                sinSesion = sesion === null;
+                datos = sesion ? sesion.movimientos : [];
+            }
+            if (revision !== revisionDatos) return;
             const validos = validarMovimientos(datos);
             modo = destino;
             movimientos = validos;
@@ -579,11 +541,13 @@ const NipinResumen = (() => {
             mostrarAviso(ignorados ? "Se omitieron " + ignorados + " movimientos con datos incompletos o inválidos." : "", ignorados > 0);
             if (modo === "real" && sinSesion) mostrarAviso("Iniciá sesión para ver tus movimientos. Mientras tanto podés ver la demostración.");
         } catch (error) {
+            if (revision !== revisionDatos) return;
             // Mantenemos la última vista correcta y ofrecemos reintentar.
             console.warn("No se pudo actualizar el resumen:", error.message);
             mostrarAviso(destino === "demo" ? "No pudimos cargar la demostración. La vista anterior se conserva. Intentá nuevamente." : "No pudimos leer tus movimientos. La vista anterior se conserva. Intentá actualizar nuevamente.", true);
             if (destino === "demo" && modo === "real") botonDemo.textContent = "Reintentar demostración";
         } finally {
+            if (revision !== revisionDatos) return;
             cargando = false;
             panel.setAttribute("aria-busy", "false");
             botonDemo.disabled = false;
@@ -603,6 +567,22 @@ const NipinResumen = (() => {
     prepararFiltros(true);
     mostrarResumen();
     return {
+        limpiar() {
+            // Invalida lecturas anteriores: un GET pendiente nunca repone los
+            // movimientos de la cuenta que acaba de cerrar sesión.
+            revisionDatos++;
+            movimientos = [];
+            modo = "real";
+            sinSesion = true;
+            cargando = false;
+            actualizarAlTerminar = false;
+            panel.setAttribute("aria-busy", "false");
+            botonDemo.disabled = false;
+            botonActualizar.disabled = false;
+            prepararFiltros(true);
+            mostrarResumen();
+            mostrarAviso("Iniciá sesión para ver tus movimientos. Mientras tanto podés ver la demostración.");
+        },
         entrar() {
             activa = true;
             if (cargando) actualizarAlTerminar = true;

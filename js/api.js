@@ -1,6 +1,12 @@
 // Capa HTTP compartida. Se carga antes de app.js y los módulos de cada página.
 const NipinAPI = (() => {
+    // Activar solo al integrar sesion.php y la validación CSRF de Santi.
+    // No se configura desde la URL ni se intenta detectar una ruta inexistente.
+    const CSRF_REQUERIDO = false;
+    let csrfActivado = CSRF_REQUERIDO;
     let pedidoSesion = null;
+    let pedidoCsrf = null;
+    let revisionSesion = 0;
     let csrfToken = null; // Solo en memoria; nunca en localStorage ni en una cookie JS.
 
     class ErrorAPI extends Error {
@@ -16,13 +22,16 @@ const NipinAPI = (() => {
     // Devuelve el JSON original, sin envolver ni renombrar campos del contrato.
     // También sirve para los JSON públicos de tarifas y demostración.
     async function solicitarJSON(url, { method = "GET", datos, privada = false } = {}) {
+        const modifica = ["POST", "PUT", "DELETE"].includes(method);
+        if (modifica) await prepararEnvios();
+        const revision = revisionSesion;
         const headers = { Accept: "application/json" };
         const opciones = { method, headers, credentials: "same-origin", cache: "no-store" };
         if (datos !== undefined) {
             headers["Content-Type"] = "application/json";
             opciones.body = JSON.stringify(datos);
         }
-        if (["POST", "PUT", "DELETE"].includes(method) && csrfToken) {
+        if (modifica && csrfToken) {
             headers["X-CSRF-Token"] = csrfToken;
         }
 
@@ -33,7 +42,11 @@ const NipinAPI = (() => {
             throw new ErrorAPI("Error de conexión con el servidor.", 0, "red");
         }
 
-        if (privada && respuesta.status === 401) pedidoSesion = null;
+        if (privada && respuesta.status === 401 && revision === revisionSesion) {
+            pedidoSesion = null;
+            // La identidad pudo vencer: renovar el token antes de otro envío.
+            if (csrfActivado) csrfToken = null;
+        }
 
         let resultado;
         try {
@@ -48,6 +61,7 @@ const NipinAPI = (() => {
         }
 
         if (!respuesta.ok || resultado?.estado === "error") {
+            if (respuesta.status === 403 && csrfActivado) csrfToken = null;
             const mensaje = typeof resultado?.mensaje === "string" && resultado.mensaje
                 ? resultado.mensaje : "Error HTTP " + respuesta.status + ".";
             throw new ErrorAPI(mensaje, respuesta.status, respuesta.ok ? "api" : "http", resultado?.errores);
@@ -77,30 +91,50 @@ const NipinAPI = (() => {
     // L1 no lo ejecuta automáticamente: el backend actual aún no tiene esa ruta.
     // Si falla o falta el token real, el llamador debe mantener los envíos deshabilitados.
     async function prepararSesion() {
+        csrfActivado = true;
         csrfToken = null;
         const sesion = await solicitarJSON("api/sesion.php");
         if (typeof sesion.csrfToken !== "string" || !sesion.csrfToken) {
             throw new ErrorAPI("No se pudo obtener el token de sesión.", 200, "json");
         }
         csrfToken = sesion.csrfToken;
+        revisionSesion++;
         pedidoSesion = null;
         return sesion;
     }
 
+    // La UI espera este método antes de habilitar envíos. Con el backend
+    // actual no hace peticiones; en modo CSRF espera un token real o rechaza.
+    async function prepararEnvios() {
+        if (!csrfActivado || csrfToken) return;
+        if (!pedidoCsrf) {
+            pedidoCsrf = prepararSesion().finally(() => { pedidoCsrf = null; });
+        }
+        await pedidoCsrf;
+    }
+
     async function ingresar(datos) {
         const resultado = await solicitarJSON("api/login.php", { method: "POST", datos });
+        if (!resultado.usuario || typeof resultado.usuario.nombre !== "string" || typeof resultado.usuario.email !== "string") {
+            throw new ErrorAPI("La respuesta de inicio de sesión es inválida.", 200, "json");
+        }
         // El login actual no trae token; el contrato AE4 lo agrega y lo rota.
         csrfToken = typeof resultado.csrfToken === "string" && resultado.csrfToken ? resultado.csrfToken : null;
+        revisionSesion++;
         pedidoSesion = null;
+        if (csrfActivado && !csrfToken) {
+            throw new ErrorAPI("No se pudo renovar el token de sesión.", 200, "json");
+        }
         return resultado;
     }
 
     async function cerrarSesion() {
-        const renovarToken = Boolean(csrfToken);
         const resultado = await solicitarJSON("api/logout.php", { method: "POST", datos: {} });
         csrfToken = null;
+        revisionSesion++;
         pedidoSesion = null;
-        if (renovarToken) await prepararSesion();
+        // La UI limpia primero los datos privados y luego prepara la sesión
+        // anónima. Si eso falla, el logout ya realizado sigue siendo efectivo.
         return resultado;
     }
 
@@ -110,5 +144,5 @@ const NipinAPI = (() => {
         return resultado;
     }
 
-    return { solicitarJSON, consultarSesion, prepararSesion, ingresar, cerrarSesion, guardarMovimiento };
+    return { solicitarJSON, consultarSesion, prepararSesion, prepararEnvios, ingresar, cerrarSesion, guardarMovimiento };
 })();
