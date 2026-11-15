@@ -28,6 +28,7 @@ const NipinSesion = (() => {
         if (document.querySelector('#resumen')) NipinResumen.limpiar();
         if (document.querySelector('#form-login')) NipinAcceso.limpiar();
         if (document.querySelector('#form-movimiento')) NipinRegistro.cambiarSesion(nuevoUsuario, conservarBorrador);
+        if (document.querySelector('#vista-movimientos')) NipinListado.limpiar(nuevoUsuario);
         mostrar();
     }
 
@@ -82,25 +83,22 @@ const NipinSesion = (() => {
         });
     }
     mostrar(); // Permite acceder también si la primera consulta falla por red.
-    return { consultar, establecer };
+    return { consultar, establecer, esUsuario: email => usuario?.email === email };
 })();
 
 if (document.querySelector('#sesion')) {
     NipinSesion.consultar().catch(() => {}); // El módulo ya muestra el error.
 }
 
-// Calculadora AE2 y formulario persistente de la vista #/registrar.
-const NipinRegistro = (() => {
-    const form = document.querySelector('#form-movimiento');
-    if (!form) return null;
-    const campos = Object.fromEntries(['descripcion', 'monto', 'fecha', 'categoria', 'pago', 'cuotas', 'comentario'].map(id => [id, form.querySelector('#' + id)]));
-    const radios = [...form.querySelectorAll('input[name="tipo"]')];
+// Una calculadora y validación para alta y edición; cada instancia conserva
+// sus propios controles y estado. La edición nunca utiliza el borrador del alta.
+function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, prefijo = '', alGuardar = null, alNoDisponible = null, alSesionVencida = null }) {
+    const elemento = id => form.querySelector('#' + prefijo + id);
+    const campos = Object.fromEntries(['descripcion', 'monto', 'fecha', 'categoria', 'pago', 'cuotas', 'comentario'].map(id => [id, elemento(id)]));
+    const radios = [...form.querySelectorAll('input[type="radio"]')];
     const controles = [...form.querySelectorAll('input, select, textarea, button')];
-    const filaCuotas = form.querySelector('#fila-cuotas');
-    const mensaje = form.querySelector('#mensaje');
-    const avisoSesion = document.querySelector('#aviso-sesion');
-    const estado = document.querySelector('#registro-estado');
-    const reintentar = document.querySelector('#registro-reintentar');
+    const filaCuotas = elemento('fila-cuotas');
+    const mensaje = elemento('mensaje');
     // El catálogo textual ya existente en el HTML coincide con el anexo 8.
     const categorias = Object.fromEntries([...campos.categoria.querySelectorAll('optgroup')].map(grupo => [grupo.dataset.tipo, new Set([...grupo.querySelectorAll('option')].map(opcion => opcion.value))]));
     const medios = [...campos.pago.options].map(opcion => opcion.value).filter(Boolean);
@@ -109,9 +107,10 @@ const NipinRegistro = (() => {
     let activa = false, preparado = false, enviando = false;
     let entrada = 0, revisionDatos = 0;
     let propietario = null, pendiente = null;
+    let original = null;
 
     function tipoSeleccionado() {
-        return form.querySelector('input[name="tipo"]:checked')?.value || '';
+        return radios.find(radio => radio.checked)?.value || '';
     }
 
     function fechaHoy() {
@@ -165,11 +164,11 @@ const NipinRegistro = (() => {
         campos.cuotas.disabled = !credito || !preparado || enviando;
         if (!credito) campos.cuotas.value = '1';
         const r = calcular();
-        form.querySelector('#res-subtotal').textContent = formatearPesos(r.subtotal);
-        form.querySelector('#res-ajuste').textContent = (r.ajuste > 0 ? '+' : '') + formatearPesos(r.ajuste);
-        form.querySelector('#res-total').textContent = formatearPesos(r.total);
-        form.querySelector('#res-cuota').textContent = formatearPesos(r.valorCuota);
-        form.querySelector('#res-cuota-linea').hidden = r.cuotas <= 1;
+        elemento('res-subtotal').textContent = formatearPesos(r.subtotal);
+        elemento('res-ajuste').textContent = (r.ajuste > 0 ? '+' : '') + formatearPesos(r.ajuste);
+        elemento('res-total').textContent = formatearPesos(r.total);
+        elemento('res-cuota').textContent = formatearPesos(r.valorCuota);
+        elemento('res-cuota-linea').hidden = r.cuotas <= 1;
     }
 
     function mostrarMensaje(texto, tipo, control = null) {
@@ -188,10 +187,12 @@ const NipinRegistro = (() => {
     }
 
     function cambiarSesion(usuario, conservarBorrador = false) {
+        if (prefijo) conservarBorrador = false;
         if (conservarBorrador && propietario) {
             pendiente = { usuario: propietario, tipo: tipoSeleccionado(), campos: Object.fromEntries(Object.entries(campos).map(([id, control]) => [id, control.value])) };
         } else if (!conservarBorrador && (!usuario || pendiente?.usuario !== usuario.email)) pendiente = null;
         revisionDatos++;
+        original = null;
         propietario = null;
         preparado = false;
         enviando = false;
@@ -199,7 +200,7 @@ const NipinRegistro = (() => {
         bloquear(true);
         form.hidden = true;
         form.setAttribute('aria-busy', 'false');
-        avisoSesion.hidden = false;
+        if (!prefijo) avisoSesion.hidden = false;
         estado.textContent = '';
         reintentar.hidden = true;
     }
@@ -215,7 +216,8 @@ const NipinRegistro = (() => {
         await pedidoTarifas;
     }
 
-    async function entrar() {
+    async function entrar(movimiento = null, cuenta = null) {
+        if (prefijo && movimiento) original = { ...movimiento };
         activa = true;
         const intento = ++entrada;
         preparado = false;
@@ -233,6 +235,7 @@ const NipinRegistro = (() => {
                 estado.textContent = 'Iniciá sesión para registrar un movimiento.';
                 return;
             }
+            if (prefijo && (!original || (cuenta && cuenta !== sesion.usuario.email))) return;
             if (propietario && propietario !== sesion.usuario.email) cambiarSesion(sesion.usuario);
             propietario = sesion.usuario.email;
             const revision = revisionDatos;
@@ -243,11 +246,18 @@ const NipinRegistro = (() => {
                 Object.entries(pendiente.campos).forEach(([id, valor]) => { campos[id].value = valor; });
                 pendiente = null;
             }
+            if (prefijo) {
+                radios.forEach(radio => { radio.checked = radio.value === original.tipo; });
+                Object.entries(campos).forEach(([id, control]) => {
+                    control.value = original[id === 'pago' ? 'medioPago' : id] ?? '';
+                });
+            }
             preparado = true;
             form.hidden = false;
             avisoSesion.hidden = true;
             estado.textContent = '';
             bloquear(enviando);
+            if (prefijo) campos.descripcion.focus();
         } catch (error) {
             if (!activa || intento !== entrada) return;
             estado.textContent = 'No se pudo preparar el formulario. ' + error.message;
@@ -288,18 +298,30 @@ const NipinRegistro = (() => {
         try {
             await NipinAPI.prepararEnvios();
             if (revision !== revisionDatos) return;
-            const resultado = await NipinAPI.guardarMovimiento(movimiento);
+            const resultado = original
+                ? await NipinAPI.editarMovimiento(original.id, movimiento)
+                : await NipinAPI.guardarMovimiento(movimiento);
             if (revision !== revisionDatos) return;
             const guardado = resultado.movimiento;
-            if (!guardado || !Number.isInteger(guardado.id) || guardado.id <= 0 || !Number.isFinite(guardado.total)) throw new Error('El servidor no confirmó el movimiento. Revisá tus movimientos antes de reintentar.');
+            if (!guardado || !Number.isInteger(guardado.id) || guardado.id <= 0 || !Number.isFinite(guardado.total) || (original && guardado.id !== original.id)) throw new Error('El servidor no confirmó el movimiento. Revisá tus movimientos antes de reintentar.');
+            if (original) {
+                await alGuardar(guardado);
+                return;
+            }
             reiniciar();
             mostrarMensaje('Movimiento guardado correctamente. Total: ' + formatearPesos(guardado.total) + '.', 'exito');
         } catch (error) {
             if (revision !== revisionDatos) return;
             if (error.status === 401) {
+                const enfocar = activa;
                 NipinSesion.establecer(null, { conservarBorrador: true });
-                estado.textContent = 'La sesión venció. Ingresá con la misma cuenta para recuperar tu borrador.';
-                if (activa) avisoSesion.querySelector('a').focus();
+                estado.textContent = prefijo ? 'La sesión venció. La edición se descartó.' : 'La sesión venció. Ingresá con la misma cuenta para recuperar tu borrador.';
+                if (prefijo) alSesionVencida();
+                if (enfocar) avisoSesion.querySelector('a').focus();
+                return;
+            }
+            if (original && error.status === 404) {
+                await alNoDisponible();
                 return;
             }
             mostrarMensaje(error.message, 'error');
@@ -312,7 +334,7 @@ const NipinRegistro = (() => {
         }
     });
 
-    reintentar.addEventListener('click', entrar);
+    reintentar.addEventListener('click', () => entrar());
     campos.monto.addEventListener('input', actualizarResultado);
     campos.monto.addEventListener('change', actualizarResultado);
     campos.pago.addEventListener('change', actualizarResultado);
@@ -320,7 +342,21 @@ const NipinRegistro = (() => {
     radios.forEach(radio => radio.addEventListener('change', actualizarResultado));
     reiniciar();
     bloquear(true);
-    return { entrar, cambiarSesion, salir() { activa = false; entrada++; preparado = false; bloquear(true); } };
+    return {
+        entrar, cambiarSesion,
+        salir() {
+            activa = false;
+            entrada++;
+            preparado = false;
+            if (prefijo) cambiarSesion(null);
+            bloquear(true);
+        }
+    };
+}
+
+const NipinRegistro = (() => {
+    const form = document.querySelector('#form-movimiento');
+    return form ? crearFormularioMovimiento({ form, avisoSesion: document.querySelector('#aviso-sesion'), estado: document.querySelector('#registro-estado'), reintentar: document.querySelector('#registro-reintentar') }) : null;
 })();
 
 // NipinFinan - AE2, opción 2 - Luciano Fohrholtz.
@@ -564,6 +600,12 @@ const NipinResumen = (() => {
     prepararFiltros(true);
     mostrarResumen();
     return {
+        actualizarTrasCambio() {
+            revisionDatos++;
+            cargando = false;
+            actualizarAlTerminar = false;
+            return actualizarDatos('real');
+        },
         limpiar() {
             // Invalida lecturas anteriores: un GET pendiente nunca repone los
             // movimientos de la cuenta que acaba de cerrar sesión.

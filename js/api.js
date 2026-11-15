@@ -8,6 +8,7 @@ const NipinAPI = (() => {
     let pedidoCsrf = null;
     let revisionSesion = 0;
     let csrfToken = null; // Solo en memoria; nunca en localStorage ni en una cookie JS.
+    const movimientosPendientes = new Set();
 
     class ErrorAPI extends Error {
         constructor(mensaje, status = 0, tipo = "http", errores = null) {
@@ -144,5 +145,23 @@ const NipinAPI = (() => {
         return resultado;
     }
 
-    return { solicitarJSON, consultarSesion, prepararSesion, prepararEnvios, ingresar, cerrarSesion, guardarMovimiento };
+    async function modificarMovimiento(id, method, datos) {
+        if (!Number.isSafeInteger(id) || id <= 0) throw new ErrorAPI("El movimiento no es válido.", 0, "entrada");
+        // El bloqueo sobrevive a salir y volver a la vista durante un envío.
+        if (movimientosPendientes.has(id)) throw new ErrorAPI("Hay una operación pendiente para este movimiento. Esperá y actualizá el listado antes de reintentar.", 0, "entrada");
+        movimientosPendientes.add(id);
+        try {
+            const resultado = await solicitarJSON("api/mis_movimientos.php?id=" + id, { method, datos, privada: true });
+            pedidoSesion = null;
+            return resultado;
+        } finally {
+            movimientosPendientes.delete(id);
+        }
+    }
+
+    return {
+        solicitarJSON, consultarSesion, prepararSesion, prepararEnvios, ingresar, cerrarSesion, guardarMovimiento,
+        editarMovimiento: (id, datos) => modificarMovimiento(id, "PUT", datos),
+        eliminarMovimiento: id => modificarMovimiento(id, "DELETE")
+    };
 })();

@@ -13,10 +13,19 @@
         .solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
         :is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
         nav a[aria-current="page"] { font-weight: bold; text-decoration: underline; text-underline-offset: 4px; }
+        #vista-movimientos { min-width: 0; }
+        #vista-movimientos table { min-width: 740px; }
+        #vista-movimientos td { overflow-wrap: anywhere; }
+        #vista-movimientos td:nth-child(n+3) { white-space: nowrap; }
+        #eliminacion-detalle { overflow-wrap: anywhere; }
+        .acciones-movimiento { display: flex; flex-wrap: wrap; gap: 8px; }
+        #confirmar-eliminacion { max-width: min(90vw, 480px); border: 1px solid #64748b; border-radius: 8px; padding: 24px; }
+        #confirmar-eliminacion::backdrop { background: rgb(0 0 0 / 45%); }
     </style>
     <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
     <script src="js/acceso.js" defer></script>
+    <script src="js/listado.js" defer></script>
     <script src="js/navegacion.js" defer></script>
 </head>
 
@@ -32,7 +41,7 @@
         <nav aria-label="Navegación principal">
             <ul class="nav-lista">
                 <li><a href="index.html#/inicio" data-ruta="inicio" aria-current="page">Inicio</a></li>
-                <li><a href="listado_tabla.html">Movimientos</a></li>
+                <li><a href="index.html#/movimientos" data-ruta="movimientos">Movimientos</a></li>
                 <li><a href="listado_box.html">Categorías</a></li>
                 <li><a href="index.html#/registrar" data-ruta="registrar">Registrar</a></li>
             </ul>
@@ -436,6 +445,53 @@
     </form>
 
 
+    </section>
+
+    <section id="vista-movimientos" class="contenedor pagina" data-vista="movimientos" aria-labelledby="movimientos-titulo" hidden>
+        <h1 id="movimientos-titulo" tabindex="-1">Movimientos</h1>
+        <p>Lista de gastos e ingresos registrados.</p>
+        <div class="formulario-botones">
+            <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a>
+            <button type="button" id="movimientos-actualizar" class="boton secundario">Actualizar</button>
+        </div>
+        <p id="movimientos-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <div class="formulario aviso-sesion" id="movimientos-sin-sesion" hidden>
+            <h2>Iniciá sesión para ver tus movimientos</h2>
+            <p>Los movimientos son privados: solo los ve el dueño de la cuenta.</p>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <ul class="tabla-resumen" id="tabla-resumen" hidden>
+            <li><span>Ingresos</span><strong class="ingreso" id="total-ingresos">$0</strong></li>
+            <li><span>Gastos</span><strong class="gasto" id="total-gastos">$0</strong></li>
+            <li><span>Disponible</span><strong id="total-disponible">$0</strong></li>
+        </ul>
+        <p id="sin-movimientos" hidden>Todavía no registraste movimientos. <a href="index.html#/registrar" data-ruta="registrar">Registrar el primero</a></p>
+        <div class="tabla-contenedor" id="tabla-contenedor" tabindex="0" role="region" aria-label="Tabla de movimientos; desplazamiento horizontal disponible" hidden>
+            <table>
+                <caption class="solo-lectores">Tus movimientos, del más reciente al más antiguo</caption>
+                <thead><tr>
+                    <th scope="col">Descripción</th><th scope="col">Categoría</th><th scope="col">Tipo</th>
+                    <th scope="col">Fecha</th><th scope="col">Monto</th><th scope="col">Acciones</th>
+                </tr></thead>
+                <tbody id="tbody-movimientos"></tbody>
+            </table>
+        </div>
+        <section id="movimientos-edicion" aria-labelledby="edicion-titulo" hidden>
+            <h2 id="edicion-titulo" tabindex="-1">Editar movimiento</h2>
+            <p id="edicion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+            <button type="button" id="edicion-reintentar" class="boton secundario" hidden>Reintentar carga</button>
+            <!-- Se reutiliza una copia independiente del formulario de alta. -->
+        </section>
+        <dialog id="confirmar-eliminacion" aria-labelledby="eliminacion-titulo" aria-describedby="eliminacion-detalle">
+            <h2 id="eliminacion-titulo">Eliminar movimiento</h2>
+            <p id="eliminacion-detalle"></p>
+            <p>Esta acción no se puede deshacer.</p>
+            <div class="formulario-botones">
+                <button type="button" id="eliminacion-cancelar" class="boton secundario" autofocus>Cancelar</button>
+                <button type="button" id="eliminacion-confirmar" class="boton">Eliminar definitivamente</button>
+            </div>
+            <p id="eliminacion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+        </dialog>
     </section>
 
 </main>
