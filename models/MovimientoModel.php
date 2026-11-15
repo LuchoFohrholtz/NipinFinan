@@ -96,4 +96,17 @@ final class MovimientoModel
         $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]);
         return $consulta->rowCount() === 1;
     }
+
+    public function listarPorCategoria(int $usuarioId, string $categoria): array
+    {
+        $consulta = $this->conexion->prepare(
+            'SELECT id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
+                    fecha, categoria, medio_pago, comentario
+             FROM movimientos
+             WHERE usuario_id = :usuario_id AND BINARY categoria = :categoria
+             ORDER BY fecha DESC, id DESC'
+        );
+        $consulta->execute(['usuario_id' => $usuarioId, 'categoria' => $categoria]);
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
