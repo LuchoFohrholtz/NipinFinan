@@ -21,9 +21,14 @@
         .acciones-movimiento { display: flex; flex-wrap: wrap; gap: 8px; }
         #confirmar-eliminacion { max-width: min(90vw, 480px); border: 1px solid #64748b; border-radius: 8px; padding: 24px; }
         #confirmar-eliminacion::backdrop { background: rgb(0 0 0 / 45%); }
+        #resumen .tarjeta, #resumen .resumen-barra-texto { overflow-wrap: anywhere; }
+        #resumen .tarjeta h3 { line-height: 1.3; font-variant-numeric: tabular-nums; }
+        #resumen[data-modo="demo"] .resumen-etiqueta { background: #fef3c7; border-color: #d97706; color: #713f12; }
+        #resumen #resumen-demostracion { border-color: #d97706; background: #fffbeb; color: #713f12; }
     </style>
     <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/resumen.js" defer></script>
     <script src="js/acceso.js" defer></script>
     <script src="js/listado.js" defer></script>
     <script src="js/navegacion.js" defer></script>
@@ -87,7 +92,7 @@
 
 
     <!-- AE2 - Tablero de indicadores de Luciano Fohrholtz -->
-    <section class="seccion" id="resumen" aria-labelledby="resumen-titulo">
+    <section class="seccion" id="resumen" data-modo="real" aria-labelledby="resumen-titulo">
         <div class="contenedor">
             <div class="resumen-cabecera">
                 <div>
@@ -112,7 +117,9 @@
                 <button type="button" class="boton" id="resumen-actualizar">Actualizar resumen</button>
             </div>
 
-            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" hidden></p>
+            <p id="resumen-demostracion" class="resumen-aviso" hidden><strong>Modo demostración.</strong> Estos importes son ficticios, no pertenecen a tu cuenta y no se guardan como movimientos.</p>
+            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+            <p id="resumen-estado" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p>
             <p class="resumen-contexto" id="resumen-contexto"></p>
 
             <ul class="tarjetas">
