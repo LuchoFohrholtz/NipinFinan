@@ -20,13 +20,14 @@ const NipinSesion = (() => {
         caja.querySelector('#sesion-nombre').textContent = usuario ? usuario.nombre : '';
     }
 
-    function establecer(nuevoUsuario) {
+    function establecer(nuevoUsuario, { conservarBorrador = false } = {}) {
         revision++;
         usuario = nuevoUsuario;
         errorConsulta = false;
         mensaje.textContent = '';
         if (document.querySelector('#resumen')) NipinResumen.limpiar();
         if (document.querySelector('#form-login')) NipinAcceso.limpiar();
+        if (document.querySelector('#form-movimiento')) NipinRegistro.cambiarSesion(nuevoUsuario, conservarBorrador);
         mostrar();
     }
 
@@ -47,7 +48,9 @@ const NipinSesion = (() => {
             errorConsulta = false;
             mensaje.textContent = '';
         }
-        if (usuario && usuario.email !== sesion?.usuario?.email) establecer(sesion ? sesion.usuario : null);
+        if (usuario && usuario.email !== sesion?.usuario?.email) {
+            establecer(sesion ? sesion.usuario : null, { conservarBorrador: !sesion });
+        }
         else {
             usuario = sesion ? sesion.usuario : null;
             mostrar();
@@ -86,244 +89,238 @@ if (document.querySelector('#sesion')) {
     NipinSesion.consultar().catch(() => {}); // El módulo ya muestra el error.
 }
 
-(function iniciarRegistro() {
-    if (!document.querySelector("#form-movimiento")) return;
+// Calculadora AE2 y formulario persistente de la vista #/registrar.
+const NipinRegistro = (() => {
+    const form = document.querySelector('#form-movimiento');
+    if (!form) return null;
+    const campos = Object.fromEntries(['descripcion', 'monto', 'fecha', 'categoria', 'pago', 'cuotas', 'comentario'].map(id => [id, form.querySelector('#' + id)]));
+    const radios = [...form.querySelectorAll('input[name="tipo"]')];
+    const controles = [...form.querySelectorAll('input, select, textarea, button')];
+    const filaCuotas = form.querySelector('#fila-cuotas');
+    const mensaje = form.querySelector('#mensaje');
+    const avisoSesion = document.querySelector('#aviso-sesion');
+    const estado = document.querySelector('#registro-estado');
+    const reintentar = document.querySelector('#registro-reintentar');
+    // El catálogo textual ya existente en el HTML coincide con el anexo 8.
+    const categorias = Object.fromEntries([...campos.categoria.querySelectorAll('optgroup')].map(grupo => [grupo.dataset.tipo, new Set([...grupo.querySelectorAll('option')].map(opcion => opcion.value))]));
+    const medios = [...campos.pago.options].map(opcion => opcion.value).filter(Boolean);
+    const cuotasPermitidas = new Set([...campos.cuotas.options].map(opcion => Number(opcion.value)));
+    let tarifas = null, pedidoTarifas = null;
+    let activa = false, preparado = false, enviando = false;
+    let entrada = 0, revisionDatos = 0;
+    let propietario = null, pendiente = null;
 
-// NipinFinan - AE2
-// Calculadora de tarifas: descuento segun medio de pago e interes por cuotas.
-// Las tarifas se cargan con fetch desde data/tarifas.json
-// Los movimientos se guardan en MySQL con api/mis_movimientos.php (requiere sesión)
+    function tipoSeleccionado() {
+        return form.querySelector('input[name="tipo"]:checked')?.value || '';
+    }
 
+    function fechaHoy() {
+        const ahora = new Date();
+        return new Date(ahora - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    }
 
-// =============================
-// VARIABLES GLOBALES
-// =============================
+    function formatearPesos(valor) {
+        const decimales = Number.isInteger(valor) ? 0 : 2;
+        return (valor < 0 ? '-$' : '$') + Math.abs(valor).toLocaleString('es-AR', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+    }
 
-let tarifas = null; // se completa cuando termina el fetch
+    function montoValido() {
+        const monto = Number(campos.monto.value);
+        return /^(?:\d+(?:\.\d{1,2})?|\.\d{1,2})$/.test(campos.monto.value) && Number.isFinite(monto) && monto > 0 && monto <= 999999999.99;
+    }
 
+    function calcular() {
+        const vacio = { subtotal: 0, ajuste: 0, total: 0, cuotas: 1, valorCuota: 0 };
+        if (!montoValido()) return vacio;
+        const monto = Number(campos.monto.value);
+        const sinAjuste = { subtotal: monto, ajuste: 0, total: monto, cuotas: 1, valorCuota: monto };
+        if (tipoSeleccionado() === 'ingreso') return sinAjuste;
+        if (!tarifas || !Object.hasOwn(tarifas.medios_pago, campos.pago.value)) return sinAjuste;
+        const esCredito = campos.pago.value === 'Tarjeta de crédito';
+        const cuotas = esCredito ? Number(campos.cuotas.value) : 1;
+        if (!cuotasPermitidas.has(cuotas)) return vacio;
+        // Las tarifas AE2 son porcentajes enteros. La aritmética en centavos
+        // evita errores binarios al redondear mitades hacia arriba (1,15 × 90%).
+        const centavos = Math.round(monto * 100);
+        const descuento = Math.round(tarifas.medios_pago[campos.pago.value].descuento * 100);
+        const interes = esCredito ? Math.round(tarifas.cuotas[cuotas] * 100) : 0;
+        const totalCentavos = Math.floor((centavos * (100 - descuento) * (100 + interes) + 5000) / 10000);
+        return { subtotal: monto, ajuste: (totalCentavos - centavos) / 100, total: totalCentavos / 100, cuotas, valorCuota: Math.floor((totalCentavos + cuotas / 2) / cuotas) / 100 };
+    }
 
-// =============================
-// ELEMENTOS DEL DOM
-// =============================
+    function bloquear(bloqueado) {
+        controles.forEach(control => { control.disabled = bloqueado; });
+        if (!bloqueado) actualizarResultado();
+    }
 
-const form = document.getElementById("form-movimiento");
-const inputDescripcion = document.getElementById("descripcion");
-const inputMonto = document.getElementById("monto");
-const inputFecha = document.getElementById("fecha");
-const selectCategoria = document.getElementById("categoria");
-const selectPago = document.getElementById("pago");
-const selectCuotas = document.getElementById("cuotas");
-const filaCuotas = document.getElementById("fila-cuotas");
-const radiosTipo = document.querySelectorAll('input[name="tipo"]');
-const inputComentario = document.getElementById("comentario");
-const btnGuardar = form.querySelector('button[type="submit"]');
-const divMensaje = document.getElementById("mensaje");
-const avisoSesion = document.getElementById("aviso-sesion");
+    function actualizarResultado() {
+        const tipo = tipoSeleccionado();
+        campos.categoria.querySelectorAll('optgroup').forEach(grupo => {
+            grupo.hidden = grupo.dataset.tipo !== tipo;
+            grupo.disabled = grupo.hidden;
+        });
+        if (!categorias[tipo]?.has(campos.categoria.value)) campos.categoria.value = '';
+        const credito = tipo === 'gasto' && campos.pago.value === 'Tarjeta de crédito';
+        filaCuotas.hidden = !credito;
+        campos.cuotas.disabled = !credito || !preparado || enviando;
+        if (!credito) campos.cuotas.value = '1';
+        const r = calcular();
+        form.querySelector('#res-subtotal').textContent = formatearPesos(r.subtotal);
+        form.querySelector('#res-ajuste').textContent = (r.ajuste > 0 ? '+' : '') + formatearPesos(r.ajuste);
+        form.querySelector('#res-total').textContent = formatearPesos(r.total);
+        form.querySelector('#res-cuota').textContent = formatearPesos(r.valorCuota);
+        form.querySelector('#res-cuota-linea').hidden = r.cuotas <= 1;
+    }
 
-// Resumen del calculo
-const resSubtotal = document.getElementById("res-subtotal");
-const resAjuste = document.getElementById("res-ajuste");
-const resTotal = document.getElementById("res-total");
-const resCuota = document.getElementById("res-cuota");
-const resCuotaLinea = document.getElementById("res-cuota-linea");
+    function mostrarMensaje(texto, tipo, control = null) {
+        mensaje.textContent = texto;
+        mensaje.className = 'mensaje ' + tipo;
+        mensaje.setAttribute('role', tipo === 'error' ? 'alert' : 'status');
+        mensaje.setAttribute('aria-live', tipo === 'error' ? 'assertive' : 'polite');
+        if (activa && texto && tipo) (control || mensaje).focus();
+    }
 
+    function reiniciar() {
+        form.reset();
+        campos.fecha.value = fechaHoy();
+        mostrarMensaje('', '');
+        actualizarResultado();
+    }
 
-// =============================
-// FUNCIONES AUXILIARES
-// =============================
+    function cambiarSesion(usuario, conservarBorrador = false) {
+        if (conservarBorrador && propietario) {
+            pendiente = { usuario: propietario, tipo: tipoSeleccionado(), campos: Object.fromEntries(Object.entries(campos).map(([id, control]) => [id, control.value])) };
+        } else if (!conservarBorrador && (!usuario || pendiente?.usuario !== usuario.email)) pendiente = null;
+        revisionDatos++;
+        propietario = null;
+        preparado = false;
+        enviando = false;
+        reiniciar();
+        bloquear(true);
+        form.hidden = true;
+        form.setAttribute('aria-busy', 'false');
+        avisoSesion.hidden = false;
+        estado.textContent = '';
+        reintentar.hidden = true;
+    }
 
-// Mismo formato que en el listado: $1.234 o $1.234,50
-function formatearPesos(valor) {
-    const decimales = Number.isInteger(valor) ? 0 : 2;
-    const texto = Math.abs(valor).toLocaleString("es-AR", {
-        minimumFractionDigits: decimales,
-        maximumFractionDigits: decimales
+    async function cargarTarifas() {
+        if (!pedidoTarifas) {
+            pedidoTarifas = NipinAPI.solicitarJSON('data/tarifas.json').then(datos => {
+                const porcentajeValido = valor => typeof valor === 'number' && Number.isFinite(valor) && valor >= 0 && valor <= 1 && Number.isInteger(valor * 100);
+                if (!medios.every(medio => porcentajeValido(datos.medios_pago?.[medio]?.descuento)) || ![...cuotasPermitidas].every(cuotas => porcentajeValido(datos.cuotas?.[cuotas]))) throw new Error('La tabla de tarifas es inválida.');
+                tarifas = datos;
+            }).catch(error => { pedidoTarifas = null; throw error; });
+        }
+        await pedidoTarifas;
+    }
+
+    async function entrar() {
+        activa = true;
+        const intento = ++entrada;
+        preparado = false;
+        bloquear(true);
+        form.hidden = true;
+        avisoSesion.hidden = true;
+        reintentar.hidden = true;
+        estado.textContent = 'Verificando sesión y cargando formulario…';
+        try {
+            const sesion = await NipinSesion.consultar(true);
+            if (!activa || intento !== entrada) return;
+            if (!sesion) {
+                if (propietario) cambiarSesion(null, true);
+                avisoSesion.hidden = false;
+                estado.textContent = 'Iniciá sesión para registrar un movimiento.';
+                return;
+            }
+            if (propietario && propietario !== sesion.usuario.email) cambiarSesion(sesion.usuario);
+            propietario = sesion.usuario.email;
+            const revision = revisionDatos;
+            await Promise.all([cargarTarifas(), NipinAPI.prepararEnvios()]);
+            if (!activa || intento !== entrada || revision !== revisionDatos) return;
+            if (pendiente?.usuario === propietario) {
+                radios.forEach(radio => { radio.checked = radio.value === pendiente.tipo; });
+                Object.entries(pendiente.campos).forEach(([id, valor]) => { campos[id].value = valor; });
+                pendiente = null;
+            }
+            preparado = true;
+            form.hidden = false;
+            avisoSesion.hidden = true;
+            estado.textContent = '';
+            bloquear(enviando);
+        } catch (error) {
+            if (!activa || intento !== entrada) return;
+            estado.textContent = 'No se pudo preparar el formulario. ' + error.message;
+            reintentar.hidden = false;
+        }
+    }
+
+    function validar() {
+        const tipo = tipoSeleccionado();
+        if (!['ingreso', 'gasto'].includes(tipo)) return ['Seleccioná un tipo de movimiento válido.', radios[0]];
+        const longitud = Array.from(campos.descripcion.value.trim()).length;
+        if (longitud < 1 || longitud > 150) return ['Ingresá una descripción de 1 a 150 caracteres.', campos.descripcion];
+        if (!montoValido()) return ['Ingresá un monto mayor a 0, hasta 999999999,99 y con un máximo de dos decimales.', campos.monto];
+        const fecha = campos.fecha.value;
+        const fechaReal = new Date(fecha + 'T00:00:00Z');
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || fecha < '1900-01-01' || fecha > '2100-12-31' || Number.isNaN(fechaReal.getTime()) || fechaReal.toISOString().slice(0, 10) !== fecha) return ['Seleccioná una fecha real entre 1900 y 2100.', campos.fecha];
+        if (!categorias[tipo].has(campos.categoria.value)) return ['Seleccioná una categoría correspondiente al tipo de movimiento.', campos.categoria];
+        if (!Object.hasOwn(tarifas.medios_pago, campos.pago.value)) return ['Seleccioná un medio de pago válido.', campos.pago];
+        const cuotas = Number(campos.cuotas.value);
+        const credito = tipo === 'gasto' && campos.pago.value === 'Tarjeta de crédito';
+        if (!cuotasPermitidas.has(cuotas) || (!credito && cuotas !== 1)) return ['Seleccioná cuotas válidas: 1, 3, 6 o 12; solo crédito admite más de una.', campos.cuotas];
+        if (Array.from(campos.comentario.value.trim()).length > 500) return ['El comentario puede tener hasta 500 caracteres.', campos.comentario];
+        return null;
+    }
+
+    form.addEventListener('submit', async evento => {
+        evento.preventDefault();
+        if (!activa || !preparado || enviando) return;
+        const error = validar();
+        if (error) return mostrarMensaje(error[0], 'error', error[1]);
+        const r = calcular();
+        const movimiento = { tipo: tipoSeleccionado(), descripcion: campos.descripcion.value.trim(), monto: r.subtotal, fecha: campos.fecha.value, categoria: campos.categoria.value, medioPago: campos.pago.value, cuotas: r.cuotas, comentario: campos.comentario.value.trim() };
+        const revision = revisionDatos;
+        enviando = true;
+        bloquear(true);
+        form.setAttribute('aria-busy', 'true');
+        mostrarMensaje('Guardando movimiento…', '');
+        try {
+            await NipinAPI.prepararEnvios();
+            if (revision !== revisionDatos) return;
+            const resultado = await NipinAPI.guardarMovimiento(movimiento);
+            if (revision !== revisionDatos) return;
+            const guardado = resultado.movimiento;
+            if (!guardado || !Number.isInteger(guardado.id) || guardado.id <= 0 || !Number.isFinite(guardado.total)) throw new Error('El servidor no confirmó el movimiento. Revisá tus movimientos antes de reintentar.');
+            reiniciar();
+            mostrarMensaje('Movimiento guardado correctamente. Total: ' + formatearPesos(guardado.total) + '.', 'exito');
+        } catch (error) {
+            if (revision !== revisionDatos) return;
+            if (error.status === 401) {
+                NipinSesion.establecer(null, { conservarBorrador: true });
+                estado.textContent = 'La sesión venció. Ingresá con la misma cuenta para recuperar tu borrador.';
+                if (activa) avisoSesion.querySelector('a').focus();
+                return;
+            }
+            mostrarMensaje(error.message, 'error');
+        } finally {
+            if (revision === revisionDatos) {
+                enviando = false;
+                form.setAttribute('aria-busy', 'false');
+                bloquear(!preparado || !activa);
+            }
+        }
     });
-    return (valor < 0 ? "-$" : "$") + texto;
-}
 
-function redondear(valor) {
-    return Math.round(valor * 100) / 100;
-}
-
-function tipoSeleccionado() {
-    return document.querySelector('input[name="tipo"]:checked').value;
-}
-
-// Fecha de hoy en hora local (con toISOString sola a la noche da el dia siguiente)
-function fechaHoy() {
-    const ahora = new Date();
-    return new Date(ahora - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-}
-
-function mostrarMensaje(texto, tipo) {
-    divMensaje.textContent = texto;
-    divMensaje.className = "mensaje " + tipo; // tipo: "exito" o "error"
-}
-
-
-// =============================
-// CARGA DE TARIFAS (fetch + async/await)
-// =============================
-
-async function cargarTarifas() {
-    try {
-        tarifas = await NipinAPI.solicitarJSON("data/tarifas.json");
-    } catch (err) {
-        console.error("Error al cargar tarifas:", err);
-        mostrarMensaje(
-            "No se pudieron cargar las tarifas. Abrí el proyecto con un servidor local (Live Server).",
-            "error"
-        );
-        btnGuardar.disabled = true; // sin tarifas el total no seria correcto
-    }
-}
-
-
-// =============================
-// CALCULO DEL PRESUPUESTO
-// =============================
-
-function calcular() {
-    const monto = parseFloat(inputMonto.value);
-    const vacio = { subtotal: 0, ajuste: 0, total: 0, cuotas: 1, valorCuota: 0 };
-
-    if (!(monto > 0)) return vacio; // vacio, 0 o negativo
-
-    // Si es ingreso no se aplican descuentos ni cuotas
-    if (tipoSeleccionado() === "ingreso") {
-        return { subtotal: monto, ajuste: 0, total: monto, cuotas: 1, valorCuota: monto };
-    }
-
-    // Si es gasto: descuento por medio de pago + interes (solo con credito)
-    const medio = selectPago.value;
-    const esCredito = medio === "Tarjeta de crédito";
-    const cuotas = esCredito ? parseInt(selectCuotas.value, 10) : 1;
-
-    const descuento = tarifas?.medios_pago?.[medio]?.descuento ?? 0;
-    const interes = esCredito ? (tarifas?.cuotas?.[cuotas] ?? 0) : 0;
-
-    const base = monto * (1 - descuento);
-    const total = redondear(base * (1 + interes));
-
-    return {
-        subtotal: monto,
-        ajuste: redondear(total - monto), // negativo = descuento, positivo = recargo
-        total,
-        cuotas,
-        valorCuota: redondear(total / cuotas)
-    };
-}
-
-
-// =============================
-// ACTUALIZACION DEL DOM
-// =============================
-
-// Las cuotas solo tienen sentido en un gasto con tarjeta de credito
-function mostrarCuotasSiCorresponde() {
-    const visible = tipoSeleccionado() === "gasto" && selectPago.value === "Tarjeta de crédito";
-    filaCuotas.hidden = !visible;
-    selectCuotas.disabled = !visible;
-    if (!visible) selectCuotas.value = "1";
-}
-
-function actualizarResultado() {
-    mostrarCuotasSiCorresponde();
-    const r = calcular();
-
-    resSubtotal.textContent = formatearPesos(r.subtotal);
-    resAjuste.textContent = (r.ajuste > 0 ? "+" : "") + formatearPesos(r.ajuste);
-    resTotal.textContent = formatearPesos(r.total);
-    resCuota.textContent = formatearPesos(r.valorCuota);
-    resCuotaLinea.hidden = r.cuotas <= 1;
-}
-
-
-// =============================
-// SESIÓN Y GUARDADO (api/mis_movimientos.php)
-// =============================
-
-// Con sesión se muestra el formulario; sin sesión, el aviso para ingresar
-function mostrarFormulario(haySesion) {
-    form.hidden = !haySesion;
-    avisoSesion.hidden = haySesion;
-}
-
-async function manejarSubmit(e) {
-    e.preventDefault();
-
-    const descripcion = inputDescripcion.value.trim();
-    const r = calcular();
-
-    // Validaciones
-    if (!descripcion) return mostrarMensaje("Ingresá una descripción.", "error");
-    if (!(r.subtotal > 0)) return mostrarMensaje("Ingresá un monto mayor a 0.", "error");
-    if (!inputFecha.value) return mostrarMensaje("Seleccioná una fecha.", "error");
-    if (!selectCategoria.value) return mostrarMensaje("Seleccioná una categoría.", "error");
-    if (!selectPago.value) return mostrarMensaje("Seleccioná un medio de pago.", "error");
-
-    const movimiento = {
-        tipo: tipoSeleccionado(),
-        descripcion,
-        monto: r.subtotal,
-        cuotas: r.cuotas,
-        fecha: inputFecha.value,
-        categoria: selectCategoria.value,
-        medioPago: selectPago.value,
-        comentario: inputComentario.value.trim()
-    };
-
-    btnGuardar.disabled = true;
-    try {
-        await NipinAPI.guardarMovimiento(movimiento);
-    } catch (err) {
-        if (err.status === 401) return mostrarFormulario(false); // la sesión venció
-        console.error("Error al guardar:", err);
-        return mostrarMensaje(err.message, "error");
-    } finally {
-        btnGuardar.disabled = false;
-    }
-
-    // Limpio el formulario (reset no dispara eventos, por eso actualizo a mano)
-    form.reset();
-    inputFecha.value = fechaHoy();
-    actualizarResultado();
-    mostrarMensaje("Movimiento guardado correctamente.", "exito");
-}
-
-
-// =============================
-// INICIO Y EVENTOS
-// =============================
-
-document.addEventListener("DOMContentLoaded", async () => {
-    // Al cargar la página se verifica la sesión contra el endpoint privado
-    try {
-        const sesion = await NipinAPI.consultarSesion();
-        mostrarFormulario(sesion !== null);
-        if (sesion === null) return;
-    } catch (err) {
-        console.error("Error al verificar la sesión:", err);
-        mostrarFormulario(true);
-        mostrarMensaje("No se pudo conectar con el servidor. Intentá de nuevo más tarde.", "error");
-        btnGuardar.disabled = true;
-        return;
-    }
-
-    inputFecha.value = fechaHoy();
-    await cargarTarifas();
-    actualizarResultado();
-
-    // Cualquier cambio en monto, tipo, medio de pago o cuotas recalcula el total
-    inputMonto.addEventListener("input", actualizarResultado);
-    inputMonto.addEventListener("change", actualizarResultado);
-    selectPago.addEventListener("change", actualizarResultado);
-    selectCuotas.addEventListener("change", actualizarResultado);
-    radiosTipo.forEach(radio => radio.addEventListener("change", actualizarResultado));
-
-    form.addEventListener("submit", manejarSubmit);
-});
+    reintentar.addEventListener('click', entrar);
+    campos.monto.addEventListener('input', actualizarResultado);
+    campos.monto.addEventListener('change', actualizarResultado);
+    campos.pago.addEventListener('change', actualizarResultado);
+    campos.cuotas.addEventListener('change', actualizarResultado);
+    radios.forEach(radio => radio.addEventListener('change', actualizarResultado));
+    reiniciar();
+    bloquear(true);
+    return { entrar, cambiarSesion, salir() { activa = false; entrada++; preparado = false; bloquear(true); } };
 })();
 
 // NipinFinan - AE2, opción 2 - Luciano Fohrholtz.
@@ -506,9 +503,9 @@ const NipinResumen = (() => {
         panel.querySelector("#resumen-vacio-texto").textContent = movimientos.length ? "No hay movimientos para los filtros seleccionados." : "Todavía no hay movimientos para mostrar.";
         const registrar = panel.querySelector("#resumen-registrar");
         registrar.hidden = modo === "demo";
-        registrar.href = sinSesion ? "index.html#/acceso" : "comprar.html";
+        registrar.href = sinSesion ? "index.html#/acceso" : "index.html#/registrar";
         if (sinSesion) registrar.dataset.ruta = "acceso";
-        else delete registrar.dataset.ruta;
+        else registrar.dataset.ruta = "registrar";
         registrar.textContent = sinSesion ? "Iniciar sesión →" : "Registrar un movimiento →";
         mostrarBarras(grupos, gastos);
         mostrarComparacion(ingresos, gastos);

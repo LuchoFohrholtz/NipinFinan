@@ -1,9 +1,10 @@
 // Navegación progresiva: solo las vistas registradas pertenecen a la SPA.
-// Los enlaces a registro de movimientos y categorías siguen siendo HTML.
+// Los enlaces a listado y categorías siguen siendo HTML.
 const NipinNavegacion = (() => {
     const contenido = document.querySelector("#contenido");
     if (!contenido) {
         if (document.querySelector("[data-acceso-antiguo]")) location.replace("index.html#/acceso");
+        if (document.querySelector("[data-registro-antiguo]")) location.replace("index.html#/registrar");
         return null;
     }
 
@@ -11,7 +12,8 @@ const NipinNavegacion = (() => {
     // Sus módulos inicializan eventos una sola vez; entrar solo refresca datos.
     const rutas = new Map([
         ["inicio", { titulo: "Inicio", modulo: NipinResumen }],
-        ["acceso", { titulo: "Mi cuenta", modulo: NipinAcceso }]
+        ["acceso", { titulo: "Mi cuenta", modulo: NipinAcceso }],
+        ["registrar", { titulo: "Registrar movimiento", modulo: NipinRegistro }]
     ]);
     const estado = document.querySelector("#estado-navegacion");
     let actual = null;

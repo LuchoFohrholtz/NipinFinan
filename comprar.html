@@ -23,176 +23,15 @@
             </ul>
         </nav>
 
-        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
-        <div class="sesion" id="sesion">
-            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
-            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
-            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
-        </div>
     </div>
 </header>
 
 
 <!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main class="contenedor pagina">
-
+<main class="contenedor pagina" data-registro-antiguo>
     <h1>Registrar movimiento</h1>
-
-    <p>Completá los datos para registrar un gasto o ingreso.</p>
-
-    <!-- Sin sesión se muestra este aviso en lugar del formulario (lo alterna js/app.js) -->
-    <div class="formulario aviso-sesion" id="aviso-sesion" hidden>
-        <h2>Iniciá sesión para registrar</h2>
-        <p>Tus movimientos se guardan en tu cuenta, así podés verlos desde cualquier dispositivo.</p>
-        <a href="login.html" class="boton">Ingresar o crear cuenta</a>
-    </div>
-
-    <!-- Formulario: el submit se maneja con addEventListener en js/app.js -->
-    <!-- novalidate para que las validaciones las muestre app.js -->
-    <!-- hidden hasta que app.js confirme que hay sesión -->
-    <form class="formulario" id="form-movimiento" novalidate hidden>
-
-        <h2>Datos del movimiento</h2>
-
-        <!-- Mensajes de exito / error -->
-        <div id="mensaje" role="alert"></div>
-
-
-        <!-- Tipo de movimiento -->
-        <fieldset class="tipo">
-            <legend>Tipo de movimiento</legend>
-
-            <label>
-                <input type="radio" name="tipo" value="gasto" checked>
-                Gasto
-            </label>
-
-            <label>
-                <input type="radio" name="tipo" value="ingreso">
-                Ingreso
-            </label>
-        </fieldset>
-
-
-        <!-- Descripcion -->
-        <div class="campo">
-            <label for="descripcion">Descripción</label>
-            <input
-                type="text"
-                id="descripcion"
-                name="descripcion"
-                placeholder="Ej: Compra en supermercado"
-                required
-            >
-        </div>
-
-
-        <!-- Monto y fecha -->
-        <div class="fila">
-            <div class="campo">
-                <!-- Monto de contado, el descuento o recargo lo calcula app.js -->
-                <label for="monto">Monto</label>
-                <input
-                    type="number"
-                    id="monto"
-                    name="monto"
-                    placeholder="0"
-                    min="0"
-                    step="0.01"
-                    required
-                >
-            </div>
-
-            <div class="campo">
-                <label for="fecha">Fecha</label>
-                <input type="date" id="fecha" name="fecha" required>
-            </div>
-        </div>
-
-
-        <!-- Categoria y medio de pago -->
-        <div class="fila">
-            <div class="campo">
-                <label for="categoria">Categoría</label>
-                <select id="categoria" name="categoria" required>
-                    <option value="">Seleccionar</option>
-                    <optgroup label="Gastos">
-                        <option>Alimentación</option>
-                        <option>Transporte</option>
-                        <option>Entretenimiento</option>
-                        <option>Servicios</option>
-                        <option>Salud</option>
-                        <option>Educación</option>
-                        <option>Alquiler</option>
-                        <option>Indumentaria</option>
-                    </optgroup>
-                    <optgroup label="Ingresos">
-                        <option>Sueldo</option>
-                        <option>Freelance</option>
-                    </optgroup>
-                </select>
-            </div>
-
-            <div class="campo">
-                <label for="pago">Medio de pago</label>
-                <!-- Los textos tienen que ser iguales a las claves de data/tarifas.json -->
-                <select id="pago" name="pago" required>
-                    <option value="">Seleccionar</option>
-                    <option>Efectivo</option>
-                    <option>Transferencia</option>
-                    <option>Tarjeta de débito</option>
-                    <option>Mercado Pago</option>
-                    <option>Tarjeta de crédito</option>
-                </select>
-            </div>
-        </div>
-
-
-        <!-- Cuotas: solo aparece con gasto + tarjeta de credito -->
-        <div class="fila" id="fila-cuotas" hidden>
-            <div class="campo">
-                <label for="cuotas">Cantidad de cuotas</label>
-                <!-- El value es la clave de "cuotas" en el JSON, de ahi sale el interes -->
-                <select id="cuotas" name="cuotas" disabled>
-                    <option value="1">1 cuota</option>
-                    <option value="3">3 cuotas</option>
-                    <option value="6">6 cuotas</option>
-                    <option value="12">12 cuotas</option>
-                </select>
-            </div>
-        </div>
-
-
-        <!-- Resumen del calculo (se actualiza solo con cada cambio) -->
-        <section class="resultado" id="resultado" aria-live="polite">
-            <h3>Resumen</h3>
-            <p>Subtotal: <span id="res-subtotal">$0</span></p>
-            <p>Descuento / recargo: <span id="res-ajuste">$0</span></p>
-            <p><strong>Total: <span id="res-total">$0</span></strong></p>
-            <p id="res-cuota-linea" hidden>Valor de cada cuota: <span id="res-cuota">$0</span></p>
-        </section>
-
-
-        <!-- Comentario opcional -->
-        <div class="campo">
-            <label for="comentario">Comentario</label>
-            <textarea
-                id="comentario"
-                name="comentario"
-                rows="4"
-                placeholder="Información adicional"
-            ></textarea>
-        </div>
-
-
-        <!-- Botones -->
-        <div class="formulario-botones">
-            <a href="index.html" class="boton secundario">Cancelar</a>
-            <button type="submit" class="boton">Guardar</button>
-        </div>
-
-    </form>
-
+    <p><a href="index.html#/registrar" class="boton">Registrar un ingreso o gasto</a></p>
+    <noscript><p>Activá JavaScript para calcular y guardar tus movimientos en NipinFinan.</p></noscript>
 </main>
 
 
@@ -205,8 +44,8 @@
 </footer>
 
 <!-- ========== SCRIPTS ========== -->
-<script src="js/api.js" defer></script>
-<script src="js/app.js" defer></script>
+
+<script src="js/navegacion.js" defer></script>
 
 </body>
 </html>
