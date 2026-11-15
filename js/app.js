@@ -371,12 +371,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // NipinFinan - AE2, opción 2 - Luciano Fohrholtz.
 // El resumen solo lee movimientos; la demostración usa un JSON separado.
-(function iniciarResumen() {
-    if (!document.querySelector("#resumen")) return;
+const NipinResumen = (() => {
+    if (!document.querySelector("#resumen")) return null;
     let modo = "real";
     let sinSesion = false;
     let movimientos = [];
     let cargando = false;
+    let activa = false;
+    let actualizarAlTerminar = false;
 
     const panel = document.querySelector("#resumen");
     const mes = panel.querySelector("#resumen-mes");
@@ -586,6 +588,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             panel.setAttribute("aria-busy", "false");
             botonDemo.disabled = false;
             botonActualizar.disabled = false;
+            if (activa && actualizarAlTerminar) {
+                actualizarAlTerminar = false;
+                actualizarDatos();
+            }
         }
     }
 
@@ -594,8 +600,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     categoria.addEventListener("change", mostrarResumen);
     botonActualizar.addEventListener("click", () => actualizarDatos());
     botonDemo.addEventListener("click", () => actualizarDatos(modo === "real" ? "demo" : "real", true));
-    window.addEventListener("pageshow", () => { if (modo === "real") actualizarDatos(); });
     prepararFiltros(true);
     mostrarResumen();
-    actualizarDatos();
+    return {
+        entrar() {
+            activa = true;
+            if (cargando) actualizarAlTerminar = true;
+            else actualizarDatos();
+        },
+        salir() {
+            activa = false;
+            actualizarAlTerminar = false;
+        }
+    };
 })();

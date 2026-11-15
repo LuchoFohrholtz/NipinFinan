@@ -6,24 +6,34 @@
     <title>NipinFinan</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/resumen.css">
+    <style>
+        /* Pautas de navegación de estas vistas; no modifica las hojas compartidas. */
+        .salto-contenido { position: absolute; left: 12px; top: -100px; z-index: 1; }
+        .salto-contenido:focus { top: 12px; }
+        .solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+        :is(a, button, input, select, [tabindex="-1"]):focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+        nav a[aria-current="page"] { font-weight: bold; text-decoration: underline; text-underline-offset: 4px; }
+    </style>
     <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/navegacion.js" defer></script>
 </head>
 
 <body>
 
+<a href="#contenido" class="boton salto-contenido" id="saltar-contenido">Saltar al contenido</a>
+
 <!-- ========== ENCABEZADO Y NAVEGACION ========== -->
 <header>
     <div class="contenedor">
-        <a href="index.html" class="logo">NipinFinan</a>
+        <a href="index.html#/inicio" class="logo" data-ruta="inicio">NipinFinan</a>
 
-        <nav>
+        <nav aria-label="Navegación principal">
             <ul class="nav-lista">
-                <li><a href="index.html" aria-current="page">Inicio</a></li>
+                <li><a href="index.html#/inicio" data-ruta="inicio" aria-current="page">Inicio</a></li>
                 <li><a href="listado_tabla.html">Movimientos</a></li>
                 <li><a href="listado_box.html">Categorías</a></li>
                 <li><a href="comprar.html">Registrar</a></li>
-                <li><a href="cupones.html">Cupones</a></li>
             </ul>
         </nav>
 
@@ -38,7 +48,10 @@
 
 
 <!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main>
+<p id="estado-navegacion" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p>
+<main id="contenido" tabindex="-1">
+
+    <div id="vista-inicio" data-vista="inicio">
 
     <!-- Portada -->
     <section class="inicio">
@@ -47,7 +60,7 @@
             <div class="inicio-texto">
                 <p class="etiqueta">FINANZAS PERSONALES</p>
 
-                <h1>Controlá tus gastos de forma simple.</h1>
+                <h1 id="inicio-titulo" tabindex="-1">Controlá tus gastos de forma simple.</h1>
 
                 <p>
                     NipinFinan te permite registrar tus gastos e ingresos
@@ -184,6 +197,8 @@
 
         </div>
     </section>
+
+    </div>
 
 </main>
 
