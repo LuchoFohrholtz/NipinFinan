@@ -27,71 +27,10 @@
 
 
 <!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main class="contenedor pagina">
-
+<main class="contenedor pagina" data-acceso-antiguo>
     <h1>Mi cuenta</h1>
-
-    <p>Ingresá o creá una cuenta para guardar tus movimientos.</p>
-
-    <!-- Pestañas: las alterna js/app.js -->
-    <div class="acceso-pestanas">
-        <button type="button" class="boton" id="tab-ingresar" aria-pressed="true">Ingresar</button>
-        <button type="button" class="boton secundario" id="tab-crear" aria-pressed="false">Crear cuenta</button>
-    </div>
-
-
-    <!-- Login: lo envía js/app.js a api/login.php -->
-    <form class="formulario" id="form-login" novalidate>
-
-        <h2>Ingresar</h2>
-
-        <div id="mensaje-login" class="mensaje" role="alert"></div>
-
-        <div class="campo">
-            <label for="login-email">Correo electrónico</label>
-            <input type="email" id="login-email" name="email" placeholder="ejemplo@ucp.edu.ar" autocomplete="email" required>
-        </div>
-
-        <div class="campo">
-            <label for="login-pass">Contraseña</label>
-            <input type="password" id="login-pass" name="password" autocomplete="current-password" required>
-        </div>
-
-        <div class="formulario-botones">
-            <button type="submit" class="boton">Ingresar</button>
-        </div>
-
-    </form>
-
-
-    <!-- Registro: lo envía js/app.js a api/registro.php -->
-    <form class="formulario" id="form-registro" novalidate hidden>
-
-        <h2>Crear cuenta</h2>
-
-        <div id="mensaje-registro" class="mensaje" role="alert"></div>
-
-        <div class="campo">
-            <label for="reg-nombre">Nombre</label>
-            <input type="text" id="reg-nombre" name="nombre" maxlength="100" placeholder="Juan Pérez" autocomplete="name" required>
-        </div>
-
-        <div class="campo">
-            <label for="reg-email">Correo electrónico</label>
-            <input type="email" id="reg-email" name="email" maxlength="150" placeholder="juan@ucp.edu.ar" autocomplete="email" required>
-        </div>
-
-        <div class="campo">
-            <label for="reg-pass">Contraseña</label>
-            <input type="password" id="reg-pass" name="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" minlength="6" required>
-        </div>
-
-        <div class="formulario-botones">
-            <button type="submit" class="boton">Crear cuenta</button>
-        </div>
-
-    </form>
-
+    <p><a href="index.html#/acceso" class="boton">Ingresar o crear cuenta</a></p>
+    <noscript><p>Activá JavaScript para ingresar o crear una cuenta en NipinFinan.</p></noscript>
 </main>
 
 
@@ -104,7 +43,8 @@
 </footer>
 
 <!-- ========== SCRIPTS ========== -->
-<script src="js/app.js" defer></script>
+
+<script src="js/navegacion.js" defer></script>
 
 </body>
 </html>

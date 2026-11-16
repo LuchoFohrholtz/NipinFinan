@@ -6,28 +6,62 @@
     <title>NipinFinan</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/resumen.css">
+    <style>
+        /* Pautas de navegación de estas vistas; no modifica las hojas compartidas. */
+        .salto-contenido { position: absolute; left: 12px; top: -100px; z-index: 1; }
+        .salto-contenido:focus { top: 12px; }
+        .solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+        :is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+        nav a[aria-current="page"] { font-weight: bold; text-decoration: underline; text-underline-offset: 4px; }
+        #vista-movimientos { min-width: 0; }
+        #vista-movimientos table { min-width: 740px; }
+        #vista-movimientos td { overflow-wrap: anywhere; }
+        #vista-movimientos td:nth-child(n+3) { white-space: nowrap; }
+        #eliminacion-detalle { overflow-wrap: anywhere; }
+        .acciones-movimiento { display: flex; flex-wrap: wrap; gap: 8px; }
+        #confirmar-eliminacion { max-width: min(90vw, 480px); border: 1px solid #64748b; border-radius: 8px; padding: 24px; }
+        #confirmar-eliminacion::backdrop { background: rgb(0 0 0 / 45%); }
+        #resumen .tarjeta, #resumen .resumen-barra-texto { overflow-wrap: anywhere; }
+        #resumen .tarjeta h3 { line-height: 1.3; font-variant-numeric: tabular-nums; }
+        #resumen[data-modo="demo"] .resumen-etiqueta { background: #fef3c7; border-color: #d97706; color: #713f12; }
+        #resumen #resumen-demostracion { border-color: #d97706; background: #fffbeb; color: #713f12; }
+        #vista-categorias .categoria { height: 100%; overflow-wrap: anywhere; }
+        #vista-categorias dl { margin: 0; }
+        #vista-categorias dt { color: #475569; }
+        #vista-categorias dd { margin: 0 0 8px; font-weight: bold; }
+        #vista-categoria .tarjeta, #categoria-historial li { min-width: 0; overflow-wrap: anywhere; }
+        #categoria-historial .movimiento { flex-wrap: wrap; gap: 12px; }
+    </style>
+    <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/resumen.js" defer></script>
+    <script src="js/acceso.js" defer></script>
+    <script src="js/listado.js" defer></script>
+    <script src="js/categorias.js" defer></script>
+    <script src="js/navegacion.js" defer></script>
 </head>
 
 <body>
 
+<a href="#contenido" class="boton salto-contenido" id="saltar-contenido">Saltar al contenido</a>
+
 <!-- ========== ENCABEZADO Y NAVEGACION ========== -->
 <header>
     <div class="contenedor">
-        <a href="index.html" class="logo">NipinFinan</a>
+        <a href="index.html#/inicio" class="logo" data-ruta="inicio">NipinFinan</a>
 
-        <nav>
+        <nav aria-label="Navegación principal">
             <ul class="nav-lista">
-                <li><a href="index.html" aria-current="page">Inicio</a></li>
-                <li><a href="listado_tabla.html">Movimientos</a></li>
-                <li><a href="listado_box.html">Categorías</a></li>
-                <li><a href="comprar.html">Registrar</a></li>
+                <li><a href="index.html#/inicio" data-ruta="inicio" aria-current="page">Inicio</a></li>
+                <li><a href="index.html#/movimientos" data-ruta="movimientos">Movimientos</a></li>
+                <li><a href="index.html#/categorias" data-ruta="categorias">Categorías</a></li>
+                <li><a href="index.html#/registrar" data-ruta="registrar">Registrar</a></li>
             </ul>
         </nav>
 
         <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
         <div class="sesion" id="sesion">
-            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
             <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
             <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
         </div>
@@ -36,7 +70,10 @@
 
 
 <!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main>
+<p id="estado-navegacion" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p>
+<main id="contenido" tabindex="-1">
+
+    <div id="vista-inicio" data-vista="inicio">
 
     <!-- Portada -->
     <section class="inicio">
@@ -45,14 +82,14 @@
             <div class="inicio-texto">
                 <p class="etiqueta">FINANZAS PERSONALES</p>
 
-                <h1>Controlá tus gastos de forma simple.</h1>
+                <h1 id="inicio-titulo" tabindex="-1">Controlá tus gastos de forma simple.</h1>
 
                 <p>
                     NipinFinan te permite registrar tus gastos e ingresos
                     y organizar tu dinero de manera sencilla.
                 </p>
 
-                <a href="comprar.html" class="boton">
+                <a href="index.html#/registrar" data-ruta="registrar" class="boton">
                     Registrar movimiento
                 </a>
             </div>
@@ -62,7 +99,7 @@
 
 
     <!-- AE2 - Tablero de indicadores de Luciano Fohrholtz -->
-    <section class="seccion" id="resumen" aria-labelledby="resumen-titulo">
+    <section class="seccion" id="resumen" data-modo="real" aria-labelledby="resumen-titulo">
         <div class="contenedor">
             <div class="resumen-cabecera">
                 <div>
@@ -87,7 +124,9 @@
                 <button type="button" class="boton" id="resumen-actualizar">Actualizar resumen</button>
             </div>
 
-            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" hidden></p>
+            <p id="resumen-demostracion" class="resumen-aviso" hidden><strong>Modo demostración.</strong> Estos importes son ficticios, no pertenecen a tu cuenta y no se guardan como movimientos.</p>
+            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+            <p id="resumen-estado" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p>
             <p class="resumen-contexto" id="resumen-contexto"></p>
 
             <ul class="tarjetas">
@@ -125,7 +164,7 @@
 
             <div class="resumen-vacio" id="resumen-vacio">
                 <p id="resumen-vacio-texto">Todavía no hay movimientos para mostrar.</p>
-                <a href="comprar.html" id="resumen-registrar">Registrar un movimiento →</a>
+                <a href="index.html#/registrar" data-ruta="registrar" id="resumen-registrar">Registrar un movimiento →</a>
             </div>
 
             <div class="tarjeta resumen-grafico">
@@ -180,6 +219,341 @@
 
             </ul>
 
+        </div>
+    </section>
+
+    </div>
+
+    <section id="vista-acceso" class="contenedor pagina" data-vista="acceso" aria-labelledby="acceso-titulo" hidden>
+
+    <h1 id="acceso-titulo" tabindex="-1">Mi cuenta</h1>
+
+    <p>Ingresá o creá una cuenta para guardar tus movimientos.</p>
+
+    <p id="mensaje-acceso" role="status" aria-live="polite"></p>
+    <button type="button" class="boton secundario" id="acceso-reintentar" hidden>Reintentar acceso</button>
+
+    <!-- Pestañas y formularios: js/acceso.js, mediante NipinAPI. -->
+    <div class="acceso-pestanas">
+        <button type="button" class="boton" id="tab-ingresar" aria-pressed="true">Ingresar</button>
+        <button type="button" class="boton secundario" id="tab-crear" aria-pressed="false">Crear cuenta</button>
+    </div>
+
+
+    <!-- Login -->
+    <form class="formulario" id="form-login" novalidate>
+
+        <h2>Ingresar</h2>
+
+        <div id="mensaje-login" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div>
+
+        <div class="campo">
+            <label for="login-email">Correo electrónico</label>
+            <input type="email" id="login-email" name="email" placeholder="ejemplo@ucp.edu.ar" autocomplete="email" required>
+        </div>
+
+        <div class="campo">
+            <label for="login-pass">Contraseña</label>
+            <input type="password" id="login-pass" name="password" autocomplete="current-password" required>
+        </div>
+
+        <div class="formulario-botones">
+            <button type="submit" class="boton" disabled>Ingresar</button>
+        </div>
+
+    </form>
+
+
+    <!-- Registro -->
+    <form class="formulario" id="form-registro" novalidate hidden>
+
+        <h2>Crear cuenta</h2>
+
+        <div id="mensaje-registro" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div>
+
+        <div class="campo">
+            <label for="reg-nombre">Nombre</label>
+            <input type="text" id="reg-nombre" name="nombre" maxlength="100" placeholder="Juan Pérez" autocomplete="name" required>
+        </div>
+
+        <div class="campo">
+            <label for="reg-email">Correo electrónico</label>
+            <input type="email" id="reg-email" name="email" maxlength="150" placeholder="juan@ucp.edu.ar" autocomplete="email" required>
+        </div>
+
+        <div class="campo">
+            <label for="reg-pass">Contraseña</label>
+            <p id="reg-password-ayuda">Entre 8 y 72 bytes UTF-8. Una letra acentuada o un emoji puede ocupar más de un byte.</p>
+            <input type="password" id="reg-pass" name="password" aria-describedby="reg-password-ayuda" autocomplete="new-password" required>
+        </div>
+
+        <div class="formulario-botones">
+            <button type="submit" class="boton" disabled>Crear cuenta</button>
+        </div>
+
+    </form>
+
+
+    </section>
+
+    <section id="vista-registrar" class="contenedor pagina" data-vista="registrar" aria-labelledby="registrar-titulo" hidden>
+
+    <h1 id="registrar-titulo" tabindex="-1">Registrar movimiento</h1>
+
+    <p>Completá los datos para registrar un gasto o ingreso.</p>
+
+    <p id="registro-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+    <button type="button" id="registro-reintentar" class="boton secundario" hidden>Reintentar carga</button>
+
+    <!-- Sin sesión se muestra este aviso en lugar del formulario (lo alterna js/app.js) -->
+    <div class="formulario aviso-sesion" id="aviso-sesion" hidden>
+        <h2>Iniciá sesión para registrar</h2>
+        <p>Tus movimientos se guardan en tu cuenta, así podés verlos desde cualquier dispositivo.</p>
+        <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+    </div>
+
+    <!-- Formulario: el submit se maneja con addEventListener en js/app.js -->
+    <!-- novalidate para que las validaciones las muestre app.js -->
+    <!-- hidden hasta que app.js confirme que hay sesión -->
+    <form class="formulario" id="form-movimiento" novalidate hidden>
+
+        <h2>Datos del movimiento</h2>
+
+        <!-- Mensajes de exito / error -->
+        <div id="mensaje" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></div>
+
+
+        <!-- Tipo de movimiento -->
+        <fieldset class="tipo">
+            <legend>Tipo de movimiento</legend>
+
+            <label>
+                <input type="radio" name="tipo" value="gasto" checked>
+                Gasto
+            </label>
+
+            <label>
+                <input type="radio" name="tipo" value="ingreso">
+                Ingreso
+            </label>
+        </fieldset>
+
+
+        <!-- Descripcion -->
+        <div class="campo">
+            <label for="descripcion">Descripción</label>
+            <input
+                type="text"
+                id="descripcion"
+                name="descripcion"
+                placeholder="Ej: Compra en supermercado"
+                required
+            >
+        </div>
+
+
+        <!-- Monto y fecha -->
+        <div class="fila">
+            <div class="campo">
+                <!-- Monto de contado, el descuento o recargo lo calcula app.js -->
+                <label for="monto">Monto</label>
+                <input
+                    type="number"
+                    id="monto"
+                    name="monto"
+                    placeholder="0"
+                    min="0.01" max="999999999.99"
+                    step="0.01"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" min="1900-01-01" max="2100-12-31" name="fecha" required>
+            </div>
+        </div>
+
+
+        <!-- Categoria y medio de pago -->
+        <div class="fila">
+            <div class="campo">
+                <label for="categoria">Categoría</label>
+                <select id="categoria" name="categoria" required>
+                    <option value="">Seleccionar</option>
+                    <optgroup label="Gastos" data-tipo="gasto">
+                        <option>Alimentación</option>
+                        <option>Transporte</option>
+                        <option>Entretenimiento</option>
+                        <option>Servicios</option>
+                        <option>Salud</option>
+                        <option>Educación</option>
+                        <option>Alquiler</option>
+                        <option>Indumentaria</option>
+                    </optgroup>
+                    <optgroup label="Ingresos" data-tipo="ingreso">
+                        <option>Sueldo</option>
+                        <option>Freelance</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="pago">Medio de pago</label>
+                <!-- Los textos tienen que ser iguales a las claves de data/tarifas.json -->
+                <select id="pago" name="pago" required>
+                    <option value="">Seleccionar</option>
+                    <option>Efectivo</option>
+                    <option>Transferencia</option>
+                    <option>Tarjeta de débito</option>
+                    <option>Mercado Pago</option>
+                    <option>Tarjeta de crédito</option>
+                </select>
+            </div>
+        </div>
+
+
+        <!-- Cuotas: solo aparece con gasto + tarjeta de credito -->
+        <div class="fila" id="fila-cuotas" hidden>
+            <div class="campo">
+                <label for="cuotas">Cantidad de cuotas</label>
+                <!-- El value es la clave de "cuotas" en el JSON, de ahi sale el interes -->
+                <select id="cuotas" name="cuotas" disabled>
+                    <option value="1">1 cuota</option>
+                    <option value="3">3 cuotas</option>
+                    <option value="6">6 cuotas</option>
+                    <option value="12">12 cuotas</option>
+                </select>
+            </div>
+        </div>
+
+
+        <!-- Resumen del calculo (se actualiza solo con cada cambio) -->
+        <section class="resultado" id="resultado" aria-live="polite">
+            <h3>Resumen</h3>
+            <p>Subtotal: <span id="res-subtotal">$0</span></p>
+            <p>Descuento / recargo: <span id="res-ajuste">$0</span></p>
+            <p><strong>Total: <span id="res-total">$0</span></strong></p>
+            <p id="res-cuota-linea" hidden>Valor de cada cuota: <span id="res-cuota">$0</span></p>
+        </section>
+
+
+        <!-- Comentario opcional -->
+        <div class="campo">
+            <label for="comentario">Comentario</label>
+            <textarea
+                id="comentario"
+                name="comentario"
+                rows="4"
+                placeholder="Información adicional"
+            ></textarea>
+        </div>
+
+
+        <!-- Botones -->
+        <div class="formulario-botones">
+            <a href="index.html#/inicio" data-ruta="inicio" class="boton secundario">Volver al inicio</a>
+            <button type="submit" class="boton" disabled>Guardar</button>
+        </div>
+
+    </form>
+
+
+    </section>
+
+    <section id="vista-movimientos" class="contenedor pagina" data-vista="movimientos" aria-labelledby="movimientos-titulo" hidden>
+        <h1 id="movimientos-titulo" tabindex="-1">Movimientos</h1>
+        <p>Lista de gastos e ingresos registrados.</p>
+        <div class="formulario-botones">
+            <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a>
+            <button type="button" id="movimientos-actualizar" class="boton secundario">Actualizar</button>
+        </div>
+        <p id="movimientos-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <div class="formulario aviso-sesion" id="movimientos-sin-sesion" hidden>
+            <h2>Iniciá sesión para ver tus movimientos</h2>
+            <p>Los movimientos son privados: solo los ve el dueño de la cuenta.</p>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <ul class="tabla-resumen" id="tabla-resumen" hidden>
+            <li><span>Ingresos</span><strong class="ingreso" id="total-ingresos">$0</strong></li>
+            <li><span>Gastos</span><strong class="gasto" id="total-gastos">$0</strong></li>
+            <li><span>Disponible</span><strong id="total-disponible">$0</strong></li>
+        </ul>
+        <p id="sin-movimientos" hidden>Todavía no registraste movimientos. <a href="index.html#/registrar" data-ruta="registrar">Registrar el primero</a></p>
+        <div class="tabla-contenedor" id="tabla-contenedor" tabindex="0" role="region" aria-label="Tabla de movimientos; desplazamiento horizontal disponible" hidden>
+            <table>
+                <caption class="solo-lectores">Tus movimientos, del más reciente al más antiguo</caption>
+                <thead><tr>
+                    <th scope="col">Descripción</th><th scope="col">Categoría</th><th scope="col">Tipo</th>
+                    <th scope="col">Fecha</th><th scope="col">Monto</th><th scope="col">Acciones</th>
+                </tr></thead>
+                <tbody id="tbody-movimientos"></tbody>
+            </table>
+        </div>
+        <section id="movimientos-edicion" aria-labelledby="edicion-titulo" hidden>
+            <h2 id="edicion-titulo" tabindex="-1">Editar movimiento</h2>
+            <p id="edicion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+            <button type="button" id="edicion-reintentar" class="boton secundario" hidden>Reintentar carga</button>
+            <!-- Se reutiliza una copia independiente del formulario de alta. -->
+        </section>
+        <dialog id="confirmar-eliminacion" aria-labelledby="eliminacion-titulo" aria-describedby="eliminacion-detalle">
+            <h2 id="eliminacion-titulo">Eliminar movimiento</h2>
+            <p id="eliminacion-detalle"></p>
+            <p>Esta acción no se puede deshacer.</p>
+            <div class="formulario-botones">
+                <button type="button" id="eliminacion-cancelar" class="boton secundario" autofocus>Cancelar</button>
+                <button type="button" id="eliminacion-confirmar" class="boton">Eliminar definitivamente</button>
+            </div>
+            <p id="eliminacion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+        </dialog>
+    </section>
+
+    <section id="vista-categorias" class="contenedor pagina" data-vista="categorias" aria-labelledby="categorias-titulo" hidden>
+        <h1 id="categorias-titulo" tabindex="-1">Categorías</h1>
+        <p>Categorías para organizar tus movimientos. Los importes corresponden a tu cuenta, sin filtro de fechas.</p>
+        <button type="button" id="categorias-actualizar" class="boton secundario">Actualizar categorías</button>
+        <p id="categorias-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <div class="formulario aviso-sesion" id="categorias-sin-sesion" hidden>
+            <h2>Iniciá sesión para ver tus categorías</h2>
+            <p>Los importes y movimientos pertenecen únicamente a tu cuenta.</p>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <p id="categorias-vacio" hidden>No hay categorías disponibles.</p>
+        <ul id="categorias-lista" class="categorias" aria-label="Categorías y totales propios" hidden></ul>
+        <noscript><p>Activá JavaScript para consultar las categorías y su historial.</p></noscript>
+    </section>
+
+    <section id="vista-categoria" class="contenedor pagina" data-vista="categoria" aria-labelledby="categoria-titulo" hidden>
+        <a href="index.html#/categorias" data-ruta="categorias">← Volver a categorías</a>
+        <h1 id="categoria-titulo" tabindex="-1">Detalle de categoría</h1>
+        <button type="button" id="categoria-actualizar" class="boton secundario">Actualizar detalle</button>
+        <p id="categoria-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <div class="formulario aviso-sesion" id="categoria-sin-sesion" hidden>
+            <h2>Iniciá sesión para ver el detalle</h2>
+            <p>El historial y los importes son privados.</p>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <div id="categoria-datos" hidden>
+            <div class="detalle">
+                <div class="icono grande" id="categoria-icono" aria-hidden="true"></div>
+                <div>
+                    <p class="etiqueta" id="categoria-tipo"></p>
+                    <p>Totales de tus movimientos en esta categoría, sin filtro de fechas.</p>
+                    <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a>
+                </div>
+            </div>
+            <h2>Resumen de la categoría</h2>
+            <ul class="tarjetas">
+                <li class="tarjeta"><p>Ingresos</p><h3 class="ingreso" id="categoria-ingresos">$0</h3></li>
+                <li class="tarjeta"><p>Gastos</p><h3 class="gasto" id="categoria-gastos">$0</h3></li>
+                <li class="tarjeta"><p>Saldo</p><h3 id="categoria-saldo">$0</h3></li>
+                <li class="tarjeta"><p>Movimientos</p><h3 id="categoria-cantidad">0</h3></li>
+            </ul>
+            <section class="historial" aria-labelledby="categoria-historial-titulo">
+                <h2 id="categoria-historial-titulo">Historial de movimientos</h2>
+                <p id="categoria-sin-movimientos" hidden>Todavía no registraste movimientos en esta categoría.</p>
+                <ul class="historial-lista" id="categoria-historial"></ul>
+            </section>
         </div>
     </section>
 

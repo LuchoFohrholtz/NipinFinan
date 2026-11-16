@@ -23,130 +23,15 @@
             </ul>
         </nav>
 
-        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
-        <div class="sesion" id="sesion">
-            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
-            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
-            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
-        </div>
     </div>
 </header>
 
 
 <!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main class="contenedor pagina">
-
+<main class="contenedor pagina" data-categorias-antiguo>
     <h1>Categorías</h1>
-
-    <p>
-        Categorías utilizadas para organizar los movimientos.
-    </p>
-
-
-    <!-- Tarjetas de categorias (cada una lleva al detalle) -->
-    <ul class="categorias">
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">A</div>
-            <h2>Alimentación</h2>
-            <p>Comida y supermercado.</p>
-            <strong>$32.500</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">T</div>
-            <h2>Transporte</h2>
-            <p>Combustible y viajes.</p>
-            <strong>$18.000</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">E</div>
-            <h2>Entretenimiento</h2>
-            <p>Cine, música y juegos.</p>
-            <strong>$6.200</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">S</div>
-            <h2>Servicios</h2>
-            <p>Luz, agua e internet.</p>
-            <strong>$15.500</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">S</div>
-            <h2>Salud</h2>
-            <p>Farmacia y consultas.</p>
-            <strong>$6.200</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">Ed</div>
-            <h2>Educación</h2>
-            <p>Cursos y materiales.</p>
-            <strong>$8.000</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">Al</div>
-            <h2>Alquiler</h2>
-            <p>Alquiler de vivienda.</p>
-            <strong>$0</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">I</div>
-            <h2>Indumentaria</h2>
-            <p>Ropa y calzado.</p>
-            <strong>$15.000</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">Su</div>
-            <h2>Sueldo</h2>
-            <p>Ingresos laborales.</p>
-            <strong class="ingreso">+$150.000</strong>
-        </a>
-        </li>
-
-
-        <li>
-        <a href="producto.html" class="categoria">
-            <div class="icono" aria-hidden="true">F</div>
-            <h2>Freelance</h2>
-            <p>Trabajos independientes.</p>
-            <strong class="ingreso">+$0</strong>
-        </a>
-        </li>
-
-    </ul>
-
+    <p><a href="index.html#/categorias" class="boton">Ver mis categorías</a></p>
+    <noscript><p>Activá JavaScript para consultar los importes y el historial de tus categorías.</p></noscript>
 </main>
 
 
@@ -159,7 +44,7 @@
 </footer>
 
 <!-- ========== SCRIPTS ========== -->
-<script src="js/app.js" defer></script>
+<script src="js/navegacion.js" defer></script>
 
 </body>
 </html>
