@@ -71,7 +71,7 @@ NipinFinan/
 
 ## Instalación en XAMPP (paso a paso)
 
-**Requisitos:** XAMPP con PHP 8.2 o superior (Apache y MySQL/MariaDB), con las extensiones `pdo_mysql` y `mbstring` habilitadas (vienen activas en XAMPP), y un navegador moderno.
+**Requisitos:** XAMPP con PHP 8.0 o superior (Apache y MySQL/MariaDB), con las extensiones `pdo_mysql` y `mbstring` habilitadas (vienen activas en XAMPP), y un navegador moderno.
 
 1. **Copiar el proyecto** a `C:\xampp\htdocs\NipinFinan`. La carpeta tiene que llamarse así, porque las URLs de abajo usan ese nombre.
    ```powershell

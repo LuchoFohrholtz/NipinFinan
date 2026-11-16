@@ -18,7 +18,7 @@ final class CategoriaModel
             throw new RuntimeException('No se pudo cargar el catálogo de categorías.');
         }
         $catalogo = json_decode($contenido, true, 512, JSON_THROW_ON_ERROR);
-        if (!is_array($catalogo) || !array_is_list($catalogo) || $catalogo === []) {
+        if (!is_array($catalogo) || array_values($catalogo) !== $catalogo || $catalogo === []) {
             throw new RuntimeException('Catálogo de categorías inválido.');
         }
         foreach ($catalogo as $categoria) {
