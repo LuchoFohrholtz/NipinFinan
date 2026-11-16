@@ -1,0 +1,15 @@
+{
+  "name": "nipinfinan-pruebas-a11y",
+  "private": true,
+  "description": "Auditoría Lighthouse/axe y recorrido por teclado de la SPA. No forma parte de la aplicación servida por XAMPP.",
+  "type": "module",
+  "scripts": {
+    "lighthouse": "node lighthouse-vistas.mjs",
+    "teclado": "node teclado.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "^4.14.1",
+    "lighthouse": "^13.6.0",
+    "puppeteer-core": "^25.17.0"
+  }
+}
