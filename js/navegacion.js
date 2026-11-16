@@ -1,11 +1,16 @@
 // Navegación progresiva: solo las vistas registradas pertenecen a la SPA.
-// Los enlaces a categorías siguen siendo HTML.
+// El detalle de una categoría usa su ID público en #/categorias/ID.
 const NipinNavegacion = (() => {
     const contenido = document.querySelector("#contenido");
     if (!contenido) {
         if (document.querySelector("[data-acceso-antiguo]")) location.replace("index.html#/acceso");
         if (document.querySelector("[data-registro-antiguo]")) location.replace("index.html#/registrar");
         if (document.querySelector("[data-listado-antiguo]")) location.replace("index.html#/movimientos");
+        if (document.querySelector("[data-categorias-antiguo]")) location.replace("index.html#/categorias");
+        if (document.querySelector("[data-categoria-antigua]")) {
+            const id = new URLSearchParams(location.search).get("id");
+            location.replace("index.html#/categorias" + (/^[a-z][a-z0-9-]{0,63}$/.test(id || "") ? "/" + id : ""));
+        }
         return null;
     }
 
@@ -15,11 +20,20 @@ const NipinNavegacion = (() => {
         ["inicio", { titulo: "Inicio", modulo: NipinResumen }],
         ["acceso", { titulo: "Mi cuenta", modulo: NipinAcceso }],
         ["registrar", { titulo: "Registrar movimiento", modulo: NipinRegistro }],
-        ["movimientos", { titulo: "Movimientos", modulo: NipinListado }]
+        ["movimientos", { titulo: "Movimientos", modulo: NipinListado }],
+        ["categorias", { titulo: "Categorías", modulo: NipinCategorias.catalogo }],
+        ["categoria", { titulo: "Detalle de categoría", modulo: NipinCategorias.detalle }]
     ]);
     const estado = document.querySelector("#estado-navegacion");
     let actual = null;
+    let categoriaActual = null;
     let revision = 0;
+
+    function resolver(ruta) {
+        if (rutas.has(ruta) && ruta !== "categoria") return { nombre: ruta, id: null };
+        const detalle = /^categorias\/([a-z][a-z0-9-]{0,63})$/.exec(ruta);
+        return detalle ? { nombre: "categoria", id: detalle[1] } : null;
+    }
 
     function enfocarContenido() {
         const titulo = contenido.querySelector('[data-vista="' + actual + '"] h1');
@@ -29,10 +43,10 @@ const NipinNavegacion = (() => {
 
     async function mostrarRuta(enfocar = true, recargar = false) {
         const intento = ++revision;
-        let nombre = location.hash.startsWith("#/") ? location.hash.slice(2) : "";
-        const desconocida = Boolean(location.hash) && !rutas.has(nombre);
-        if (!rutas.has(nombre)) {
-            nombre = "inicio";
+        const ruta = location.hash.startsWith("#/") ? resolver(location.hash.slice(2)) : null;
+        const desconocida = Boolean(location.hash) && !ruta;
+        let { nombre, id } = ruta || { nombre: "inicio", id: null };
+        if (!ruta) {
             // No crea una entrada extra al abrir index.html o una ruta inexistente.
             history.replaceState(null, "", "#/inicio");
         }
@@ -58,7 +72,7 @@ const NipinNavegacion = (() => {
                 if (intento === revision) contenido.setAttribute("aria-busy", "false");
             }
         }
-        if (nombre === actual && !recargar) {
+        if (nombre === actual && id === categoriaActual && !recargar) {
             if (desconocida) estado.textContent = "Vista no encontrada. Mostramos Inicio.";
             else if (aviso) estado.textContent = aviso;
             if (enfocar) enfocarContenido();
@@ -70,7 +84,7 @@ const NipinNavegacion = (() => {
             vista.hidden = vista.dataset.vista !== nombre;
         });
         document.querySelectorAll("nav [data-ruta]").forEach(enlace => {
-            if (enlace.dataset.ruta === nombre) enlace.setAttribute("aria-current", "page");
+            if (enlace.dataset.ruta === (nombre === "categoria" ? "categorias" : nombre)) enlace.setAttribute("aria-current", "page");
             else enlace.removeAttribute("aria-current");
         });
         const ingresar = document.querySelector("#sesion-ingresar");
@@ -78,14 +92,15 @@ const NipinNavegacion = (() => {
         else ingresar.removeAttribute("aria-current");
 
         actual = nombre;
+        categoriaActual = id;
         document.title = rutas.get(nombre).titulo + " - NipinFinan";
         estado.textContent = aviso || (desconocida ? "Vista no encontrada. Mostramos Inicio." : "Vista " + rutas.get(nombre).titulo + ".");
         if (enfocar) enfocarContenido();
-        rutas.get(nombre).modulo?.entrar();
+        rutas.get(nombre).modulo?.entrar(id);
     }
 
     function ir(nombre, { reemplazar = false, recargar = false } = {}) {
-        if (!rutas.has(nombre)) return;
+        if (!resolver(nombre)) return;
         const hash = "#/" + nombre;
         if (reemplazar) history.replaceState(null, "", hash);
         else if (location.hash !== hash) {
@@ -104,7 +119,7 @@ const NipinNavegacion = (() => {
         if (enlace.id === "saltar-contenido") {
             evento.preventDefault();
             enfocarContenido();
-        } else if (rutas.has(enlace.dataset.ruta)) {
+        } else if (resolver(enlace.dataset.ruta || "")) {
             evento.preventDefault();
             ir(enlace.dataset.ruta);
         }

@@ -29,6 +29,7 @@ const NipinSesion = (() => {
         if (document.querySelector('#form-login')) NipinAcceso.limpiar();
         if (document.querySelector('#form-movimiento')) NipinRegistro.cambiarSesion(nuevoUsuario, conservarBorrador);
         if (document.querySelector('#vista-movimientos')) NipinListado.limpiar(nuevoUsuario);
+        if (document.querySelector('#vista-categorias')) NipinCategorias.limpiar(nuevoUsuario);
         mostrar();
     }
 

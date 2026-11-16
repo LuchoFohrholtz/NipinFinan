@@ -25,12 +25,19 @@
         #resumen .tarjeta h3 { line-height: 1.3; font-variant-numeric: tabular-nums; }
         #resumen[data-modo="demo"] .resumen-etiqueta { background: #fef3c7; border-color: #d97706; color: #713f12; }
         #resumen #resumen-demostracion { border-color: #d97706; background: #fffbeb; color: #713f12; }
+        #vista-categorias .categoria { height: 100%; overflow-wrap: anywhere; }
+        #vista-categorias dl { margin: 0; }
+        #vista-categorias dt { color: #475569; }
+        #vista-categorias dd { margin: 0 0 8px; font-weight: bold; }
+        #vista-categoria .tarjeta, #categoria-historial li { min-width: 0; overflow-wrap: anywhere; }
+        #categoria-historial .movimiento { flex-wrap: wrap; gap: 12px; }
     </style>
     <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
     <script src="js/resumen.js" defer></script>
     <script src="js/acceso.js" defer></script>
     <script src="js/listado.js" defer></script>
+    <script src="js/categorias.js" defer></script>
     <script src="js/navegacion.js" defer></script>
 </head>
 
@@ -47,7 +54,7 @@
             <ul class="nav-lista">
                 <li><a href="index.html#/inicio" data-ruta="inicio" aria-current="page">Inicio</a></li>
                 <li><a href="index.html#/movimientos" data-ruta="movimientos">Movimientos</a></li>
-                <li><a href="listado_box.html">Categorías</a></li>
+                <li><a href="index.html#/categorias" data-ruta="categorias">Categorías</a></li>
                 <li><a href="index.html#/registrar" data-ruta="registrar">Registrar</a></li>
             </ul>
         </nav>
@@ -499,6 +506,55 @@
             </div>
             <p id="eliminacion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
         </dialog>
+    </section>
+
+    <section id="vista-categorias" class="contenedor pagina" data-vista="categorias" aria-labelledby="categorias-titulo" hidden>
+        <h1 id="categorias-titulo" tabindex="-1">Categorías</h1>
+        <p>Categorías para organizar tus movimientos. Los importes corresponden a tu cuenta, sin filtro de fechas.</p>
+        <button type="button" id="categorias-actualizar" class="boton secundario">Actualizar categorías</button>
+        <p id="categorias-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <div class="formulario aviso-sesion" id="categorias-sin-sesion" hidden>
+            <h2>Iniciá sesión para ver tus categorías</h2>
+            <p>Los importes y movimientos pertenecen únicamente a tu cuenta.</p>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <p id="categorias-vacio" hidden>No hay categorías disponibles.</p>
+        <ul id="categorias-lista" class="categorias" aria-label="Categorías y totales propios" hidden></ul>
+        <noscript><p>Activá JavaScript para consultar las categorías y su historial.</p></noscript>
+    </section>
+
+    <section id="vista-categoria" class="contenedor pagina" data-vista="categoria" aria-labelledby="categoria-titulo" hidden>
+        <a href="index.html#/categorias" data-ruta="categorias">← Volver a categorías</a>
+        <h1 id="categoria-titulo" tabindex="-1">Detalle de categoría</h1>
+        <button type="button" id="categoria-actualizar" class="boton secundario">Actualizar detalle</button>
+        <p id="categoria-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <div class="formulario aviso-sesion" id="categoria-sin-sesion" hidden>
+            <h2>Iniciá sesión para ver el detalle</h2>
+            <p>El historial y los importes son privados.</p>
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <div id="categoria-datos" hidden>
+            <div class="detalle">
+                <div class="icono grande" id="categoria-icono" aria-hidden="true"></div>
+                <div>
+                    <p class="etiqueta" id="categoria-tipo"></p>
+                    <p>Totales de tus movimientos en esta categoría, sin filtro de fechas.</p>
+                    <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a>
+                </div>
+            </div>
+            <h2>Resumen de la categoría</h2>
+            <ul class="tarjetas">
+                <li class="tarjeta"><p>Ingresos</p><h3 class="ingreso" id="categoria-ingresos">$0</h3></li>
+                <li class="tarjeta"><p>Gastos</p><h3 class="gasto" id="categoria-gastos">$0</h3></li>
+                <li class="tarjeta"><p>Saldo</p><h3 id="categoria-saldo">$0</h3></li>
+                <li class="tarjeta"><p>Movimientos</p><h3 id="categoria-cantidad">0</h3></li>
+            </ul>
+            <section class="historial" aria-labelledby="categoria-historial-titulo">
+                <h2 id="categoria-historial-titulo">Historial de movimientos</h2>
+                <p id="categoria-sin-movimientos" hidden>Todavía no registraste movimientos en esta categoría.</p>
+                <ul class="historial-lista" id="categoria-historial"></ul>
+            </section>
+        </div>
     </section>
 
 </main>
