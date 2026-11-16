@@ -383,13 +383,6 @@ th {
 }
 
 
-/* CUPONES */
-
-#mensaje-cupon:not(:empty) {
-    margin: 16px 0 0;
-    font-weight: bold;
-}
-
 .mensaje-error {
     color: #dc2626;
 }
