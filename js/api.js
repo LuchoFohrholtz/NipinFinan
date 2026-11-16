@@ -1,8 +1,8 @@
 // Capa HTTP compartida. Se carga antes de app.js y los módulos de cada página.
 const NipinAPI = (() => {
-    // Activar solo al integrar sesion.php y la validación CSRF de Santi.
+    // Backend integrado: todas las escrituras requieren el token real de sesión.
     // No se configura desde la URL ni se intenta detectar una ruta inexistente.
-    const CSRF_REQUERIDO = false;
+    const CSRF_REQUERIDO = true;
     let csrfActivado = CSRF_REQUERIDO;
     let pedidoSesion = null;
     let pedidoCsrf = null;
@@ -48,6 +48,8 @@ const NipinAPI = (() => {
             // La identidad pudo vencer: renovar el token antes de otro envío.
             if (csrfActivado) csrfToken = null;
         }
+        // Invalidar también ante un 403 con JSON roto, sin tocar una sesión posterior.
+        if (respuesta.status === 403 && csrfActivado && revision === revisionSesion) csrfToken = null;
 
         let resultado;
         try {
@@ -62,7 +64,6 @@ const NipinAPI = (() => {
         }
 
         if (!respuesta.ok || resultado?.estado === "error") {
-            if (respuesta.status === 403 && csrfActivado) csrfToken = null;
             const mensaje = typeof resultado?.mensaje === "string" && resultado.mensaje
                 ? resultado.mensaje : "Error HTTP " + respuesta.status + ".";
             throw new ErrorAPI(mensaje, respuesta.status, respuesta.ok ? "api" : "http", resultado?.errores);
@@ -88,13 +89,17 @@ const NipinAPI = (() => {
         return pedidoSesion;
     }
 
-    // Anexo 8.6: al integrar sesion.php, llamar antes de habilitar envíos.
-    // L1 no lo ejecuta automáticamente: el backend actual aún no tiene esa ruta.
+    // Anexo 8.6: obtener el token de sesion.php antes de habilitar envíos.
     // Si falla o falta el token real, el llamador debe mantener los envíos deshabilitados.
     async function prepararSesion() {
+        const revision = revisionSesion;
         csrfActivado = true;
         csrfToken = null;
         const sesion = await solicitarJSON("api/sesion.php");
+        // Una preparación anterior al login/logout no puede reemplazar el token rotado.
+        if (revision !== revisionSesion) {
+            throw new ErrorAPI("La sesión cambió. Volvé a intentar la operación.", 0, "sesion");
+        }
         if (typeof sesion.csrfToken !== "string" || !sesion.csrfToken) {
             throw new ErrorAPI("No se pudo obtener el token de sesión.", 200, "json");
         }
@@ -104,8 +109,7 @@ const NipinAPI = (() => {
         return sesion;
     }
 
-    // La UI espera este método antes de habilitar envíos. Con el backend
-    // actual no hace peticiones; en modo CSRF espera un token real o rechaza.
+    // La UI espera este método antes de habilitar envíos: token real o rechazo.
     async function prepararEnvios() {
         if (!csrfActivado || csrfToken) return;
         if (!pedidoCsrf) {
@@ -119,7 +123,7 @@ const NipinAPI = (() => {
         if (!resultado.usuario || typeof resultado.usuario.nombre !== "string" || typeof resultado.usuario.email !== "string") {
             throw new ErrorAPI("La respuesta de inicio de sesión es inválida.", 200, "json");
         }
-        // El login actual no trae token; el contrato AE4 lo agrega y lo rota.
+        // El contrato AE4 rota el token junto con el identificador de sesión.
         csrfToken = typeof resultado.csrfToken === "string" && resultado.csrfToken ? resultado.csrfToken : null;
         revisionSesion++;
         pedidoSesion = null;
