@@ -6,32 +6,7 @@
     <title>NipinFinan</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/resumen.css">
-    <style>
-        /* Pautas de navegación de estas vistas; no modifica las hojas compartidas. */
-        .salto-contenido { position: absolute; left: 12px; top: -100px; z-index: 1; }
-        .salto-contenido:focus { top: 12px; }
-        .solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-        :is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
-        nav a[aria-current="page"] { font-weight: bold; text-decoration: underline; text-underline-offset: 4px; }
-        #vista-movimientos { min-width: 0; }
-        #vista-movimientos table { min-width: 740px; }
-        #vista-movimientos td { overflow-wrap: anywhere; }
-        #vista-movimientos td:nth-child(n+3) { white-space: nowrap; }
-        #eliminacion-detalle { overflow-wrap: anywhere; }
-        .acciones-movimiento { display: flex; flex-wrap: wrap; gap: 8px; }
-        #confirmar-eliminacion { max-width: min(90vw, 480px); border: 1px solid #64748b; border-radius: 8px; padding: 24px; }
-        #confirmar-eliminacion::backdrop { background: rgb(0 0 0 / 45%); }
-        #resumen .tarjeta, #resumen .resumen-barra-texto { overflow-wrap: anywhere; }
-        #resumen .tarjeta h3 { line-height: 1.3; font-variant-numeric: tabular-nums; }
-        #resumen[data-modo="demo"] .resumen-etiqueta { background: #fef3c7; border-color: #d97706; color: #713f12; }
-        #resumen #resumen-demostracion { border-color: #d97706; background: #fffbeb; color: #713f12; }
-        #vista-categorias .categoria { height: 100%; overflow-wrap: anywhere; }
-        #vista-categorias dl { margin: 0; }
-        #vista-categorias dt { color: #475569; }
-        #vista-categorias dd { margin: 0 0 8px; font-weight: bold; }
-        #vista-categoria .tarjeta, #categoria-historial li { min-width: 0; overflow-wrap: anywhere; }
-        #categoria-historial .movimiento { flex-wrap: wrap; gap: 12px; }
-    </style>
+    <link rel="stylesheet" href="css/vistas.css">
     <script src="js/api.js" defer></script>
     <script src="js/app.js" defer></script>
     <script src="js/resumen.js" defer></script>

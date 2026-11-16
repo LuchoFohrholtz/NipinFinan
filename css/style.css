@@ -74,6 +74,8 @@ header .contenedor {
 }
 
 nav a {
+    display: inline-block;
+    padding: 4px 0;
     color: #475569;
 }
 
@@ -92,6 +94,7 @@ nav a:hover {
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    min-height: 24px;
 }
 
 .boton:hover {
@@ -122,7 +125,7 @@ nav a:hover {
 }
 
 .inicio-texto p {
-    color: #64748b;
+    color: #475569;
     font-size: 18px;
 }
 
@@ -156,7 +159,7 @@ nav a:hover {
 }
 
 .tarjeta p {
-    color: #64748b;
+    color: #475569;
 }
 
 .icono {
@@ -172,7 +175,7 @@ nav a:hover {
 }
 
 .ingreso {
-    color: #16a34a;
+    color: #15803d;
 }
 
 .gasto {
@@ -200,7 +203,7 @@ nav a:hover {
 
 .tabla-resumen span {
     display: block;
-    color: #64748b;
+    color: #475569;
     margin-bottom: 8px;
 }
 
@@ -263,7 +266,7 @@ th {
 }
 
 .categoria p {
-    color: #64748b;
+    color: #475569;
 }
 
 .categoria strong {
@@ -293,7 +296,7 @@ th {
 }
 
 .detalle p {
-    color: #64748b;
+    color: #475569;
     max-width: 650px;
 }
 
@@ -320,7 +323,7 @@ th {
 
 .movimiento p {
     margin: 5px 0 0;
-    color: #64748b;
+    color: #475569;
     font-size: 14px;
 }
 
@@ -388,7 +391,7 @@ th {
 }
 
 .mensaje-exito {
-    color: #16a34a;
+    color: #15803d;
 }
 
 
@@ -465,7 +468,7 @@ th {
 }
 
 .aviso-sesion p {
-    color: #64748b;
+    color: #475569;
 }
 
 
@@ -522,4 +525,41 @@ footer p {
         overflow-x: auto;
     }
 
+}
+
+
+/* ACCESIBILIDAD (WCAG 2.1): salto de contenido, texto solo para lectores,
+   foco visible con teclado y página actual en la navegación */
+
+.salto-contenido {
+    position: absolute;
+    left: 12px;
+    top: -100px;
+    z-index: 1;
+}
+
+.salto-contenido:focus {
+    top: 12px;
+}
+
+.solo-lectores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+:is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+nav a[aria-current="page"] {
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }

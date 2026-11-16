@@ -9,7 +9,7 @@
     margin-bottom: 24px;
 }
 #resumen h2 { margin: 0 0 8px; }
-#resumen .resumen-cabecera p { margin: 0; color: #64748b; }
+#resumen .resumen-cabecera p { margin: 0; color: #475569; }
 #resumen .resumen-modo { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
 #resumen .resumen-etiqueta {
     border: 1px solid #bfdbfe;
@@ -43,11 +43,11 @@
     border-color: #fed7aa;
     color: #9a3412;
 }
-#resumen .resumen-contexto { color: #64748b; margin: 0 0 16px; }
+#resumen .resumen-contexto { color: #475569; margin: 0 0 16px; }
 #resumen .tarjeta { min-width: 0; }
 #resumen .tarjeta p { margin: 0 0 12px; }
 #resumen .tarjeta h3 { font-size: 26px; overflow-wrap: anywhere; margin: 0; }
-#resumen .tarjeta small { display: block; margin-top: 10px; color: #64748b; line-height: 1.5; }
+#resumen .tarjeta small { display: block; margin-top: 10px; color: #475569; line-height: 1.5; }
 #resumen .resumen-categoria { font-size: 21px !important; }
 #resumen .resumen-vacio { margin-top: 20px; }
 #resumen .resumen-grafico { margin-top: 24px; }
