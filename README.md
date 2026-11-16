@@ -1,366 +1,152 @@
 # NipinFinan
 
-Sistema de Gestión y Análisis de Economía Personal — aplicación web para
-registrar, organizar y analizar ingresos y gastos personales, con
-presupuestos por categoría, alertas y objetivos de ahorro.
-
-Este repositorio corresponde a la materia **Paradigmas y Lenguajes de
-Programación III** — Comisión "A" — Universidad de la Cuenca del Plata.
+Aplicación web de finanzas personales para registrar ingresos y gastos, consultarlos, editarlos y eliminarlos, y analizarlos por período y por categoría. Trabajo integrador AE4 / TIFAS de **Paradigmas y Lenguajes de Programación III**, Ingeniería en Sistemas de Información, Universidad de la Cuenca del Plata. Profesor: Ing. Dante Sicardi. Comisión A.
 
 ## Equipo
 
-- Luciano Fohrholtz
-- Santiago Gonzalez
+| Integrante | Responsabilidad principal en AE4 |
+|---|---|
+| Santiago Gonzalez | Backend: modelos PDO, API REST, sesión/CSRF, MySQL |
+| Luciano Fohrholtz | Frontend: SPA en JavaScript Vanilla e integración con la API |
+| Juan Carlos Abente | Calidad: accesibilidad WCAG 2.1, pruebas de integración, documentación e ISO/IEC 25010 |
 
-## Pantallas
+## Funcionalidades
 
-| Archivo               | Descripción                                                |
-|------------------------|-------------------------------------------------------------|
-| `index.html`           | Portada principal                                           |
-| `listado_tabla.html`   | Listado de movimientos guardados (tabla + totales)          |
-| `listado_box.html`     | Listado de categorías en formato de tarjetas                |
-| `producto.html`        | Ficha detallada de una categoría en particular              |
-| `comprar.html`         | Registro de un movimiento + calculadora de tarifas          |
-| `cupones.html`         | Validación de cupones de descuento                          |
-| `login.html`           | Ingreso y creación de cuenta                                |
+- Registro de cuenta, inicio y cierre de sesión (contraseñas con BCRYPT).
+- **CU-01, registrar movimiento financiero:** alta de ingresos y gastos con medio de pago y cuotas. El servidor calcula el descuento o el interés.
+- Listado de movimientos propios con **edición y baja** (CRUD completo).
+- **CU-02, consultar categorías y su detalle:** catálogo de categorías con totales reales e historial propio de cada una.
+- Resumen de portada por período y categoría, con un modo de demostración separado y señalizado.
+- Operable completamente con teclado, con foco visible y anuncios `aria-live` para lectores de pantalla.
 
-## AE2 - Calculador de Tarifas, Presupuestos y Descuentos (Opción 5)
+Presupuestos, alertas, metas de ahorro y la integración con WhatsApp forman parte de la visión del producto, pero **no están implementados** en esta entrega.
 
-El módulo que se enriqueció con JavaScript es el formulario de registro de
-movimientos (`comprar.html` + `js/app.js`).
+## Arquitectura
 
-**Cómo funciona:**
+MVC desacoplado: la vista es una Single Page Application que se comunica con el servidor únicamente mediante `fetch()` asíncrono y JSON. El HTML no contiene PHP, estilos embebidos ni atributos de eventos.
 
-1. Al cargar la página se hace un `fetch()` (con `async/await`) a
-   `data/tarifas.json`, que tiene la tabla de descuentos por medio de pago,
-   el interés por cuotas y los cupones.
-2. Con `addEventListener('change', ...)` se escuchan los cambios en el tipo
-   de movimiento, el medio de pago y la cantidad de cuotas (y `input` en el
-   monto para que se actualice mientras se escribe).
-3. Con cada cambio se recalcula el presupuesto de forma condicional:
-   - Ingreso: no lleva descuento ni cuotas.
-   - Gasto en efectivo / transferencia: se aplica el descuento del JSON.
-   - Gasto con tarjeta de crédito: se muestran las cuotas y se suma el
-     interés que corresponda.
-4. El subtotal, el descuento/recargo, el total y el valor de cada cuota se
-   actualizan en el DOM.
-5. Al guardar, el movimiento se almacena en `localStorage` y aparece en
-   `listado_tabla.html`.
-
-No hay atributos `onclick` ni `onsubmit` en el HTML, todos los eventos se
-registran desde los archivos JS.
-
-> Como se usa `fetch()` sobre un archivo local, el proyecto hay que abrirlo
-> con un servidor (por ejemplo Live Server de VS Code). Abriendo el HTML con
-> doble click el navegador bloquea la petición.
-
-## Fundamentación U1 - Estructura EORM de la Tarifa / Promoción
-
-Se modela la tarifa como un objeto con sus **atributos** (los datos que
-vienen del JSON) y su **comportamiento** (las operaciones que se hacen con
-esos datos en `app.js`).
-
-### Entidad: Tarifa
-
-| Atributo       | Tipo    | Descripción                                           |
-|----------------|---------|-------------------------------------------------------|
-| `medios_pago`  | objeto  | Lista de medios de pago, cada uno con su `descuento`  |
-| `cuotas`       | objeto  | Cantidad de cuotas → porcentaje de interés            |
-| `cupones`      | objeto  | Código de cupón → promoción                           |
-
-### Entidad: MedioPago
-
-| Atributo     | Tipo    | Ejemplo                  |
-|--------------|---------|--------------------------|
-| nombre       | string  | `"Efectivo"`             |
-| `descuento`  | número  | `0.10` (10%)             |
-
-### Entidad: PlanCuotas
-
-| Atributo   | Tipo    | Ejemplo                    |
-|------------|---------|----------------------------|
-| cantidad   | número  | `3`, `6`, `12`             |
-| interés    | número  | `0.08`, `0.18`, `0.35`     |
-
-### Entidad: Promoción (Cupón)
-
-| Atributo     | Tipo     | Ejemplo      |
-|--------------|----------|--------------|
-| código       | string   | `"UCP10"`    |
-| `descuento`  | número   | `0.10`       |
-| `vigente`    | booleano | `true`       |
-
-### Comportamiento
-
-| Operación                     | Dónde                | Qué hace                                                  |
-|-------------------------------|----------------------|-----------------------------------------------------------|
-| `cargarTarifas()`             | `js/app.js`          | Trae la tabla de tarifas con `fetch()`                    |
-| `calcular()`                  | `js/app.js`          | Aplica descuento e interés según tipo, medio y cuotas     |
-| `mostrarCuotasSiCorresponde()`| `js/app.js`          | Muestra las cuotas solo si es gasto con tarjeta de crédito|
-| `actualizarResultado()`       | `js/app.js`          | Escribe subtotal, ajuste, total y valor de cuota en el DOM|
-| `validarCupon()`              | `js/cupones.js`      | Verifica si el código existe y está vigente               |
-
-### Relaciones
-
-- Un **Movimiento** (gasto) usa un **MedioPago** y, si es con tarjeta de
-  crédito, un **PlanCuotas**.
-- La **Tarifa** agrupa todos los medios de pago, planes de cuotas y
-  promociones.
-
-**Fórmula usada:**
-
-```
-total = monto × (1 − descuento del medio de pago) × (1 + interés de las cuotas)
-valor de cuota = total / cantidad de cuotas
+```text
+ Navegador (Vista)                         Servidor PHP (Controlador)            Datos (Modelo)
+┌──────────────────────────┐   fetch +    ┌───────────────────────────┐      ┌─────────────────────┐
+│ index.html (SPA)         │   JSON       │ api/*.php                 │      │ models/*Model.php   │
+│ js/navegacion.js (rutas) │ ───────────► │  · valida sesión (401)    │ ───► │  PDO + consultas    │
+│ js/api.js (fetch, CSRF)  │              │  · valida CSRF (403)      │      │  preparadas :campo  │
+│ js/app.js, listado.js,   │ ◄─────────── │  · services/ valida y     │ ◄─── │ config/ Singleton   │
+│ categorias.js, ...       │   HTTP 2xx/  │    calcula                │      │        │            │
+│ css/ (responsive, foco)  │   4xx/500    │  · json_encode + código   │      │   MySQL nipinfinan  │
+└──────────────────────────┘              └───────────────────────────┘      └─────────────────────┘
 ```
 
-Ejemplo: $10.000 en efectivo → $9.000. $10.000 con crédito en 12 cuotas →
-$13.500 (12 cuotas de $1.125).
-
-## Autenticación y endpoints privados (PHP + MySQL)
-
-Los movimientos dejaron de guardarse en `localStorage`: ahora cada usuario
-tiene su cuenta y sus movimientos se guardan en MySQL.
-
-### Cómo levantarlo
-
-1. Copiar la carpeta del proyecto a `C:\xampp\htdocs\NipinFinan`.
-2. Iniciar **Apache** y **MySQL** desde el panel de XAMPP.
-3. En phpMyAdmin, pestaña **Importar**, subir `sql/nipinfinan.sql`
-   (crea la base `nipinfinan` con las tablas `usuarios` y `movimientos`).
-4. Abrir `http://localhost/NipinFinan/`.
-
-Si MySQL tiene otro usuario o contraseña, cambiarlo en `config/conexion.php`.
-
-### Paso 1 - Capa de datos
-
-`sql/nipinfinan.sql` crea la tabla `usuarios` con `password VARCHAR(255)`
-para guardar el hash BCRYPT, y la tabla `movimientos`, relacionada con
-`usuarios` por `usuario_id` (clave foránea).
-
-### Paso 2 - Servicios de autenticación
-
-| Archivo | Qué hace |
-|---------|----------|
-| `api/registro.php` | Recibe JSON, valida, hashea con `password_hash($pass, PASSWORD_BCRYPT)` e inserta con PDO + prepared statements. Responde 201, 400 o 409 si el correo ya existe |
-| `api/login.php` | Busca el usuario, compara con `password_verify()`, hace `session_start()`, `session_regenerate_id(true)` y guarda `$_SESSION['usuario_id']`. Responde 200 o 401 |
-| `api/logout.php` | Vacía y destruye la sesión |
-| `config/sesion.php` | `session_start()` con cookie `HttpOnly` y `SameSite=Lax` |
-
-### Paso 3 - Endpoint privado: `api/mis_movimientos.php`
-
-- Guardián de sesión al principio: si `!isset($_SESSION['usuario_id'])`
-  responde `http_response_code(401)` y corta la ejecución.
-- `GET`: devuelve el nombre del usuario y **solo sus** movimientos.
-- `POST`: registra un movimiento. El `usuario_id` sale de la sesión (nunca
-  del cliente) y el total se vuelve a calcular en el servidor con
-  `data/tarifas.json`, así no se puede mandar un total falso.
-
-### Paso 4 - Frontend (`js/app.js`) y XSS
-
-- `consultarSesion()` hace `fetch()` a `api/mis_movimientos.php` al cargar
-  cada página: con 200 hay sesión, con 401 no.
-- El header muestra **Ingresar** o **Hola, nombre** + **Cerrar sesión**.
-- `comprar.html` muestra el formulario solo con sesión; sin sesión muestra
-  un aviso para ingresar. Lo mismo `listado_tabla.html`. El resumen del
-  inicio muestra los movimientos del usuario o invita a iniciar sesión
-  (la demostración funciona igual).
-- El nombre del usuario y los datos de los movimientos se escriben siempre
-  con `textContent`: si alguien se registra con el nombre
-  `<img src=x onerror=alert(1)>` se ve ese texto y no se ejecuta nada.
-
-## Estructura
-
-```
+```text
 NipinFinan/
-├── api/
-│   ├── registro.php         # alta de usuario (BCRYPT)
-│   ├── login.php            # login + sesión
-│   ├── logout.php           # cierre de sesión
-│   └── mis_movimientos.php  # endpoint privado (401 sin sesión)
-├── config/
-│   ├── conexion.php         # conexión PDO
-│   └── sesion.php           # session_start() con cookie segura
-├── sql/nipinfinan.sql       # base de datos y tablas
-├── css/style.css
-├── data/tarifas.json        # tabla de tarifas, cuotas y cupones
-├── js/app.js                # sesión, login, calculadora, registro y resumen
-├── js/listado.js            # listado de movimientos (desde la API)
-├── js/cupones.js            # validación de cupones
-└── *.html
+├── index.html               Documento único de la SPA (HTML5 semántico, ARIA)
+├── css/
+│   ├── style.css            Layout responsive de AE1 + reglas de accesibilidad (:focus-visible)
+│   ├── resumen.css          Tablero de la portada
+│   └── vistas.css           Ajustes de las vistas de la SPA
+├── js/
+│   ├── api.js               Cliente HTTP único: fetch, JSON, sesión y token CSRF
+│   ├── navegacion.js        Enrutador por hash (#/inicio, #/movimientos, ...) y gestión del foco
+│   ├── app.js               Alta de movimientos y estado de sesión
+│   ├── acceso.js            Registro, login y logout
+│   ├── listado.js           Listado, edición y baja
+│   ├── categorias.js        Catálogo y detalle de categorías
+│   └── resumen.js           Resumen por período y modo de demostración
+├── api/                     Controladores REST (JSON + códigos HTTP)
+│   ├── sesion.php           GET identidad y token CSRF
+│   ├── registro.php         POST alta de cuenta
+│   ├── login.php            POST autenticación
+│   ├── logout.php           POST cierre de sesión
+│   ├── mis_movimientos.php  GET / POST / PUT / DELETE de movimientos propios
+│   └── categorias.php       GET catálogo con totales y detalle por ID
+├── models/                  UsuarioModel, MovimientoModel, CategoriaModel (PDO)
+├── services/                Validación, cálculo de tarifas y formato de movimientos
+├── config/                  Conexión PDO Singleton, sesión segura y verificación CSRF
+├── data/                    Catálogo de categorías, tarifas y datos de demostración
+├── sql/nipinfinan.sql       Script de la base de datos
+├── tests/                   Pruebas de integración, seguridad, accesibilidad y teclado
+├── docs/                    Contrato de API, trazabilidad, calidad y evidencias
+└── *.html (otros)           Páginas de AE1 que solo redirigen a la ruta equivalente de la SPA
 ```
 
-## Tecnologías
+## Instalación en XAMPP (paso a paso)
 
-- HTML5 semántico
-- CSS3 (Flexbox, CSS Grid)
-- JavaScript (addEventListener, fetch + async/await)
-- PHP (PDO, sesiones, BCRYPT) y MySQL
+**Requisitos:** XAMPP con PHP 8.0 o superior (Apache y MySQL/MariaDB), con las extensiones `pdo_mysql` y `mbstring` habilitadas (vienen activas en XAMPP), y un navegador moderno.
 
-## Documento de análisis y diseño
+1. **Copiar el proyecto** a `C:\xampp\htdocs\NipinFinan`. La carpeta tiene que llamarse así, porque las URLs de abajo usan ese nombre.
+   ```powershell
+   cd C:\xampp\htdocs
+   git clone https://github.com/LuchoFohrholtz/NipinFinan.git
+   ```
+2. **Iniciar Apache y MySQL** desde el *XAMPP Control Panel* (botones *Start*).
+3. **Crear la base de datos:** abrir `http://localhost/phpmyadmin/`, ir a la pestaña *Importar*, elegir `sql/nipinfinan.sql` y presionar *Importar*. Se crean la base `nipinfinan` y las tablas `usuarios` y `movimientos`. Por consola: `C:\xampp\mysql\bin\mysql -u root < sql\nipinfinan.sql`.
+4. **Conexión:** por defecto se usa `127.0.0.1:3306`, usuario `root` y contraseña vacía, igual que XAMPP. Si tu MySQL usa otro puerto o clave, creá `config/conexion.local.php` solo con lo que cambia; ese archivo está excluido de Git.
+   ```php
+   <?php
+   return ['port' => 3307, 'password' => ''];
+   ```
+5. **Comprobar la API:** abrir `http://localhost/NipinFinan/api/sesion.php`. Tiene que mostrar un JSON con `"usuario":null` y un `csrfToken`.
+6. **Usar la aplicación:** abrir `http://localhost/NipinFinan/`, crear una cuenta en *Ingresar → Crear cuenta*, iniciar sesión y registrar un movimiento. No abrir los HTML con doble clic ni con Live Server: PHP tiene que ejecutarse en Apache.
 
-El documento con el análisis funcional y el diseño de la aplicación
-(avances) se encuentra adjunto en la entrega del TP correspondiente.
+Si Apache usa un puerto distinto de 80, agregarlo a todas las URLs (por ejemplo, `http://localhost:8080/NipinFinan/`).
 
-## AE2 — Opción 2: Tablero de indicadores — Luciano Fohrholtz
+## API REST
 
-Se enriqueció el **Resumen del inicio** (`index.html#resumen`) con métricas,
-filtros y barras de gastos por categoría. Se mantuvo el estilo del sitio.
-Esta implementación es individual y complementa la opción 5 de Santiago.
+Todas las respuestas son `application/json; charset=utf-8`. El detalle de cuerpos, validaciones y ejemplos está en [docs/contrato-api.md](docs/contrato-api.md).
 
-### Archivos de esta implementación
+| Método | Ruta | Acceso | Éxito | Errores |
+|---|---|---|---|---|
+| GET | `api/sesion.php` | Público | 200 `usuario` (o null) y `csrfToken` | 500 |
+| POST | `api/registro.php` | Público + CSRF | 201 | 400, 403, 409, 500 |
+| POST | `api/login.php` | Público + CSRF | 200 `usuario` y nuevo `csrfToken` | 400, 401, 403, 500 |
+| POST | `api/logout.php` | Sesión + CSRF | 200 | 401, 403 |
+| GET | `api/mis_movimientos.php` | Sesión | 200 `movimientos` propios | 401, 500 |
+| POST | `api/mis_movimientos.php` | Sesión + CSRF | 201 `movimiento` calculado | 400, 401, 403, 500 |
+| PUT | `api/mis_movimientos.php?id={id}` | Sesión + CSRF | 200 `movimiento` actualizado | 400, 401, 403, 404, 500 |
+| DELETE | `api/mis_movimientos.php?id={id}` | Sesión + CSRF | 200 `id` eliminado | 400, 401, 403, 404, 500 |
+| GET | `api/categorias.php` | Sesión | 200 `categorias` con totales propios | 401, 500 |
+| GET | `api/categorias.php?id={slug}` | Sesión | 200 `categoria` y `movimientos` | 400, 401, 404, 500 |
 
-| Archivo | Responsabilidad |
-|---------|-----------------|
-| `index.html` | Sección del resumen, controles y carga de los archivos nuevos |
-| `js/app.js` | Script compartido: registro/calculadora y módulo del resumen |
-| `css/resumen.css` | Estilos adicionales limitados a `#resumen` |
-| `data/metricas.json` | Movimientos ficticios de julio, agosto y septiembre de 2026 |
+Un método no admitido responde 405. Un recurso de otra cuenta responde 404, igual que uno inexistente.
 
-Se unificaron el registro y el resumen en **un único `js/app.js`** por pedido
-posterior de Luciano. Cada módulo se ejecuta únicamente si existe el elemento
-de su pantalla: `#form-movimiento` o `#resumen`. El código de la calculadora
-se conserva dentro de su módulo, con sus fórmulas, eventos y guardado.
-Los archivos de listado/cupones, las tarifas, los estilos compartidos y los
-PDF siguen sin modificaciones. Se eliminó `js/metricas/app.js`.
+## Seguridad (OWASP Top 10)
 
-### Dos fuentes de datos, sin mezclarlas
+- **A01, control de acceso:** cada endpoint privado obtiene `usuario_id` solo de `$_SESSION`; sin sesión responde 401 y corta la ejecución. Las consultas filtran siempre por `usuario_id`.
+- **A02, criptografía:** contraseñas con `password_hash(..., PASSWORD_BCRYPT)` en `VARCHAR(255)` y verificación con `password_verify()`.
+- **A03, inyección:** todas las consultas usan PDO con sentencias preparadas y marcadores nombrados. En el DOM, los datos se insertan con `.textContent`.
+- **A07, sesiones:** `session_regenerate_id(true)` tras el login, cookie `HttpOnly` y `SameSite=Lax`, y token CSRF por sesión (`random_bytes` + `hash_equals`) en toda escritura.
+- **Errores:** `try/catch` de `PDOException` con `error_log` en el servidor; el cliente recibe un 500 con mensaje genérico.
 
-- **Mis movimientos:** es la vista inicial. Lee, sin escribir, la clave
-  `nipinfinan_movimientos` de `localStorage`, usada por el registro existente.
-  Los movimientos pertenecen al navegador y origen del sitio; esta versión
-  todavía no implementa cuentas individuales ni sincronización entre equipos.
-- **Ver demostración:** hace una petición HTTP con `fetch()` y `async/await`
-  a `data/metricas.json`. La respuesta se verifica con `respuesta.ok`,
-  se convierte con `respuesta.json()` y sus movimientos se usan para
-  calcular las métricas. La etiqueta **Datos de ejemplo** identifica este modo.
-  Los ejemplos nunca se guardan ni se suman a los datos reales.
+## Accesibilidad (WCAG 2.1)
 
-La vista real comienza en el mes actual, según la fecha local. La demostración
-comienza en el mes más reciente del JSON. El botón permite volver a los datos
-reales. **Actualizar resumen** relee el almacenamiento o vuelve a solicitar
-el JSON, según el modo. Los filtros operan sobre los datos cargados en memoria.
+Lighthouse Accesibilidad **100/100** en todas las vistas (verificación local en [docs/verificaciones/accesibilidad.md](docs/verificaciones/accesibilidad.md)). Incluye enlace para saltar al contenido, HTML nativo (`<button>`, `<a>`, `<label>`, `<fieldset>`), `:focus-visible` con contorno de 3 px, foco movido al título de cada vista, regiones `aria-live="polite"` para los resultados de `fetch`, un diálogo nativo que devuelve el foco al cerrarse, contraste AA y objetivos táctiles de 24 px como mínimo.
 
-### Requisitos de JavaScript
+## Pruebas
 
-| Requisito | Implementación |
-|-----------|----------------|
-| Desacoplamiento | `addEventListener('click', ...)` para los botones y `addEventListener('change', ...)` para los selectores, en `js/app.js` |
-| Asincronía | `cargarEjemplo()` solicita el JSON mediante `fetch()` y `async/await` |
-| Totales acumulados | `sumar()` agrupa importes del período; `gastosPorCategoria()` agrupa gastos |
-| DOM dinámico | `mostrarResumen()` actualiza tarjetas; `mostrarBarras()` crea elementos con texto e importes |
-| Manejo de errores | Avisos de carga/error, reintento, validación de registros y conservación de la última vista correcta |
+```powershell
+# Integración y seguridad de la API (Node 18+, sin dependencias). Usar una base de prueba.
+node tests/integracion-seguridad.mjs http://localhost/NipinFinan/
 
-No hay atributos `onclick` ni `onsubmit` en el HTML. El inicio y el registro
-cargan el mismo `js/app.js`; las comprobaciones de pantalla evitan ejecutar
-el código de un módulo donde no están sus elementos del DOM.
-Los textos procedentes de datos se muestran con `textContent`. Las barras
-se construyen con HTML y CSS, sin librerías de gráficos.
+# Helper del cliente HTTP
+node --test tests/api-sesion.test.cjs
 
-### Indicadores y fórmulas
-
-Todos los indicadores respetan el mismo período, categoría y modo:
-
-| Indicador | Cálculo |
-|-----------|---------|
-| Ingresos | Suma de `total` de movimientos de tipo ingreso |
-| Gastos | Suma de `total` de movimientos de tipo gasto |
-| Saldo del período | Ingresos − gastos |
-| Porcentaje disponible | Saldo / ingresos × 100; sin ingresos se muestra “—” |
-| Cantidad | Número de movimientos de la selección |
-| Categoría de mayor gasto | Categoría con mayor suma de gastos; en empates se muestran todas |
-
-Se utiliza **total**, que ya incluye el ajuste calculado por la opción 5.
-No se multiplica por cuotas ni se vuelve a calcular el descuento/interés.
-El importe final se atribuye a la fecha del movimiento, igual que en el listado.
-Las sumas se hacen en centavos para evitar errores habituales de decimales.
-
-El saldo es el balance de los movimientos filtrados, no un saldo bancario.
-El saldo y el porcentaje pueden ser negativos.
-Cada barra muestra el importe y su porcentaje del gasto total seleccionado.
-Para un mes concreto, la comparación muestra diferencias de ingresos y gastos
-respecto del **mes calendario anterior**, con el mismo filtro de categoría.
-Si no hay datos anteriores se informa que se compara con cero.
-La comparación se oculta al seleccionar Todo el período.
-
-Si no hay movimientos se muestran valores en cero, un porcentaje “—” y un
-aviso; en la vista real se ofrece un enlace al registro.
-Los registros con tipo, importe, categoría o fecha inválidos se omiten con
-una advertencia. Un JSON ilegible, una respuesta HTTP fallida o un
-almacenamiento ilegible generan un aviso sin borrar los datos ni presentar
-los ejemplos como datos del usuario.
-
-### Fundamentación U1 — OOHDM
-
-OOHDM separa el diseño conceptual del dominio, el diseño navegacional y la
-interfaz. Los nodos navegacionales son vistas de información del modelo
-conceptual; los contextos organizan la exploración según las tareas del usuario.
-Esta distinción se apoya en el trabajo de Rossi, Schwabe y Lyardet
-[Web Application Models are more than Conceptual Models](https://archives.iw3c2.org/www2002/_west2001/iwwost01/files/contributions/DanielSchwabe/WWWCM99.pdf),
-especialmente sus secciones sobre diseño conceptual, navegación y contextos.
-
-**Aplicación al proyecto:**
-
-| Nivel | Elemento | Significado en NipinFinan |
-|-------|----------|--------------------------|
-| Dominio | Movimiento | Datos de una operación: tipo, fecha, categoría e importe final |
-| Navegación | Resumen | Vista derivada de una colección de movimientos con totales y distribución |
-| Contexto | Período y categoría | Selecciona qué movimientos se presentan; no modifica las operaciones |
-| Interfaz | Tarjetas, selectores y barras | Presentación visual y controles del nodo Resumen |
-
-Movimiento es una clase **conceptual**; no se exige crear una clase JS.
-Resumen es un nodo que se presenta dentro del inicio, no una nueva entidad
-persistente ni una tarjeta HTML aislada. Cambiar filtros cambia el contexto
-de la vista dentro de la misma página. La fuente real o de ejemplo también
-se identifica para orientar al usuario.
-
-```mermaid
-flowchart TD
-    I["Inicio: index.html"] -->|"Contiene"| R["Resumen: #resumen"]
-    I -->|"Menú Registrar"| F["Registro: comprar.html"]
-    I -->|"Menú Movimientos"| M["Listado: listado_tabla.html"]
-    R -->|"Enlace si no hay movimientos"| F
-    F -->|"Menú Inicio"| I
-    M -->|"Menú Inicio"| I
+# Accesibilidad (Lighthouse + axe) y recorrido por teclado (requiere Google Chrome)
+cd tests/a11y
+npm install
+node lighthouse-vistas.mjs http://localhost/NipinFinan/
+node teclado.mjs http://localhost/NipinFinan/ cuenta@example.com "Clave-segura-123"
 ```
 
-Las flechas de menú/enlace representan navegación existente. La relación
-Contiene ubica el resumen dentro del inicio. El contexto mes/categoría se
-aplica al nodo Resumen mediante los selectores.
+Los resultados y las evidencias están en [docs/verificaciones/](docs/verificaciones/). El resumen está en [checklist-pruebas.md](docs/verificaciones/checklist-pruebas.md).
 
-### Ejecución y prueba manual
+## Documentación
 
-1. Abrir esta rama en VS Code y ejecutar **Live Server** desde `index.html`.
-   También puede usarse `python -m http.server 8000` desde la carpeta del sitio.
-   Con ese comando, entrar a `http://localhost:8000/index.html`.
-2. Registrar un ingreso o gasto y regresar al inicio para consultar el resumen.
-3. Cambiar período y categoría. Probar Todo el período y Actualizar resumen.
-4. Presionar Ver demostración para cargar el JSON y probar gráficos y comparación.
-5. Volver a Mis movimientos y comprobar que los ejemplos no se guardaron.
+- [Contrato de API](docs/contrato-api.md)
+- [Trazabilidad de los casos de uso AE1 → AE4](docs/trazabilidad-ae1.md)
+- [Matriz de calidad ISO/IEC 25010](docs/calidad-iso25010.md)
+- [Configuración local de la conexión](docs/configuracion-local.md)
+- [Integración frontend-backend](docs/integracion-frontend.md)
 
-Usar siempre el mismo origen (protocolo, host y puerto) para conservar el acceso
-a los movimientos del navegador. No abrir con doble clic: la demostración
-requiere HTTP para poder cargar el JSON. El JSON es una fuente de ejemplos,
-no una base de datos que reciba los movimientos del registro.
+## Flujo de trabajo Git
 
-### Verificaciones realizadas
-
-Se ejecutaron diez grupos de verificaciones en Chromium mediante Playwright,
-con el proyecto servido por HTTP y datos de prueba en un navegador aislado:
-
-- Estado vacío, importes con decimales, saldo negativo y porcentaje.
-- Uso del total final, sin multiplicarlo por cuotas.
-- Filtros, Todo el período, barras y comparación mensual.
-- Demostración con petición HTTP real y nueva petición al actualizar.
-- Alternancia entre fuentes sin mezcla ni escrituras en almacenamiento.
-- JSON no disponible, reintento y recuperación.
-- Almacenamiento ilegible, registros inválidos y recuperación.
-- Empates de categoría y comparación enero/diciembre del año anterior.
-- Vista a 375 px sin desbordamiento horizontal; revisión visual de móvil y escritorio.
-- Integración con registro de un gasto con crédito, listado y cupón UCP10.
-
-No se detectaron errores JavaScript sin capturar durante estas verificaciones.
-El informe individual de Luciano se realizará en una entrega posterior.
-
-Después de la unificación en un solo app.js se repitieron los diez grupos
-de verificaciones, incluida la integración con el registro y los cupones.
+Cada integrante trabajó en su rama (`ae4/santi-backend`, `ae4/lucho-spa`, `ae4/juanqui-calidad`) e integró mediante Pull Requests en `ae4-integracion`, con *merge commit* para conservar el historial de los tres. La versión final se fusiona en `main`.

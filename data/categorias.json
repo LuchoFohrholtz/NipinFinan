@@ -1,0 +1,12 @@
+[
+  {"id": "alimentacion", "nombre": "Alimentación", "tipo": "gasto"},
+  {"id": "transporte", "nombre": "Transporte", "tipo": "gasto"},
+  {"id": "entretenimiento", "nombre": "Entretenimiento", "tipo": "gasto"},
+  {"id": "servicios", "nombre": "Servicios", "tipo": "gasto"},
+  {"id": "salud", "nombre": "Salud", "tipo": "gasto"},
+  {"id": "educacion", "nombre": "Educación", "tipo": "gasto"},
+  {"id": "alquiler", "nombre": "Alquiler", "tipo": "gasto"},
+  {"id": "indumentaria", "nombre": "Indumentaria", "tipo": "gasto"},
+  {"id": "sueldo", "nombre": "Sueldo", "tipo": "ingreso"},
+  {"id": "freelance", "nombre": "Freelance", "tipo": "ingreso"}
+]
