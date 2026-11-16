@@ -523,3 +523,40 @@ footer p {
     }
 
 }
+
+
+/* ACCESIBILIDAD (WCAG 2.1): salto de contenido, texto solo para lectores,
+   foco visible con teclado y página actual en la navegación */
+
+.salto-contenido {
+    position: absolute;
+    left: 12px;
+    top: -100px;
+    z-index: 1;
+}
+
+.salto-contenido:focus {
+    top: 12px;
+}
+
+.solo-lectores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+:is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+nav a[aria-current="page"] {
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
