@@ -20,90 +20,18 @@
                 <li><a href="listado_tabla.html" aria-current="page">Movimientos</a></li>
                 <li><a href="listado_box.html">Categorías</a></li>
                 <li><a href="comprar.html">Registrar</a></li>
-                <li><a href="cupones.html">Cupones</a></li>
             </ul>
         </nav>
 
-        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
-        <div class="sesion" id="sesion">
-            <a href="login.html" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
-            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
-            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
-        </div>
     </div>
 </header>
 
 
 <!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main class="contenedor pagina">
-
+<main class="contenedor pagina" data-listado-antiguo>
     <h1>Movimientos</h1>
-
-    <p>
-        Lista de gastos e ingresos registrados.
-    </p>
-
-
-    <!-- Sin sesión se muestra este aviso en lugar de los datos (lo alterna js/listado.js) -->
-    <div class="formulario aviso-sesion" id="aviso-sesion" hidden>
-        <h2>Iniciá sesión para ver tus movimientos</h2>
-        <p>Los movimientos son privados: solo los ve el dueño de la cuenta.</p>
-        <a href="login.html" class="boton">Ingresar o crear cuenta</a>
-    </div>
-
-    <!-- Totales: los calcula js/listado.js con lo que devuelve api/mis_movimientos.php -->
-    <ul class="tabla-resumen" id="tabla-resumen" hidden>
-
-        <li>
-            <span>Ingresos</span>
-            <strong class="ingreso" id="total-ingresos">$0</strong>
-        </li>
-
-        <li>
-            <span>Gastos</span>
-            <strong class="gasto" id="total-gastos">$0</strong>
-        </li>
-
-        <li>
-            <span>Disponible</span>
-            <strong id="total-disponible">$0</strong>
-        </li>
-
-    </ul>
-
-
-    <!-- Error al consultar la API -->
-    <div id="mensaje" class="mensaje error" role="alert"></div>
-
-    <!-- Aviso cuando todavia no hay movimientos -->
-    <p id="sin-movimientos" hidden>
-        Todavía no registraste movimientos.
-        <a href="comprar.html">Registrar el primero</a>
-    </p>
-
-
-    <!-- Tabla de movimientos -->
-    <div class="tabla-contenedor" id="tabla-contenedor" hidden>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Descripción</th>
-                    <th>Categoría</th>
-                    <th>Tipo</th>
-                    <th>Fecha</th>
-                    <th>Monto</th>
-                </tr>
-            </thead>
-
-            <!-- Las filas se agregan desde js/listado.js -->
-            <tbody id="tbody-movimientos"></tbody>
-
-        </table>
-
-    </div>
-
+    <p><a href="index.html#/movimientos" class="boton">Ver mis movimientos</a></p>
+    <noscript><p>Activá JavaScript para consultar, editar y eliminar tus movimientos en NipinFinan.</p></noscript>
 </main>
 
 
@@ -116,8 +44,7 @@
 </footer>
 
 <!-- ========== SCRIPTS ========== -->
-<script src="js/app.js" defer></script>
-<script src="js/listado.js" defer></script>
+<script src="js/navegacion.js" defer></script>
 
 </body>
 </html>

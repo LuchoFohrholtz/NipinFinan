@@ -1,654 +1,362 @@
-// NipinFinan - app.js compartido por todas las pantallas.
-// Cada módulo comprueba que su pantalla esté presente antes de ejecutarse.
-
-
-// =============================
-// SESIÓN (compartido)
-// =============================
-
-// Consulta el endpoint privado api/mis_movimientos.php.
-// Devuelve { usuario, movimientos } si hay sesión, null si el servidor
-// responde 401 (sin sesión) y lanza un error ante cualquier otra falla.
-// El primer pedido se reutiliza; con recargar = true se vuelve a pedir.
-let pedidoSesion = null;
-
-function consultarSesion(recargar = false) {
-    if (!pedidoSesion || recargar) {
-        pedidoSesion = (async () => {
-            const respuesta = await fetch("api/mis_movimientos.php", { cache: "no-store" });
-            if (respuesta.status === 401) return null;
-            if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-            return respuesta.json();
-        })();
+// NipinFinan - módulos compartidos y estado de sesión en memoria.
+const NipinSesion = (() => {
+    const caja = document.querySelector('#sesion');
+    const mensaje = document.querySelector('#mensaje-sesion') || document.createElement('p');
+    if (caja && !mensaje.id) {
+        mensaje.id = 'mensaje-sesion';
+        mensaje.className = 'mensaje error';
+        mensaje.setAttribute('role', 'alert');
+        caja.after(mensaje);
     }
-    return pedidoSesion;
-}
+    let usuario = null;
+    let revision = 0;
+    let errorConsulta = false;
 
-
-// Header: muestra "Ingresar" o "Hola, nombre" + "Cerrar sesión"
-(function iniciarSesion() {
-    const caja = document.querySelector("#sesion");
-    if (!caja) return;
-
-    const linkIngresar = caja.querySelector("#sesion-ingresar");
-    const spanUsuario = caja.querySelector("#sesion-usuario");
-    const spanNombre = caja.querySelector("#sesion-nombre");
-    const btnSalir = caja.querySelector("#sesion-salir");
-
-    function mostrar(usuario) {
-        linkIngresar.hidden = Boolean(usuario);
-        spanUsuario.hidden = !usuario;
-        btnSalir.hidden = !usuario;
-        // textContent: si el nombre trae etiquetas HTML se muestran como texto (evita XSS)
-        spanNombre.textContent = usuario ? usuario.nombre : "";
+    function mostrar() {
+        if (!caja) return;
+        caja.querySelector('#sesion-ingresar').hidden = Boolean(usuario);
+        caja.querySelector('#sesion-usuario').hidden = !usuario;
+        caja.querySelector('#sesion-salir').hidden = !usuario;
+        caja.querySelector('#sesion-nombre').textContent = usuario ? usuario.nombre : '';
     }
 
-    consultarSesion()
-        .then(sesion => mostrar(sesion && sesion.usuario))
-        .catch(() => mostrar(null));
+    function establecer(nuevoUsuario, { conservarBorrador = false } = {}) {
+        revision++;
+        usuario = nuevoUsuario;
+        errorConsulta = false;
+        mensaje.textContent = '';
+        if (document.querySelector('#resumen')) NipinResumen.limpiar(nuevoUsuario);
+        if (document.querySelector('#form-login')) NipinAcceso.limpiar();
+        if (document.querySelector('#form-movimiento')) NipinRegistro.cambiarSesion(nuevoUsuario, conservarBorrador);
+        if (document.querySelector('#vista-movimientos')) NipinListado.limpiar(nuevoUsuario);
+        if (document.querySelector('#vista-categorias')) NipinCategorias.limpiar(nuevoUsuario);
+        mostrar();
+    }
 
-    btnSalir.addEventListener("click", async () => {
-        btnSalir.disabled = true;
+    async function consultar(recargar = false) {
+        const consulta = revision;
+        let sesion;
         try {
-            await fetch("api/logout.php", { method: "POST" });
-            location.href = "index.html";
-        } catch (err) {
-            console.error("Error al cerrar sesión:", err);
-            btnSalir.disabled = false;
+            sesion = await NipinAPI.consultarSesion(recargar);
+        } catch (error) {
+            if (consulta === revision) {
+                errorConsulta = true;
+                mensaje.textContent = error.message;
+            }
+            throw error;
         }
-    });
+        if (consulta !== revision) return null; // Respuesta anterior a login/logout.
+        if (errorConsulta) {
+            errorConsulta = false;
+            mensaje.textContent = '';
+        }
+        if (usuario && usuario.email !== sesion?.usuario?.email) {
+            establecer(sesion ? sesion.usuario : null, { conservarBorrador: !sesion });
+        }
+        else {
+            usuario = sesion ? sesion.usuario : null;
+            mostrar();
+        }
+        return sesion;
+    }
+
+    if (caja) {
+        const salir = caja.querySelector('#sesion-salir');
+        salir.addEventListener('click', async () => {
+            if (salir.disabled) return;
+            salir.disabled = true;
+            errorConsulta = false;
+            mensaje.textContent = 'Cerrando sesión…';
+            try {
+                await NipinAPI.cerrarSesion();
+                establecer(null);
+                mensaje.textContent = '';
+                if (document.querySelector('#contenido')) {
+                    NipinNavegacion.ir('inicio', { reemplazar: true, recargar: true });
+                    // El token anónimo se solicita solo cuando se integra CSRF.
+                    await NipinAPI.prepararEnvios();
+                } else location.href = 'index.html';
+            } catch (error) {
+                mensaje.textContent = error.message;
+            } finally {
+                salir.disabled = false;
+            }
+        });
+    }
+    mostrar(); // Permite acceder también si la primera consulta falla por red.
+    return { consultar, establecer, esUsuario: email => usuario?.email === email };
 })();
 
+if (document.querySelector('#sesion')) {
+    NipinSesion.consultar().catch(() => {}); // El módulo ya muestra el error.
+}
 
-// Pantalla login.html: pestañas, login y registro de usuarios
-(function iniciarAcceso() {
-    const formLogin = document.querySelector("#form-login");
-    if (!formLogin) return;
+// Una calculadora y validación para alta y edición; cada instancia conserva
+// sus propios controles y estado. La edición nunca utiliza el borrador del alta.
+function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, prefijo = '', alGuardar = null, alNoDisponible = null, alSesionVencida = null }) {
+    const elemento = id => form.querySelector('#' + prefijo + id);
+    const campos = Object.fromEntries(['descripcion', 'monto', 'fecha', 'categoria', 'pago', 'cuotas', 'comentario'].map(id => [id, elemento(id)]));
+    const radios = [...form.querySelectorAll('input[type="radio"]')];
+    const controles = [...form.querySelectorAll('input, select, textarea, button')];
+    const filaCuotas = elemento('fila-cuotas');
+    const mensaje = elemento('mensaje');
+    // El catálogo textual ya existente en el HTML coincide con el anexo 8.
+    const categorias = Object.fromEntries([...campos.categoria.querySelectorAll('optgroup')].map(grupo => [grupo.dataset.tipo, new Set([...grupo.querySelectorAll('option')].map(opcion => opcion.value))]));
+    const medios = [...campos.pago.options].map(opcion => opcion.value).filter(Boolean);
+    const cuotasPermitidas = new Set([...campos.cuotas.options].map(opcion => Number(opcion.value)));
+    let tarifas = null, pedidoTarifas = null;
+    let activa = false, preparado = false, enviando = false;
+    let entrada = 0, revisionDatos = 0;
+    let propietario = null, pendiente = null;
+    let original = null;
 
-    const formRegistro = document.querySelector("#form-registro");
-    const tabIngresar = document.querySelector("#tab-ingresar");
-    const tabCrear = document.querySelector("#tab-crear");
-    const msgLogin = document.querySelector("#mensaje-login");
-    const msgRegistro = document.querySelector("#mensaje-registro");
-
-    // Si ya hay sesión no tiene sentido mostrar el login
-    consultarSesion()
-        .then(sesion => { if (sesion) location.replace("index.html"); })
-        .catch(() => {});
-
-    function mostrarMensaje(elemento, texto, tipo) {
-        elemento.textContent = texto;
-        elemento.className = "mensaje " + tipo; // tipo: "exito" o "error"
+    function tipoSeleccionado() {
+        return radios.find(radio => radio.checked)?.value || '';
     }
 
-    function mostrarPestana(pestana) {
-        const ingresar = pestana === "ingresar";
-        formLogin.hidden = !ingresar;
-        formRegistro.hidden = ingresar;
-        tabIngresar.classList.toggle("secundario", !ingresar);
-        tabCrear.classList.toggle("secundario", ingresar);
-        tabIngresar.setAttribute("aria-pressed", String(ingresar));
-        tabCrear.setAttribute("aria-pressed", String(!ingresar));
-        mostrarMensaje(msgLogin, "", "");
-        mostrarMensaje(msgRegistro, "", "");
+    function fechaHoy() {
+        const ahora = new Date();
+        return new Date(ahora - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     }
 
-    // POST con JSON; devuelve el código HTTP y la respuesta del servidor
-    async function enviar(url, datos) {
-        const respuesta = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+    function formatearPesos(valor) {
+        const decimales = Number.isInteger(valor) ? 0 : 2;
+        return (valor < 0 ? '-$' : '$') + Math.abs(valor).toLocaleString('es-AR', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+    }
+
+    function montoValido() {
+        const monto = Number(campos.monto.value);
+        return /^(?:\d+(?:\.\d{1,2})?|\.\d{1,2})$/.test(campos.monto.value) && Number.isFinite(monto) && monto > 0 && monto <= 999999999.99;
+    }
+
+    function calcular() {
+        const vacio = { subtotal: 0, ajuste: 0, total: 0, cuotas: 1, valorCuota: 0 };
+        if (!montoValido()) return vacio;
+        const monto = Number(campos.monto.value);
+        const sinAjuste = { subtotal: monto, ajuste: 0, total: monto, cuotas: 1, valorCuota: monto };
+        if (tipoSeleccionado() === 'ingreso') return sinAjuste;
+        if (!tarifas || !Object.hasOwn(tarifas.medios_pago, campos.pago.value)) return sinAjuste;
+        const esCredito = campos.pago.value === 'Tarjeta de crédito';
+        const cuotas = esCredito ? Number(campos.cuotas.value) : 1;
+        if (!cuotasPermitidas.has(cuotas)) return vacio;
+        // Las tarifas AE2 son porcentajes enteros. La aritmética en centavos
+        // evita errores binarios al redondear mitades hacia arriba (1,15 × 90%).
+        const centavos = Math.round(monto * 100);
+        const descuento = Math.round(tarifas.medios_pago[campos.pago.value].descuento * 100);
+        const interes = esCredito ? Math.round(tarifas.cuotas[cuotas] * 100) : 0;
+        const totalCentavos = Math.floor((centavos * (100 - descuento) * (100 + interes) + 5000) / 10000);
+        return { subtotal: monto, ajuste: (totalCentavos - centavos) / 100, total: totalCentavos / 100, cuotas, valorCuota: Math.floor((totalCentavos + cuotas / 2) / cuotas) / 100 };
+    }
+
+    function bloquear(bloqueado) {
+        controles.forEach(control => { control.disabled = bloqueado; });
+        if (!bloqueado) actualizarResultado();
+    }
+
+    function actualizarResultado() {
+        const tipo = tipoSeleccionado();
+        campos.categoria.querySelectorAll('optgroup').forEach(grupo => {
+            grupo.hidden = grupo.dataset.tipo !== tipo;
+            grupo.disabled = grupo.hidden;
         });
-        const resultado = await respuesta.json().catch(() => ({}));
-        return { ok: respuesta.ok, resultado };
+        if (!categorias[tipo]?.has(campos.categoria.value)) campos.categoria.value = '';
+        const credito = tipo === 'gasto' && campos.pago.value === 'Tarjeta de crédito';
+        filaCuotas.hidden = !credito;
+        campos.cuotas.disabled = !credito || !preparado || enviando;
+        if (!credito) campos.cuotas.value = '1';
+        const r = calcular();
+        elemento('res-subtotal').textContent = formatearPesos(r.subtotal);
+        elemento('res-ajuste').textContent = (r.ajuste > 0 ? '+' : '') + formatearPesos(r.ajuste);
+        elemento('res-total').textContent = formatearPesos(r.total);
+        elemento('res-cuota').textContent = formatearPesos(r.valorCuota);
+        elemento('res-cuota-linea').hidden = r.cuotas <= 1;
     }
 
-    tabIngresar.addEventListener("click", () => mostrarPestana("ingresar"));
-    tabCrear.addEventListener("click", () => mostrarPestana("crear"));
+    function mostrarMensaje(texto, tipo, control = null) {
+        mensaje.textContent = texto;
+        mensaje.className = 'mensaje ' + tipo;
+        mensaje.setAttribute('role', tipo === 'error' ? 'alert' : 'status');
+        mensaje.setAttribute('aria-live', tipo === 'error' ? 'assertive' : 'polite');
+        if (activa && texto && tipo) (control || mensaje).focus();
+    }
 
-    formLogin.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const datos = {
-            email: formLogin.querySelector("#login-email").value.trim(),
-            password: formLogin.querySelector("#login-pass").value
-        };
-        if (!datos.email || !datos.password) {
-            return mostrarMensaje(msgLogin, "Ingresá tu correo y tu contraseña.", "error");
+    function reiniciar() {
+        form.reset();
+        campos.fecha.value = fechaHoy();
+        mostrarMensaje('', '');
+        actualizarResultado();
+    }
+
+    function cambiarSesion(usuario, conservarBorrador = false) {
+        if (prefijo) conservarBorrador = false;
+        if (conservarBorrador && propietario) {
+            pendiente = { usuario: propietario, tipo: tipoSeleccionado(), campos: Object.fromEntries(Object.entries(campos).map(([id, control]) => [id, control.value])) };
+        } else if (!conservarBorrador && (!usuario || pendiente?.usuario !== usuario.email)) pendiente = null;
+        revisionDatos++;
+        original = null;
+        propietario = null;
+        preparado = false;
+        enviando = false;
+        reiniciar();
+        bloquear(true);
+        form.hidden = true;
+        form.setAttribute('aria-busy', 'false');
+        if (!prefijo) avisoSesion.hidden = false;
+        estado.textContent = '';
+        reintentar.hidden = true;
+    }
+
+    async function cargarTarifas() {
+        if (!pedidoTarifas) {
+            pedidoTarifas = NipinAPI.solicitarJSON('data/tarifas.json').then(datos => {
+                const porcentajeValido = valor => typeof valor === 'number' && Number.isFinite(valor) && valor >= 0 && valor <= 1 && Number.isInteger(valor * 100);
+                if (!medios.every(medio => porcentajeValido(datos.medios_pago?.[medio]?.descuento)) || ![...cuotasPermitidas].every(cuotas => porcentajeValido(datos.cuotas?.[cuotas]))) throw new Error('La tabla de tarifas es inválida.');
+                tarifas = datos;
+            }).catch(error => { pedidoTarifas = null; throw error; });
         }
+        await pedidoTarifas;
+    }
 
-        const boton = formLogin.querySelector('button[type="submit"]');
-        boton.disabled = true;
+    async function entrar(movimiento = null, cuenta = null) {
+        if (prefijo && movimiento) original = { ...movimiento };
+        activa = true;
+        const intento = ++entrada;
+        preparado = false;
+        bloquear(true);
+        form.hidden = true;
+        avisoSesion.hidden = true;
+        reintentar.hidden = true;
+        estado.textContent = 'Verificando sesión y cargando formulario…';
         try {
-            const { ok, resultado } = await enviar("api/login.php", datos);
-            if (ok) {
-                location.href = "index.html";
+            const sesion = await NipinSesion.consultar(true);
+            if (!activa || intento !== entrada) return;
+            if (!sesion) {
+                if (propietario) cambiarSesion(null, true);
+                avisoSesion.hidden = false;
+                estado.textContent = 'Iniciá sesión para registrar un movimiento.';
                 return;
             }
-            mostrarMensaje(msgLogin, resultado.mensaje || "No se pudo iniciar sesión.", "error");
-        } catch (err) {
-            mostrarMensaje(msgLogin, "Error de conexión con el servidor.", "error");
-        }
-        boton.disabled = false;
-    });
-
-    formRegistro.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const datos = {
-            nombre: formRegistro.querySelector("#reg-nombre").value.trim(),
-            email: formRegistro.querySelector("#reg-email").value.trim(),
-            password: formRegistro.querySelector("#reg-pass").value
-        };
-        if (!datos.nombre || !datos.email || !datos.password) {
-            return mostrarMensaje(msgRegistro, "Completá todos los campos.", "error");
-        }
-        if (datos.password.length < 6) {
-            return mostrarMensaje(msgRegistro, "La contraseña debe tener al menos 6 caracteres.", "error");
-        }
-
-        const boton = formRegistro.querySelector('button[type="submit"]');
-        boton.disabled = true;
-        try {
-            const { ok, resultado } = await enviar("api/registro.php", datos);
-            if (ok) {
-                formRegistro.reset();
-                mostrarPestana("ingresar");
-                formLogin.querySelector("#login-email").value = datos.email;
-                mostrarMensaje(msgLogin, "Cuenta creada. Ya podés ingresar.", "exito");
-            } else {
-                mostrarMensaje(msgRegistro, resultado.mensaje || "No se pudo crear la cuenta.", "error");
+            if (prefijo && (!original || (cuenta && cuenta !== sesion.usuario.email))) return;
+            if (propietario && propietario !== sesion.usuario.email) cambiarSesion(sesion.usuario);
+            propietario = sesion.usuario.email;
+            const revision = revisionDatos;
+            await Promise.all([cargarTarifas(), NipinAPI.prepararEnvios()]);
+            if (!activa || intento !== entrada || revision !== revisionDatos) return;
+            if (pendiente?.usuario === propietario) {
+                radios.forEach(radio => { radio.checked = radio.value === pendiente.tipo; });
+                Object.entries(pendiente.campos).forEach(([id, valor]) => { campos[id].value = valor; });
+                pendiente = null;
             }
-        } catch (err) {
-            mostrarMensaje(msgRegistro, "Error de conexión con el servidor.", "error");
-        }
-        boton.disabled = false;
-    });
-})();
-
-
-(function iniciarRegistro() {
-    if (!document.querySelector("#form-movimiento")) return;
-
-// NipinFinan - AE2
-// Calculadora de tarifas: descuento segun medio de pago e interes por cuotas.
-// Las tarifas se cargan con fetch desde data/tarifas.json
-// Los movimientos se guardan en MySQL con api/mis_movimientos.php (requiere sesión)
-
-
-// =============================
-// VARIABLES GLOBALES
-// =============================
-
-let tarifas = null; // se completa cuando termina el fetch
-
-
-// =============================
-// ELEMENTOS DEL DOM
-// =============================
-
-const form = document.getElementById("form-movimiento");
-const inputDescripcion = document.getElementById("descripcion");
-const inputMonto = document.getElementById("monto");
-const inputFecha = document.getElementById("fecha");
-const selectCategoria = document.getElementById("categoria");
-const selectPago = document.getElementById("pago");
-const selectCuotas = document.getElementById("cuotas");
-const filaCuotas = document.getElementById("fila-cuotas");
-const radiosTipo = document.querySelectorAll('input[name="tipo"]');
-const inputComentario = document.getElementById("comentario");
-const btnGuardar = form.querySelector('button[type="submit"]');
-const divMensaje = document.getElementById("mensaje");
-const avisoSesion = document.getElementById("aviso-sesion");
-
-// Resumen del calculo
-const resSubtotal = document.getElementById("res-subtotal");
-const resAjuste = document.getElementById("res-ajuste");
-const resTotal = document.getElementById("res-total");
-const resCuota = document.getElementById("res-cuota");
-const resCuotaLinea = document.getElementById("res-cuota-linea");
-
-
-// =============================
-// FUNCIONES AUXILIARES
-// =============================
-
-// Mismo formato que en el listado: $1.234 o $1.234,50
-function formatearPesos(valor) {
-    const decimales = Number.isInteger(valor) ? 0 : 2;
-    const texto = Math.abs(valor).toLocaleString("es-AR", {
-        minimumFractionDigits: decimales,
-        maximumFractionDigits: decimales
-    });
-    return (valor < 0 ? "-$" : "$") + texto;
-}
-
-function redondear(valor) {
-    return Math.round(valor * 100) / 100;
-}
-
-function tipoSeleccionado() {
-    return document.querySelector('input[name="tipo"]:checked').value;
-}
-
-// Fecha de hoy en hora local (con toISOString sola a la noche da el dia siguiente)
-function fechaHoy() {
-    const ahora = new Date();
-    return new Date(ahora - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-}
-
-function mostrarMensaje(texto, tipo) {
-    divMensaje.textContent = texto;
-    divMensaje.className = "mensaje " + tipo; // tipo: "exito" o "error"
-}
-
-
-// =============================
-// CARGA DE TARIFAS (fetch + async/await)
-// =============================
-
-async function cargarTarifas() {
-    try {
-        const respuesta = await fetch("data/tarifas.json");
-        if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-        tarifas = await respuesta.json();
-    } catch (err) {
-        console.error("Error al cargar tarifas:", err);
-        mostrarMensaje(
-            "No se pudieron cargar las tarifas. Abrí el proyecto con un servidor local (Live Server).",
-            "error"
-        );
-        btnGuardar.disabled = true; // sin tarifas el total no seria correcto
-    }
-}
-
-
-// =============================
-// CALCULO DEL PRESUPUESTO
-// =============================
-
-function calcular() {
-    const monto = parseFloat(inputMonto.value);
-    const vacio = { subtotal: 0, ajuste: 0, total: 0, cuotas: 1, valorCuota: 0 };
-
-    if (!(monto > 0)) return vacio; // vacio, 0 o negativo
-
-    // Si es ingreso no se aplican descuentos ni cuotas
-    if (tipoSeleccionado() === "ingreso") {
-        return { subtotal: monto, ajuste: 0, total: monto, cuotas: 1, valorCuota: monto };
-    }
-
-    // Si es gasto: descuento por medio de pago + interes (solo con credito)
-    const medio = selectPago.value;
-    const esCredito = medio === "Tarjeta de crédito";
-    const cuotas = esCredito ? parseInt(selectCuotas.value, 10) : 1;
-
-    const descuento = tarifas?.medios_pago?.[medio]?.descuento ?? 0;
-    const interes = esCredito ? (tarifas?.cuotas?.[cuotas] ?? 0) : 0;
-
-    const base = monto * (1 - descuento);
-    const total = redondear(base * (1 + interes));
-
-    return {
-        subtotal: monto,
-        ajuste: redondear(total - monto), // negativo = descuento, positivo = recargo
-        total,
-        cuotas,
-        valorCuota: redondear(total / cuotas)
-    };
-}
-
-
-// =============================
-// ACTUALIZACION DEL DOM
-// =============================
-
-// Las cuotas solo tienen sentido en un gasto con tarjeta de credito
-function mostrarCuotasSiCorresponde() {
-    const visible = tipoSeleccionado() === "gasto" && selectPago.value === "Tarjeta de crédito";
-    filaCuotas.hidden = !visible;
-    selectCuotas.disabled = !visible;
-    if (!visible) selectCuotas.value = "1";
-}
-
-function actualizarResultado() {
-    mostrarCuotasSiCorresponde();
-    const r = calcular();
-
-    resSubtotal.textContent = formatearPesos(r.subtotal);
-    resAjuste.textContent = (r.ajuste > 0 ? "+" : "") + formatearPesos(r.ajuste);
-    resTotal.textContent = formatearPesos(r.total);
-    resCuota.textContent = formatearPesos(r.valorCuota);
-    resCuotaLinea.hidden = r.cuotas <= 1;
-}
-
-
-// =============================
-// SESIÓN Y GUARDADO (api/mis_movimientos.php)
-// =============================
-
-// Con sesión se muestra el formulario; sin sesión, el aviso para ingresar
-function mostrarFormulario(haySesion) {
-    form.hidden = !haySesion;
-    avisoSesion.hidden = haySesion;
-}
-
-// El servidor vuelve a calcular el total con data/tarifas.json
-async function guardarMovimiento(movimiento) {
-    const respuesta = await fetch("api/mis_movimientos.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(movimiento)
-    });
-    const resultado = await respuesta.json().catch(() => ({}));
-    return { status: respuesta.status, ok: respuesta.ok, resultado };
-}
-
-async function manejarSubmit(e) {
-    e.preventDefault();
-
-    const descripcion = inputDescripcion.value.trim();
-    const r = calcular();
-
-    // Validaciones
-    if (!descripcion) return mostrarMensaje("Ingresá una descripción.", "error");
-    if (!(r.subtotal > 0)) return mostrarMensaje("Ingresá un monto mayor a 0.", "error");
-    if (!inputFecha.value) return mostrarMensaje("Seleccioná una fecha.", "error");
-    if (!selectCategoria.value) return mostrarMensaje("Seleccioná una categoría.", "error");
-    if (!selectPago.value) return mostrarMensaje("Seleccioná un medio de pago.", "error");
-
-    const movimiento = {
-        tipo: tipoSeleccionado(),
-        descripcion,
-        monto: r.subtotal,
-        cuotas: r.cuotas,
-        fecha: inputFecha.value,
-        categoria: selectCategoria.value,
-        medioPago: selectPago.value,
-        comentario: inputComentario.value.trim()
-    };
-
-    btnGuardar.disabled = true;
-    try {
-        const { status, ok, resultado } = await guardarMovimiento(movimiento);
-        if (status === 401) return mostrarFormulario(false); // la sesión venció
-        if (!ok) return mostrarMensaje(resultado.mensaje || "No se pudo guardar el movimiento.", "error");
-    } catch (err) {
-        console.error("Error al guardar:", err);
-        return mostrarMensaje("No se pudo guardar el movimiento.", "error");
-    } finally {
-        btnGuardar.disabled = false;
-    }
-
-    // Limpio el formulario (reset no dispara eventos, por eso actualizo a mano)
-    form.reset();
-    inputFecha.value = fechaHoy();
-    actualizarResultado();
-    mostrarMensaje("Movimiento guardado correctamente.", "exito");
-}
-
-
-// =============================
-// INICIO Y EVENTOS
-// =============================
-
-document.addEventListener("DOMContentLoaded", async () => {
-    // Al cargar la página se verifica la sesión contra el endpoint privado
-    try {
-        const sesion = await consultarSesion();
-        mostrarFormulario(sesion !== null);
-        if (sesion === null) return;
-    } catch (err) {
-        console.error("Error al verificar la sesión:", err);
-        mostrarFormulario(true);
-        mostrarMensaje("No se pudo conectar con el servidor. Intentá de nuevo más tarde.", "error");
-        btnGuardar.disabled = true;
-        return;
-    }
-
-    inputFecha.value = fechaHoy();
-    await cargarTarifas();
-    actualizarResultado();
-
-    // Cualquier cambio en monto, tipo, medio de pago o cuotas recalcula el total
-    inputMonto.addEventListener("input", actualizarResultado);
-    inputMonto.addEventListener("change", actualizarResultado);
-    selectPago.addEventListener("change", actualizarResultado);
-    selectCuotas.addEventListener("change", actualizarResultado);
-    radiosTipo.forEach(radio => radio.addEventListener("change", actualizarResultado));
-
-    form.addEventListener("submit", manejarSubmit);
-});
-})();
-
-// NipinFinan - AE2, opción 2 - Luciano Fohrholtz.
-// El resumen solo lee movimientos; la demostración usa un JSON separado.
-(function iniciarResumen() {
-    if (!document.querySelector("#resumen")) return;
-    let modo = "real";
-    let sinSesion = false;
-    let movimientos = [];
-    let cargando = false;
-
-    const panel = document.querySelector("#resumen");
-    const mes = panel.querySelector("#resumen-mes");
-    const categoria = panel.querySelector("#resumen-filtro-categoria");
-    const botonDemo = panel.querySelector("#resumen-demo");
-    const botonActualizar = panel.querySelector("#resumen-actualizar");
-    const aviso = panel.querySelector("#resumen-aviso");
-
-    function mesActual() {
-        const hoy = new Date();
-        return hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, "0");
-    }
-
-    function nombreMes(valor) {
-        const [anio, numero] = valor.split("-");
-        const nombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        return nombres[Number(numero) - 1] + " de " + anio;
-    }
-
-    function mesAnterior(valor) {
-        const [anio, numero] = valor.split("-").map(Number);
-        return (numero === 1 ? anio - 1 : anio) + "-" + String(numero === 1 ? 12 : numero - 1).padStart(2, "0");
-    }
-
-    function pesos(centavos) {
-        return (centavos / 100).toLocaleString("es-AR", { style: "currency", currency: "ARS", minimumFractionDigits: centavos % 100 === 0 ? 0 : 2 });
-    }
-
-    function porcentaje(valor) {
-        return valor.toLocaleString("es-AR", { maximumFractionDigits: 1 }) + "%";
-    }
-
-    function mostrarAviso(texto, error = false) {
-        aviso.textContent = texto;
-        aviso.hidden = !texto;
-        aviso.classList.toggle("error", error);
-    }
-
-    // Validamos sin corregir ni escribir los registros del módulo de Santiago.
-    function validarMovimientos(datos) {
-        if (!Array.isArray(datos)) throw new Error("Los movimientos no son una lista.");
-        return datos.filter(m => {
-            if (!m || !["ingreso", "gasto"].includes(m.tipo)) return false;
-            if (typeof m.total !== "number" || m.total <= 0 || !Number.isSafeInteger(Math.round(m.total * 100))) return false;
-            if (typeof m.categoria !== "string" || !m.categoria.trim()) return false;
-            if (typeof m.fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(m.fecha)) return false;
-            const [anio, numero, dia] = m.fecha.split("-").map(Number);
-            const ultimoDia = new Date(anio, numero, 0).getDate();
-            return anio >= 1000 && numero >= 1 && numero <= 12 && dia >= 1 && dia <= ultimoDia;
-        });
-    }
-
-    // Movimientos del usuario desde el endpoint privado (401 = sin sesión).
-    async function leerMovimientos() {
-        const sesion = await consultarSesion(true);
-        sinSesion = sesion === null;
-        return sesion ? sesion.movimientos : [];
-    }
-
-    // Una petición HTTP real; los ejemplos nunca se guardan en la cuenta.
-    async function cargarEjemplo() {
-        const respuesta = await fetch("data/metricas.json", { cache: "no-store" });
-        if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-        const datos = await respuesta.json();
-        return datos.movimientos;
-    }
-
-    function agregarOpcion(select, valor, texto) {
-        const opcion = document.createElement("option");
-        opcion.value = valor;
-        opcion.textContent = texto;
-        select.append(opcion);
-    }
-
-    function prepararFiltros(reiniciar) {
-        const seleccionado = mes.value;
-        const seleccionCategoria = categoria.value;
-        const meses = [...new Set(movimientos.map(m => m.fecha.slice(0, 7)))];
-        if (modo === "real" && !meses.includes(mesActual())) meses.push(mesActual());
-        meses.sort().reverse();
-        mes.replaceChildren();
-        agregarOpcion(mes, "todos", "Todo el período");
-        meses.forEach(valor => agregarOpcion(mes, valor, nombreMes(valor)));
-        const inicial = modo === "real" ? mesActual() : (meses[0] || "todos");
-        mes.value = !reiniciar && (seleccionado === "todos" || meses.includes(seleccionado)) ? seleccionado : inicial;
-
-        const categorias = [...new Set(movimientos.map(m => m.categoria))].sort((a, b) => a.localeCompare(b, "es"));
-        categoria.replaceChildren();
-        agregarOpcion(categoria, "todas", "Todas las categorías");
-        categorias.forEach(valor => agregarOpcion(categoria, valor, valor));
-        categoria.value = !reiniciar && categorias.includes(seleccionCategoria) ? seleccionCategoria : "todas";
-    }
-
-    function filtrar(periodo) {
-        return movimientos.filter(m => (periodo === "todos" || m.fecha.slice(0, 7) === periodo) && (categoria.value === "todas" || m.categoria === categoria.value));
-    }
-
-    // Sumamos en centavos y usamos total, sin volver a calcular las cuotas.
-    function sumar(lista, tipo) {
-        return lista.filter(m => m.tipo === tipo).reduce((total, m) => total + Math.round(m.total * 100), 0);
-    }
-
-    function gastosPorCategoria(lista) {
-        const grupos = new Map();
-        lista.filter(m => m.tipo === "gasto").forEach(m => {
-            grupos.set(m.categoria, (grupos.get(m.categoria) || 0) + Math.round(m.total * 100));
-        });
-        return [...grupos].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "es"));
-    }
-
-    function mostrarBarras(grupos, gastos) {
-        const lista = panel.querySelector("#resumen-barras");
-        lista.replaceChildren();
-        panel.querySelector("#resumen-sin-gastos").hidden = grupos.length > 0;
-        grupos.forEach(([nombre, importe]) => {
-            const item = document.createElement("li");
-            const texto = document.createElement("div");
-            texto.className = "resumen-barra-texto";
-            const etiqueta = document.createElement("strong");
-            etiqueta.textContent = nombre;
-            const detalle = document.createElement("span");
-            const parte = importe / gastos * 100;
-            detalle.textContent = pesos(importe) + " · " + porcentaje(parte);
-            texto.append(etiqueta, detalle);
-            const base = document.createElement("div");
-            base.className = "resumen-barra-base";
-            base.setAttribute("aria-hidden", "true");
-            const barra = document.createElement("span");
-            barra.className = "resumen-barra-valor";
-            barra.style.width = parte + "%";
-            base.append(barra);
-            item.append(texto, base);
-            lista.append(item);
-        });
-    }
-
-    function diferencia(actual, anterior) {
-        const valor = actual - anterior;
-        return valor === 0 ? "Sin cambios" : (valor > 0 ? "+" : "−") + pesos(Math.abs(valor));
-    }
-
-    function mostrarComparacion(ingresos, gastos) {
-        const bloque = panel.querySelector("#resumen-comparacion");
-        bloque.hidden = mes.value === "todos";
-        if (bloque.hidden) return;
-        const anterior = mesAnterior(mes.value);
-        const lista = filtrar(anterior);
-        panel.querySelector("#resumen-comparacion-titulo").textContent = "Comparación con " + nombreMes(anterior).toLowerCase();
-        panel.querySelector("#resumen-diferencia-ingresos").textContent = diferencia(ingresos, sumar(lista, "ingreso"));
-        panel.querySelector("#resumen-diferencia-gastos").textContent = diferencia(gastos, sumar(lista, "gasto"));
-        panel.querySelector("#resumen-comparacion-nota").textContent = lista.length ? "Diferencia de importes con el mismo filtro de categoría." : "No hay movimientos con estos filtros en el mes anterior; se compara con $0.";
-    }
-
-    function mostrarResumen() {
-        const lista = filtrar(mes.value);
-        const ingresos = sumar(lista, "ingreso");
-        const gastos = sumar(lista, "gasto");
-        const saldo = ingresos - gastos;
-        const grupos = gastosPorCategoria(lista);
-        panel.querySelector("#resumen-ingresos").textContent = pesos(ingresos);
-        panel.querySelector("#resumen-gastos").textContent = pesos(gastos);
-        const disponible = panel.querySelector("#resumen-saldo");
-        disponible.textContent = pesos(saldo);
-        disponible.classList.toggle("gasto", saldo < 0);
-        disponible.classList.toggle("ingreso", saldo > 0);
-        panel.querySelector("#resumen-porcentaje").textContent = ingresos ? porcentaje(saldo / ingresos * 100) : "—";
-        panel.querySelector("#resumen-cantidad").textContent = lista.length;
-        const mayores = grupos.length ? grupos.filter(g => g[1] === grupos[0][1]).map(g => g[0]) : [];
-        panel.querySelector("#resumen-categoria-mayor").textContent = mayores.length ? mayores.join(" / ") : "Sin gastos";
-        panel.querySelector("#resumen-categoria-importe").textContent = grupos.length ? pesos(grupos[0][1]) + (mayores.length > 1 ? " en cada categoría (empate)" : " en el período") : "Todavía no hay una categoría de mayor gasto.";
-        panel.querySelector("#resumen-contexto").textContent = (mes.value === "todos" ? "Todo el período" : nombreMes(mes.value)) + " · " + (categoria.value === "todas" ? "Todas las categorías" : categoria.value);
-        panel.querySelector("#resumen-fuente").textContent = modo === "real" ? "Mis movimientos" : "Datos de ejemplo";
-        botonDemo.textContent = modo === "real" ? "Ver demostración" : "Volver a mis movimientos";
-        botonDemo.setAttribute("aria-pressed", String(modo === "demo"));
-        panel.querySelector("#resumen-vacio").hidden = lista.length > 0;
-        panel.querySelector("#resumen-vacio-texto").textContent = movimientos.length ? "No hay movimientos para los filtros seleccionados." : "Todavía no hay movimientos para mostrar.";
-        const registrar = panel.querySelector("#resumen-registrar");
-        registrar.hidden = modo === "demo";
-        registrar.href = sinSesion ? "login.html" : "comprar.html";
-        registrar.textContent = sinSesion ? "Iniciar sesión →" : "Registrar un movimiento →";
-        mostrarBarras(grupos, gastos);
-        mostrarComparacion(ingresos, gastos);
-    }
-
-    async function actualizarDatos(destino = modo, reiniciar = false) {
-        if (cargando) return;
-        cargando = true;
-        panel.setAttribute("aria-busy", "true");
-        botonDemo.disabled = true;
-        botonActualizar.disabled = true;
-        mostrarAviso(destino === "demo" ? "Cargando datos de ejemplo…" : "Actualizando resumen…");
-        try {
-            const datos = destino === "demo" ? await cargarEjemplo() : await leerMovimientos();
-            const validos = validarMovimientos(datos);
-            modo = destino;
-            movimientos = validos;
-            prepararFiltros(reiniciar);
-            mostrarResumen();
-            const ignorados = datos.length - validos.length;
-            mostrarAviso(ignorados ? "Se omitieron " + ignorados + " movimientos con datos incompletos o inválidos." : "", ignorados > 0);
-            if (modo === "real" && sinSesion) mostrarAviso("Iniciá sesión para ver tus movimientos. Mientras tanto podés ver la demostración.");
+            if (prefijo) {
+                radios.forEach(radio => { radio.checked = radio.value === original.tipo; });
+                Object.entries(campos).forEach(([id, control]) => {
+                    control.value = original[id === 'pago' ? 'medioPago' : id] ?? '';
+                });
+            }
+            preparado = true;
+            form.hidden = false;
+            avisoSesion.hidden = true;
+            estado.textContent = '';
+            bloquear(enviando);
+            if (prefijo) campos.descripcion.focus();
         } catch (error) {
-            // Mantenemos la última vista correcta y ofrecemos reintentar.
-            console.warn("No se pudo actualizar el resumen:", error.message);
-            mostrarAviso(destino === "demo" ? "No pudimos cargar la demostración. La vista anterior se conserva. Intentá nuevamente." : "No pudimos leer tus movimientos. La vista anterior se conserva. Intentá actualizar nuevamente.", true);
-            if (destino === "demo" && modo === "real") botonDemo.textContent = "Reintentar demostración";
-        } finally {
-            cargando = false;
-            panel.setAttribute("aria-busy", "false");
-            botonDemo.disabled = false;
-            botonActualizar.disabled = false;
+            if (!activa || intento !== entrada) return;
+            estado.textContent = 'No se pudo preparar el formulario. ' + error.message;
+            reintentar.hidden = false;
         }
     }
 
-    // Todos los eventos se registran desde este app.js, sin atributos on*.
-    mes.addEventListener("change", mostrarResumen);
-    categoria.addEventListener("change", mostrarResumen);
-    botonActualizar.addEventListener("click", () => actualizarDatos());
-    botonDemo.addEventListener("click", () => actualizarDatos(modo === "real" ? "demo" : "real", true));
-    window.addEventListener("pageshow", () => { if (modo === "real") actualizarDatos(); });
-    prepararFiltros(true);
-    mostrarResumen();
-    actualizarDatos();
+    function validar() {
+        const tipo = tipoSeleccionado();
+        if (!['ingreso', 'gasto'].includes(tipo)) return ['Seleccioná un tipo de movimiento válido.', radios[0]];
+        const longitud = Array.from(campos.descripcion.value.trim()).length;
+        if (longitud < 1 || longitud > 150) return ['Ingresá una descripción de 1 a 150 caracteres.', campos.descripcion];
+        if (!montoValido()) return ['Ingresá un monto mayor a 0, hasta 999999999,99 y con un máximo de dos decimales.', campos.monto];
+        const fecha = campos.fecha.value;
+        const fechaReal = new Date(fecha + 'T00:00:00Z');
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || fecha < '1900-01-01' || fecha > '2100-12-31' || Number.isNaN(fechaReal.getTime()) || fechaReal.toISOString().slice(0, 10) !== fecha) return ['Seleccioná una fecha real entre 1900 y 2100.', campos.fecha];
+        if (!categorias[tipo].has(campos.categoria.value)) return ['Seleccioná una categoría correspondiente al tipo de movimiento.', campos.categoria];
+        if (!Object.hasOwn(tarifas.medios_pago, campos.pago.value)) return ['Seleccioná un medio de pago válido.', campos.pago];
+        const cuotas = Number(campos.cuotas.value);
+        const credito = tipo === 'gasto' && campos.pago.value === 'Tarjeta de crédito';
+        if (!cuotasPermitidas.has(cuotas) || (!credito && cuotas !== 1)) return ['Seleccioná cuotas válidas: 1, 3, 6 o 12; solo crédito admite más de una.', campos.cuotas];
+        if (Array.from(campos.comentario.value.trim()).length > 500) return ['El comentario puede tener hasta 500 caracteres.', campos.comentario];
+        return null;
+    }
+
+    form.addEventListener('submit', async evento => {
+        evento.preventDefault();
+        if (!activa || !preparado || enviando) return;
+        const error = validar();
+        if (error) return mostrarMensaje(error[0], 'error', error[1]);
+        const r = calcular();
+        const movimiento = { tipo: tipoSeleccionado(), descripcion: campos.descripcion.value.trim(), monto: r.subtotal, fecha: campos.fecha.value, categoria: campos.categoria.value, medioPago: campos.pago.value, cuotas: r.cuotas, comentario: campos.comentario.value.trim() };
+        const revision = revisionDatos;
+        enviando = true;
+        bloquear(true);
+        form.setAttribute('aria-busy', 'true');
+        mostrarMensaje('Guardando movimiento…', '');
+        try {
+            await NipinAPI.prepararEnvios();
+            if (revision !== revisionDatos) return;
+            const resultado = original
+                ? await NipinAPI.editarMovimiento(original.id, movimiento)
+                : await NipinAPI.guardarMovimiento(movimiento);
+            if (revision !== revisionDatos) return;
+            const guardado = resultado.movimiento;
+            if (!guardado || !Number.isInteger(guardado.id) || guardado.id <= 0 || !Number.isFinite(guardado.total) || (original && guardado.id !== original.id)) throw new Error('El servidor no confirmó el movimiento. Revisá tus movimientos antes de reintentar.');
+            if (original) {
+                await alGuardar(guardado);
+                return;
+            }
+            reiniciar();
+            mostrarMensaje('Movimiento guardado correctamente. Total: ' + formatearPesos(guardado.total) + '.', 'exito');
+            if (document.querySelector('#resumen')) NipinResumen.actualizarTrasCambio();
+        } catch (error) {
+            if (revision !== revisionDatos) return;
+            if (error.status === 401) {
+                const enfocar = activa;
+                NipinSesion.establecer(null, { conservarBorrador: true });
+                estado.textContent = prefijo ? 'La sesión venció. La edición se descartó.' : 'La sesión venció. Ingresá con la misma cuenta para recuperar tu borrador.';
+                if (prefijo) alSesionVencida();
+                if (enfocar) avisoSesion.querySelector('a').focus();
+                return;
+            }
+            if (original && error.status === 404) {
+                await alNoDisponible();
+                return;
+            }
+            mostrarMensaje(error.message, 'error');
+        } finally {
+            if (revision === revisionDatos) {
+                enviando = false;
+                form.setAttribute('aria-busy', 'false');
+                bloquear(!preparado || !activa);
+            }
+        }
+    });
+
+    reintentar.addEventListener('click', () => entrar());
+    campos.monto.addEventListener('input', actualizarResultado);
+    campos.monto.addEventListener('change', actualizarResultado);
+    campos.pago.addEventListener('change', actualizarResultado);
+    campos.cuotas.addEventListener('change', actualizarResultado);
+    radios.forEach(radio => radio.addEventListener('change', actualizarResultado));
+    reiniciar();
+    bloquear(true);
+    return {
+        entrar, cambiarSesion,
+        salir() {
+            activa = false;
+            entrada++;
+            preparado = false;
+            if (prefijo) cambiarSesion(null);
+            bloquear(true);
+        }
+    };
+}
+
+const NipinRegistro = (() => {
+    const form = document.querySelector('#form-movimiento');
+    return form ? crearFormularioMovimiento({ form, avisoSesion: document.querySelector('#aviso-sesion'), estado: document.querySelector('#registro-estado'), reintentar: document.querySelector('#registro-reintentar') }) : null;
 })();
