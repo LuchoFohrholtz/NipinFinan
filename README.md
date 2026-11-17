@@ -141,6 +141,8 @@ Los resultados y las evidencias están en [docs/verificaciones/](docs/verificaci
 
 ## Documentación
 
+- [Mapa de carpetas y archivos](docs/mapa-proyecto.md)
+
 - [Contrato de API](docs/contrato-api.md)
 - [Trazabilidad de los casos de uso AE1 → AE4](docs/trazabilidad-ae1.md)
 - [Matriz de calidad ISO/IEC 25010](docs/calidad-iso25010.md)

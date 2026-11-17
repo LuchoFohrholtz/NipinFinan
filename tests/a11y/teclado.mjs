@@ -1,8 +1,4 @@
-// Recorrido solo con teclado (Tab, Enter, flechas y Escape) de NipinFinan (J5, AE4):
-// ingresar → registrar movimiento → listado → diálogo de baja → categorías → detalle → cerrar sesión.
-// Informa el elemento enfocado y su outline (:focus-visible) en cada paso y comprueba que el
-// documento no se recargue (SPA). La cuenta debe existir en una base de prueba.
-// Uso: node teclado.mjs http://localhost/NipinFinan/ cuenta@example.com "contraseña"
+// Recorre la SPA con teclado y una cuenta de prueba, registrando foco y navegación.
 import puppeteer from "puppeteer-core";
 const CHROME = process.env.CHROME_PATH || (process.platform === "win32"
   ? "C:/Program Files/Google/Chrome/Application/chrome.exe" : "/usr/bin/google-chrome");
@@ -10,10 +6,25 @@ const BASE = process.argv[2];
 const b = await puppeteer.launch({ executablePath: CHROME, headless: "new", args: ["--no-sandbox"] });
 const p = await b.newPage(); await p.setViewport({ width: 1280, height: 900 });
 const log = [];
-let navs = 0; p.on("framenavigated", f => { if (f === p.mainFrame()) navs++; });
-await p.goto(BASE, { waitUntil: "networkidle0" }); await p.evaluate(() => { window.__marca = 1; });
-const foco = () => p.evaluate(() => { const e = document.activeElement; const o = getComputedStyle(e).outlineStyle + " " + getComputedStyle(e).outlineWidth; return `${e.tagName.toLowerCase()}${e.id ? "#" + e.id : ""} "${(e.textContent || e.value || e.getAttribute("aria-label") || "").trim().slice(0, 30)}" [outline ${o}]`; });
-const tabHasta = async (pred, max = 60) => { for (let i = 0; i < max; i++) { await p.keyboard.press("Tab"); if (await p.evaluate(pred)) return true; } return false; };
+let navs = 0; p.on("framenavigated", f => {
+    // Cuenta las navegaciones completas del documento principal.
+    if (f === p.mainFrame()) navs++;
+});
+await p.goto(BASE, { waitUntil: "networkidle0" }); await p.evaluate(() => {
+    // Inspecciona o prepara el estado dentro del navegador de prueba.
+    window.__marca = 1;
+});
+const foco = () => p.evaluate(() => {
+    // Inspecciona o prepara el estado dentro del navegador de prueba.
+    const e = document.activeElement; const o = getComputedStyle(e).outlineStyle + " " + getComputedStyle(e).outlineWidth; return `${e.tagName.toLowerCase()}${e.id ? "#" + e.id : ""} "${(e.textContent || e.value || e.getAttribute("aria-label") || "").trim().slice(0, 30)}" [outline ${o}]`;
+});
+const tabHasta = async (pred, max = 60) => {
+    // Avanza con Tab hasta alcanzar el control buscado o agotar el límite.
+    for (let i = 0; i < max; i++) {
+    // Recorre los elementos para acumular o comprobar sus resultados.
+    await p.keyboard.press("Tab"); if (await p.evaluate(pred)) return true;
+    } return false;
+};
 const espera = (ms = 600) => new Promise(r => setTimeout(r, ms));
 await p.keyboard.press("Tab"); log.push("1er Tab: " + await foco());
 // Ir a Mi cuenta (Ingresar)

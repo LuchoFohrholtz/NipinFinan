@@ -1,14 +1,14 @@
-/* ===============================
-   NipinFinan - Hoja de estilos
-   =============================== */
+/* NipinFinan - Hoja de estilos */
 
 
 /* ESTILOS GENERALES */
 
+/* Incluye relleno y borde dentro del tamaño declarado de cada elemento. */
 * {
     box-sizing: border-box;
 }
 
+/* Define la tipografía, el fondo y el color general de la aplicación. */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -16,29 +16,35 @@ body {
     color: #1e293b;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 a {
     text-decoration: none;
     color: #2563eb;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 h1 {
     font-size: 38px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 h2 {
     margin-bottom: 25px;
 }
 
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 p {
     line-height: 1.5;
 }
 
+/* Centra el contenido y limita su ancho en pantallas grandes. */
 .contenedor {
     width: 90%;
     max-width: 1100px;
     margin: auto;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .pagina {
     padding-top: 50px;
     padding-bottom: 60px;
@@ -47,11 +53,13 @@ p {
 
 /* HEADER */
 
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 header {
     background: white;
     border-bottom: 1px solid #ddd;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 header .contenedor {
     min-height: 70px;
     display: flex;
@@ -59,12 +67,14 @@ header .contenedor {
     justify-content: space-between;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .logo {
     font-size: 24px;
     font-weight: bold;
     color: #2563eb;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .nav-lista {
     display: flex;
     gap: 20px;
@@ -73,12 +83,14 @@ header .contenedor {
     padding: 0;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 nav a {
     display: inline-block;
     padding: 4px 0;
     color: #475569;
 }
 
+/* Destaca el elemento al pasar el puntero. */
 nav a:hover {
     color: #2563eb;
 }
@@ -86,6 +98,7 @@ nav a:hover {
 
 /* BOTONES */
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .boton {
     display: inline-block;
     padding: 12px 20px;
@@ -97,10 +110,12 @@ nav a:hover {
     min-height: 24px;
 }
 
+/* Destaca el elemento al pasar el puntero. */
 .boton:hover {
     background: #1d4ed8;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .secundario {
     background: white;
     color: #2563eb;
@@ -110,25 +125,30 @@ nav a:hover {
 
 /* INICIO */
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .inicio {
     padding: 80px 0;
     background: #eff6ff;
 }
 
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 .inicio-texto {
     max-width: 650px;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .inicio h1 {
     font-size: 48px;
     margin-bottom: 20px;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .inicio-texto p {
     color: #475569;
     font-size: 18px;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .etiqueta {
     color: #2563eb !important;
     font-size: 13px !important;
@@ -138,10 +158,12 @@ nav a:hover {
 
 /* SECCIONES */
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .seccion {
     padding: 60px 0;
 }
 
+/* Distribuye los elementos en columnas mediante CSS Grid. */
 .tarjetas {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -151,6 +173,7 @@ nav a:hover {
     padding: 0;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .tarjeta {
     background: white;
     border: 1px solid #ddd;
@@ -158,10 +181,12 @@ nav a:hover {
     padding: 25px;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .tarjeta p {
     color: #475569;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .icono {
     width: 45px;
     height: 45px;
@@ -174,10 +199,12 @@ nav a:hover {
     font-weight: bold;
 }
 
+/* Distingue los ingresos con un verde de contraste suficiente. */
 .ingreso {
     color: #15803d;
 }
 
+/* Distingue los gastos mediante el color rojo. */
 .gasto {
     color: #dc2626;
 }
@@ -185,6 +212,7 @@ nav a:hover {
 
 /* TABLA */
 
+/* Distribuye los elementos en columnas mediante CSS Grid. */
 .tabla-resumen {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -194,6 +222,7 @@ nav a:hover {
     padding: 0;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .tabla-resumen li {
     background: white;
     padding: 20px;
@@ -201,16 +230,19 @@ nav a:hover {
     border-radius: 8px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .tabla-resumen span {
     display: block;
     color: #475569;
     margin-bottom: 8px;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .tabla-resumen strong {
     font-size: 22px;
 }
 
+/* Permite desplazar horizontalmente contenido ancho sin romper el diseño. */
 .tabla-contenedor {
     background: white;
     padding: 20px;
@@ -218,11 +250,13 @@ nav a:hover {
     overflow-x: auto;
 }
 
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 th,
 td {
     padding: 14px;
@@ -230,6 +264,7 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 th {
     background: #f8fafc;
 }
@@ -237,6 +272,7 @@ th {
 
 /* CATEGORIAS */
 
+/* Distribuye los elementos en columnas mediante CSS Grid. */
 .categorias {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -246,6 +282,7 @@ th {
     padding: 0;
 }
 
+/* Ordena los elementos verticalmente mediante Flexbox. */
 .categoria {
     display: flex;
     flex-direction: column;
@@ -256,25 +293,30 @@ th {
     color: #1e293b;
 }
 
+/* Destaca el elemento al pasar el puntero. */
 .categoria:hover {
     border-color: #2563eb;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .categoria h2 {
     font-size: 20px;
     margin: 15px 0 8px;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .categoria p {
     color: #475569;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .categoria strong {
     display: block;
     margin-top: 20px;
     font-size: 20px;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .grande {
     width: 80px;
     height: 80px;
@@ -284,6 +326,7 @@ th {
 
 /* DETALLE */
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .detalle {
     display: flex;
     align-items: center;
@@ -295,11 +338,13 @@ th {
     border-radius: 8px;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .detalle p {
     color: #475569;
     max-width: 650px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .historial {
     background: white;
     padding: 25px;
@@ -308,12 +353,14 @@ th {
     border-radius: 8px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .historial-lista {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .movimiento {
     display: flex;
     justify-content: space-between;
@@ -321,6 +368,7 @@ th {
     border-top: 1px solid #ddd;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .movimiento p {
     margin: 5px 0 0;
     color: #475569;
@@ -330,6 +378,7 @@ th {
 
 /* FORMULARIO */
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .formulario {
     max-width: 750px;
     margin: 35px auto 0;
@@ -339,6 +388,7 @@ th {
     border-radius: 8px;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .tipo {
     display: flex;
     gap: 25px;
@@ -347,22 +397,26 @@ th {
     padding: 0;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .tipo legend {
     font-weight: bold;
     margin-bottom: 7px;
     width: 100%;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .campo {
     margin-bottom: 20px;
 }
 
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 .campo label {
     display: block;
     font-weight: bold;
     margin-bottom: 7px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .campo input,
 .campo select,
 .campo textarea {
@@ -372,12 +426,14 @@ th {
     border-radius: 5px;
 }
 
+/* Distribuye los elementos en columnas mediante CSS Grid. */
 .fila {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .formulario-botones {
     display: flex;
     justify-content: flex-end;
@@ -386,10 +442,12 @@ th {
 }
 
 
+/* Define los colores del componente manteniendo su contraste. */
 .mensaje-error {
     color: #dc2626;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .mensaje-exito {
     color: #15803d;
 }
@@ -397,6 +455,7 @@ th {
 
 /* RESULTADO DE LA CALCULADORA */
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .resultado {
     margin-bottom: 20px;
     padding: 15px 20px;
@@ -405,6 +464,7 @@ th {
     border-radius: 6px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .resultado h3 {
     margin-bottom: 10px;
 }
@@ -412,22 +472,26 @@ th {
 
 /* MENSAJES DE ÉXITO / ERROR (formulario de registro) */
 
+/* Oculta el contenedor de mensajes cuando no tiene contenido. */
 #mensaje:empty {
     display: none;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .mensaje {
     margin-bottom: 20px;
     padding: 12px 15px;
     border-radius: 6px;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .mensaje.exito {
     background: #dcfce7;
     color: #166534;
     border: 1px solid #86efac;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .mensaje.error {
     background: #fee2e2;
     color: #991b1b;
@@ -438,24 +502,29 @@ th {
 /* SESIÓN (login, registro y estado en el header) */
 
 /* hidden siempre oculta, aunque la clase tenga display (por ejemplo .fila) */
+/* Oculta los elementos marcados con hidden aunque otra clase use display. */
 [hidden] {
     display: none !important;
 }
 
+/* Oculta el contenedor de mensajes cuando no tiene contenido. */
 .mensaje:empty {
     display: none;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .sesion {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 .sesion .boton {
     padding: 8px 14px;
 }
 
+/* Alinea y distribuye los elementos con Flexbox. */
 .acceso-pestanas {
     display: flex;
     justify-content: center;
@@ -463,10 +532,12 @@ th {
     margin-top: 30px;
 }
 
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 .aviso-sesion {
     text-align: center;
 }
 
+/* Define los colores del componente manteniendo su contraste. */
 .aviso-sesion p {
     color: #475569;
 }
@@ -474,12 +545,14 @@ th {
 
 /* FOOTER */
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 footer {
     background: #0f172a;
     color: white;
     padding: 30px 0;
 }
 
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 footer p {
     margin: 5px 0;
     color: #cbd5e1;
@@ -488,39 +561,47 @@ footer p {
 
 /* CELULARES */
 
+/* Aplica estos ajustes cuando la pantalla tiene hasta setecientos píxeles de ancho. */
 @media (max-width: 700px) {
 
+    /* Ordena los elementos verticalmente mediante Flexbox. */
     header .contenedor {
         flex-direction: column;
         gap: 15px;
         padding: 20px 0;
     }
 
+    /* Distribuye los elementos en varias filas cuando falta espacio. */
     .nav-lista {
         flex-wrap: wrap;
         justify-content: center;
     }
 
+    /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
     .inicio h1 {
         font-size: 36px;
     }
 
+    /* Apila los elementos en una sola columna para pantallas pequeñas. */
     .tarjetas,
     .categorias,
     .tabla-resumen {
         grid-template-columns: 1fr;
     }
 
+    /* Ordena los elementos verticalmente mediante Flexbox. */
     .detalle {
         flex-direction: column;
         align-items: flex-start;
     }
 
+    /* Apila los elementos en una sola columna para pantallas pequeñas. */
     .fila {
         grid-template-columns: 1fr;
         gap: 0;
     }
 
+    /* Permite desplazar horizontalmente contenido ancho sin romper el diseño. */
     .tabla-contenedor {
         overflow-x: auto;
     }
@@ -528,9 +609,9 @@ footer p {
 }
 
 
-/* ACCESIBILIDAD (WCAG 2.1): salto de contenido, texto solo para lectores,
-   foco visible con teclado y página actual en la navegación */
+/* ACCESIBILIDAD (WCAG 2.1): salto de contenido, texto solo para lectores, foco visible con teclado y página actual en la navegación */
 
+/* Mantiene el enlace de salto fuera de pantalla hasta recibir foco. */
 .salto-contenido {
     position: absolute;
     left: 12px;
@@ -538,10 +619,12 @@ footer p {
     z-index: 1;
 }
 
+/* Muestra el enlace de salto cuando recibe foco. */
 .salto-contenido:focus {
     top: 12px;
 }
 
+/* Oculta visualmente el texto y lo conserva para lectores de pantalla. */
 .solo-lectores {
     position: absolute;
     width: 1px;
@@ -553,11 +636,13 @@ footer p {
     white-space: nowrap;
 }
 
+/* Dibuja un contorno visible para identificar el foco de teclado. */
 :is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible {
     outline: 3px solid #1d4ed8;
     outline-offset: 3px;
 }
 
+/* Distingue visualmente el enlace de la página actual. */
 nav a[aria-current="page"] {
     font-weight: bold;
     text-decoration: underline;

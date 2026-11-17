@@ -1,8 +1,10 @@
 // NipinFinan - módulos compartidos y estado de sesión en memoria.
 const NipinSesion = (() => {
+    // Coordina la identidad visible y la limpieza de datos privados.
     const caja = document.querySelector('#sesion');
     const mensaje = document.querySelector('#mensaje-sesion') || document.createElement('p');
     if (caja && !mensaje.id) {
+        // Crea el contenedor accesible de errores si falta en el documento.
         mensaje.id = 'mensaje-sesion';
         mensaje.className = 'mensaje error';
         mensaje.setAttribute('role', 'alert');
@@ -13,6 +15,7 @@ const NipinSesion = (() => {
     let errorConsulta = false;
 
     function mostrar() {
+        // Actualiza la presentación con los datos recibidos.
         if (!caja) return;
         caja.querySelector('#sesion-ingresar').hidden = Boolean(usuario);
         caja.querySelector('#sesion-usuario').hidden = !usuario;
@@ -21,6 +24,7 @@ const NipinSesion = (() => {
     }
 
     function establecer(nuevoUsuario, { conservarBorrador = false } = {}) {
+        // Cambia la cuenta visible y limpia los datos de la sesión anterior.
         revision++;
         usuario = nuevoUsuario;
         errorConsulta = false;
@@ -34,12 +38,16 @@ const NipinSesion = (() => {
     }
 
     async function consultar(recargar = false) {
+        // Consulta la identidad e ignora respuestas de una sesión anterior.
         const consulta = revision;
         let sesion;
         try {
+            // Ejecuta la operación y permite tratar sus errores.
             sesion = await NipinAPI.consultarSesion(recargar);
         } catch (error) {
+            // Informa el fallo sin sustituir el resultado por un éxito.
             if (consulta === revision) {
+                // Mantiene el resultado sólo para la vista o sesión vigente.
                 errorConsulta = true;
                 mensaje.textContent = error.message;
             }
@@ -47,13 +55,16 @@ const NipinSesion = (() => {
         }
         if (consulta !== revision) return null; // Respuesta anterior a login/logout.
         if (errorConsulta) {
+            // Limpia el error de una consulta anterior que ya se recuperó.
             errorConsulta = false;
             mensaje.textContent = '';
         }
         if (usuario && usuario.email !== sesion?.usuario?.email) {
+            // Ajusta los datos según la identidad de la sesión comprobada.
             establecer(sesion ? sesion.usuario : null, { conservarBorrador: !sesion });
         }
         else {
+            // Ajusta los datos según la identidad de la sesión comprobada.
             usuario = sesion ? sesion.usuario : null;
             mostrar();
         }
@@ -61,24 +72,30 @@ const NipinSesion = (() => {
     }
 
     if (caja) {
+        // Conecta el botón de cierre con la limpieza de la sesión.
         const salir = caja.querySelector('#sesion-salir');
         salir.addEventListener('click', async () => {
+            // Procesa la acción del control y actualiza su estado.
             if (salir.disabled) return;
             salir.disabled = true;
             errorConsulta = false;
             mensaje.textContent = 'Cerrando sesión…';
             try {
+                // Ejecuta la operación y permite tratar sus errores.
                 await NipinAPI.cerrarSesion();
                 establecer(null);
                 mensaje.textContent = '';
                 if (document.querySelector('#contenido')) {
+                    // Vuelve a Inicio después del cierre de sesión.
                     NipinNavegacion.ir('inicio', { reemplazar: true, recargar: true });
-                    // El token anónimo se solicita solo cuando se integra CSRF.
+                    // Prepara un token anónimo después de cerrar la sesión autenticada.
                     await NipinAPI.prepararEnvios();
                 } else location.href = 'index.html';
             } catch (error) {
+                // Informa el fallo sin sustituir el resultado por un éxito.
                 mensaje.textContent = error.message;
             } finally {
+                // Restablece los controles y el estado al finalizar la operación.
                 salir.disabled = false;
             }
         });
@@ -88,12 +105,15 @@ const NipinSesion = (() => {
 })();
 
 if (document.querySelector('#sesion')) {
-    NipinSesion.consultar().catch(() => {}); // El módulo ya muestra el error.
+    // Ajusta los datos según la identidad de la sesión comprobada.
+    NipinSesion.consultar().catch(() => {
+        // Finaliza este callback sin acciones adicionales.
+        }); // El módulo ya muestra el error.
 }
 
-// Una calculadora y validación para alta y edición; cada instancia conserva
-// sus propios controles y estado. La edición nunca utiliza el borrador del alta.
+// Reutiliza alta y edición con controles, estado y borradores independientes.
 function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, prefijo = '', alGuardar = null, alNoDisponible = null, alSesionVencida = null }) {
+    // Prepara controles, cálculos y eventos reutilizables para alta y edición.
     const elemento = id => form.querySelector('#' + prefijo + id);
     const campos = Object.fromEntries(['descripcion', 'monto', 'fecha', 'categoria', 'pago', 'cuotas', 'comentario'].map(id => [id, elemento(id)]));
     const radios = [...form.querySelectorAll('input[type="radio"]')];
@@ -111,25 +131,30 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     let original = null;
 
     function tipoSeleccionado() {
+        // Obtiene el tipo de movimiento seleccionado en los botones de opción.
         return radios.find(radio => radio.checked)?.value || '';
     }
 
     function fechaHoy() {
+        // Obtiene la fecha local en formato año-mes-día.
         const ahora = new Date();
         return new Date(ahora - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     }
 
     function formatearPesos(valor) {
+        // Presenta un importe en pesos con los decimales necesarios.
         const decimales = Number.isInteger(valor) ? 0 : 2;
         return (valor < 0 ? '-$' : '$') + Math.abs(valor).toLocaleString('es-AR', { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
     }
 
     function montoValido() {
+        // Comprueba que el monto sea positivo y tenga como máximo dos decimales.
         const monto = Number(campos.monto.value);
         return /^(?:\d+(?:\.\d{1,2})?|\.\d{1,2})$/.test(campos.monto.value) && Number.isFinite(monto) && monto > 0 && monto <= 999999999.99;
     }
 
     function calcular() {
+        // Calcula la vista previa del total y las cuotas con las tarifas cargadas.
         const vacio = { subtotal: 0, ajuste: 0, total: 0, cuotas: 1, valorCuota: 0 };
         if (!montoValido()) return vacio;
         const monto = Number(campos.monto.value);
@@ -139,8 +164,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
         const esCredito = campos.pago.value === 'Tarjeta de crédito';
         const cuotas = esCredito ? Number(campos.cuotas.value) : 1;
         if (!cuotasPermitidas.has(cuotas)) return vacio;
-        // Las tarifas AE2 son porcentajes enteros. La aritmética en centavos
-        // evita errores binarios al redondear mitades hacia arriba (1,15 × 90%).
+        // Calcula en centavos para redondear importes sin errores binarios.
         const centavos = Math.round(monto * 100);
         const descuento = Math.round(tarifas.medios_pago[campos.pago.value].descuento * 100);
         const interes = esCredito ? Math.round(tarifas.cuotas[cuotas] * 100) : 0;
@@ -149,13 +173,19 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     function bloquear(bloqueado) {
-        controles.forEach(control => { control.disabled = bloqueado; });
+        // Habilita o bloquea los controles durante la operación.
+        controles.forEach(control => {
+            // Actualiza la disponibilidad de los controles afectados.
+            control.disabled = bloqueado;
+        });
         if (!bloqueado) actualizarResultado();
     }
 
     function actualizarResultado() {
+        // Ajusta categorías, cuotas e importes de la vista previa.
         const tipo = tipoSeleccionado();
         campos.categoria.querySelectorAll('optgroup').forEach(grupo => {
+            // Oculta y deshabilita categorías de otro tipo de movimiento.
             grupo.hidden = grupo.dataset.tipo !== tipo;
             grupo.disabled = grupo.hidden;
         });
@@ -173,6 +203,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     function mostrarMensaje(texto, tipo, control = null) {
+        // Muestra el resultado y enfoca el mensaje o el campo con error.
         mensaje.textContent = texto;
         mensaje.className = 'mensaje ' + tipo;
         mensaje.setAttribute('role', tipo === 'error' ? 'alert' : 'status');
@@ -181,6 +212,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     function reiniciar() {
+        // Restablece el formulario, la fecha y los importes de vista previa.
         form.reset();
         campos.fecha.value = fechaHoy();
         mostrarMensaje('', '');
@@ -188,8 +220,10 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     function cambiarSesion(usuario, conservarBorrador = false) {
+        // Descarta datos privados y conserva sólo el borrador permitido de la misma cuenta.
         if (prefijo) conservarBorrador = false;
         if (conservarBorrador && propietario) {
+            // Conserva el borrador asociado a la cuenta propietaria.
             pendiente = { usuario: propietario, tipo: tipoSeleccionado(), campos: Object.fromEntries(Object.entries(campos).map(([id, control]) => [id, control.value])) };
         } else if (!conservarBorrador && (!usuario || pendiente?.usuario !== usuario.email)) pendiente = null;
         revisionDatos++;
@@ -207,17 +241,24 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     async function cargarTarifas() {
+        // Carga y valida las tarifas públicas antes de calcular.
         if (!pedidoTarifas) {
+            // Comparte la carga de tarifas y permite reintentar si falla.
             pedidoTarifas = NipinAPI.solicitarJSON('data/tarifas.json').then(datos => {
+                // Comprueba las tasas antes de aceptar la tabla de tarifas.
                 const porcentajeValido = valor => typeof valor === 'number' && Number.isFinite(valor) && valor >= 0 && valor <= 1 && Number.isInteger(valor * 100);
                 if (!medios.every(medio => porcentajeValido(datos.medios_pago?.[medio]?.descuento)) || ![...cuotasPermitidas].every(cuotas => porcentajeValido(datos.cuotas?.[cuotas]))) throw new Error('La tabla de tarifas es inválida.');
                 tarifas = datos;
-            }).catch(error => { pedidoTarifas = null; throw error; });
+            }).catch(error => {
+                // Libera la carga fallida para permitir otro intento explícito.
+                pedidoTarifas = null; throw error;
+            });
         }
         await pedidoTarifas;
     }
 
     async function entrar(movimiento = null, cuenta = null) {
+        // Activa la vista y prepara sus datos antes de habilitar controles.
         if (prefijo && movimiento) original = { ...movimiento };
         activa = true;
         const intento = ++entrada;
@@ -228,9 +269,11 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
         reintentar.hidden = true;
         estado.textContent = 'Verificando sesión y cargando formulario…';
         try {
+            // Ejecuta la operación y permite tratar sus errores.
             const sesion = await NipinSesion.consultar(true);
             if (!activa || intento !== entrada) return;
             if (!sesion) {
+                // Ajusta los datos según la identidad de la sesión comprobada.
                 if (propietario) cambiarSesion(null, true);
                 avisoSesion.hidden = false;
                 estado.textContent = 'Iniciá sesión para registrar un movimiento.';
@@ -243,13 +286,25 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
             await Promise.all([cargarTarifas(), NipinAPI.prepararEnvios()]);
             if (!activa || intento !== entrada || revision !== revisionDatos) return;
             if (pendiente?.usuario === propietario) {
-                radios.forEach(radio => { radio.checked = radio.value === pendiente.tipo; });
-                Object.entries(pendiente.campos).forEach(([id, valor]) => { campos[id].value = valor; });
+                // Restaura los valores de los controles correspondientes.
+                radios.forEach(radio => {
+                    // Restaura los valores de los controles correspondientes.
+                    radio.checked = radio.value === pendiente.tipo;
+                });
+                Object.entries(pendiente.campos).forEach(([id, valor]) => {
+                    // Restaura los valores de los controles correspondientes.
+                    campos[id].value = valor;
+                });
                 pendiente = null;
             }
             if (prefijo) {
-                radios.forEach(radio => { radio.checked = radio.value === original.tipo; });
+                // Restaura los valores de los controles correspondientes.
+                radios.forEach(radio => {
+                    // Restaura los valores de los controles correspondientes.
+                    radio.checked = radio.value === original.tipo;
+                });
                 Object.entries(campos).forEach(([id, control]) => {
+                    // Restaura los valores de los controles correspondientes.
                     control.value = original[id === 'pago' ? 'medioPago' : id] ?? '';
                 });
             }
@@ -260,6 +315,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
             bloquear(enviando);
             if (prefijo) campos.descripcion.focus();
         } catch (error) {
+            // Informa el fallo sin sustituir el resultado por un éxito.
             if (!activa || intento !== entrada) return;
             estado.textContent = 'No se pudo preparar el formulario. ' + error.message;
             reintentar.hidden = false;
@@ -267,6 +323,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     function validar() {
+        // Comprueba los campos y devuelve el primer error con su control.
         const tipo = tipoSeleccionado();
         if (!['ingreso', 'gasto'].includes(tipo)) return ['Seleccioná un tipo de movimiento válido.', radios[0]];
         const longitud = Array.from(campos.descripcion.value.trim()).length;
@@ -285,6 +342,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     }
 
     form.addEventListener('submit', async evento => {
+        // Valida y envía el formulario sin recargar la página.
         evento.preventDefault();
         if (!activa || !preparado || enviando) return;
         const error = validar();
@@ -297,6 +355,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
         form.setAttribute('aria-busy', 'true');
         mostrarMensaje('Guardando movimiento…', '');
         try {
+            // Ejecuta la operación y permite tratar sus errores.
             await NipinAPI.prepararEnvios();
             if (revision !== revisionDatos) return;
             const resultado = original
@@ -306,6 +365,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
             const guardado = resultado.movimiento;
             if (!guardado || !Number.isInteger(guardado.id) || guardado.id <= 0 || !Number.isFinite(guardado.total) || (original && guardado.id !== original.id)) throw new Error('El servidor no confirmó el movimiento. Revisá tus movimientos antes de reintentar.');
             if (original) {
+                // Aplica el comportamiento específico del formulario de edición.
                 await alGuardar(guardado);
                 return;
             }
@@ -313,8 +373,10 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
             mostrarMensaje('Movimiento guardado correctamente. Total: ' + formatearPesos(guardado.total) + '.', 'exito');
             if (document.querySelector('#resumen')) NipinResumen.actualizarTrasCambio();
         } catch (error) {
+            // Informa el fallo sin sustituir el resultado por un éxito.
             if (revision !== revisionDatos) return;
             if (error.status === 401) {
+                // Limpia la sesión vencida y conserva sólo el borrador permitido.
                 const enfocar = activa;
                 NipinSesion.establecer(null, { conservarBorrador: true });
                 estado.textContent = prefijo ? 'La sesión venció. La edición se descartó.' : 'La sesión venció. Ingresá con la misma cuenta para recuperar tu borrador.';
@@ -323,12 +385,15 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
                 return;
             }
             if (original && error.status === 404) {
+                // Aplica el comportamiento específico del formulario de edición.
                 await alNoDisponible();
                 return;
             }
             mostrarMensaje(error.message, 'error');
         } finally {
+            // Restablece los controles y el estado al finalizar la operación.
             if (revision === revisionDatos) {
+                // Mantiene el resultado sólo para la vista o sesión vigente.
                 enviando = false;
                 form.setAttribute('aria-busy', 'false');
                 bloquear(!preparado || !activa);
@@ -347,6 +412,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
     return {
         entrar, cambiarSesion,
         salir() {
+            // Desactiva la vista para que las respuestas pendientes no la actualicen.
             activa = false;
             entrada++;
             preparado = false;
@@ -357,6 +423,7 @@ function crearFormularioMovimiento({ form, avisoSesion, estado, reintentar, pref
 }
 
 const NipinRegistro = (() => {
+    // Conecta el formulario de alta con la lógica compartida.
     const form = document.querySelector('#form-movimiento');
     return form ? crearFormularioMovimiento({ form, avisoSesion: document.querySelector('#aviso-sesion'), estado: document.querySelector('#registro-estado'), reintentar: document.querySelector('#registro-reintentar') }) : null;
 })();

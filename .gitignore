@@ -1,3 +1,5 @@
+# Mantiene los ajustes privados de conexión fuera del repositorio.
 /config/conexion.local.php
+# Excluye dependencias y el archivo de bloqueo local de las auditorías.
 /tests/a11y/node_modules/
 /tests/a11y/package-lock.json

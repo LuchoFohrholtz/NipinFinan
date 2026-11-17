@@ -1,19 +1,15 @@
--- NipinFinan - Base de datos
--- Importar desde phpMyAdmin (pestaña "Importar") o con:
---   mysql -u root < sql/nipinfinan.sql
+-- Crea la base y sus tablas al importar este script en MySQL o phpMyAdmin.
 
+-- Crea la base con soporte de caracteres Unicode.
 CREATE DATABASE IF NOT EXISTS nipinfinan
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
+-- Selecciona la base donde se crearán las tablas.
 USE nipinfinan;
 
 
--- =============================
--- USUARIOS
--- =============================
--- password es VARCHAR(255) para guardar el hash BCRYPT de password_hash()
--- (hoy ocupa 60 caracteres, pero PHP recomienda dejar margen).
+-- Guarda las cuentas con correo único y espacio suficiente para el hash BCRYPT.
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -24,10 +20,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 ) ENGINE=InnoDB;
 
 
--- =============================
--- MOVIMIENTOS (ingresos y gastos de cada usuario)
--- =============================
--- Reemplaza al localStorage: cada movimiento pertenece a un usuario.
+-- Guarda ingresos y gastos vinculados a su usuario mediante una clave foránea.
 
 CREATE TABLE IF NOT EXISTS movimientos (
     id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -44,6 +37,7 @@ CREATE TABLE IF NOT EXISTS movimientos (
     medio_pago   VARCHAR(50)   NOT NULL,
     comentario   VARCHAR(500)  NOT NULL DEFAULT '',
     creado_en    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    -- Elimina los movimientos asociados si se elimina su usuario.
     CONSTRAINT fk_movimientos_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         ON DELETE CASCADE

@@ -1,38 +1,51 @@
-// Pruebas de integración y seguridad sobre la API real (PHP + MySQL), AE4 J4/J5.
-// Usa dos cuentas nuevas en cada ejecución. Ejecutar contra una base de prueba:
-//   node tests/integracion-seguridad.mjs http://localhost/NipinFinan/
-// Requiere Node 18 o superior (fetch nativo). No usa dependencias externas.
+// Comprueba la API real con dos cuentas nuevas en una base de prueba; requiere Node 18 o superior.
 
 const BASE = (process.argv[2] || "http://localhost/NipinFinan/").replace(/\/?$/, "/");
 const resultados = [];
 function caso(id, descripcion, ok, detalle = "") {
+    // Registra el resultado y el detalle de una comprobación.
     resultados.push({ id, descripcion, ok: Boolean(ok), detalle });
 }
 
 class Cliente {
-    constructor() { this.cookies = new Map(); this.token = null; }
+    constructor() {
+        // Inicializa el estado de esta instancia.
+        this.cookies = new Map(); this.token = null;
+    }
     async pedir(ruta, { metodo = "GET", cuerpo, token = this.token, crudo } = {}) {
+        // Envía la petición de prueba conservando cookies, token y respuesta.
         const headers = {};
         if (this.cookies.size) headers.Cookie = [...this.cookies].map(([k, v]) => `${k}=${v}`).join("; ");
         if (cuerpo !== undefined || crudo !== undefined) headers["Content-Type"] = "application/json";
         if (token) headers["X-CSRF-Token"] = token;
         const r = await fetch(BASE + ruta, { method: metodo, headers, body: crudo ?? (cuerpo === undefined ? undefined : JSON.stringify(cuerpo)), redirect: "manual" });
         for (const c of r.headers.getSetCookie?.() || []) {
+            // Recorre los elementos para acumular o comprobar sus resultados.
             const [par] = c.split(";"); const i = par.indexOf("=");
             this.cookies.set(par.slice(0, i).trim(), par.slice(i + 1).trim());
         }
         const texto = await r.text();
-        let json = null; try { json = JSON.parse(texto); } catch { /* no JSON */ }
+        let json = null; try {
+            // Ejecuta la operación y permite tratar sus errores.
+            json = JSON.parse(texto);
+        } catch { /* no JSON */ }
         return { status: r.status, json, texto, tipo: r.headers.get("content-type") || "", setCookie: r.headers.getSetCookie?.() || [] };
     }
-    async sesion() { const r = await this.pedir("api/sesion.php", { token: null }); this.token = r.json?.csrfToken; return r; }
-    get sid() { return this.cookies.get("PHPSESSID") || [...this.cookies.values()][0]; }
+    async sesion() {
+        // Solicita una sesión de prueba y conserva su token CSRF.
+        const r = await this.pedir("api/sesion.php", { token: null }); this.token = r.json?.csrfToken; return r;
+    }
+    get sid() {
+        // Obtiene el identificador de sesión conservado por el cliente de prueba.
+        return this.cookies.get("PHPSESSID") || [...this.cookies.values()][0];
+    }
 }
 
 const sello = Date.now();
 const movimiento = (extra = {}) => ({ tipo: "gasto", descripcion: "Supermercado", monto: 10000, fecha: "2026-11-14", categoria: "Alimentación", medioPago: "Efectivo", cuotas: 1, comentario: "", ...extra });
 
 async function crearCuenta(nombre) {
+    // Registra e inicia una cuenta nueva para aislar las pruebas.
     const c = new Cliente();
     await c.sesion();
     const email = `${nombre}.${sello}@example.com`;
@@ -106,6 +119,7 @@ const invalidos = [
     ["VAL-08", "Descripción vacía", movimiento({ descripcion: "" })],
 ];
 for (const [id, d, cuerpo] of invalidos) {
+    // Recorre los elementos para acumular o comprobar sus resultados.
     const r = await A.c.pedir("api/mis_movimientos.php", { metodo: "POST", cuerpo });
     caso(id, `${d} responde 400 con estado error`, r.status === 400 && r.json?.estado === "error", r.status + " " + (r.json?.mensaje || ""));
 }

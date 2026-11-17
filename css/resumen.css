@@ -1,5 +1,7 @@
 /* AE2 - Luciano Fohrholtz. Estilos limitados al resumen del inicio. */
+/* Oculta los elementos marcados con hidden aunque otra clase use display. */
 #resumen [hidden] { display: none !important; }
+/* Distribuye los elementos en varias filas cuando falta espacio. */
 #resumen .resumen-cabecera {
     display: flex;
     align-items: center;
@@ -8,9 +10,13 @@
     gap: 16px;
     margin-bottom: 24px;
 }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen h2 { margin: 0 0 8px; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-cabecera p { margin: 0; color: #475569; }
+/* Distribuye los elementos en varias filas cuando falta espacio. */
 #resumen .resumen-modo { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-etiqueta {
     border: 1px solid #bfdbfe;
     border-radius: 6px;
@@ -20,6 +26,7 @@
     font-size: 14px;
     font-weight: bold;
 }
+/* Distribuye los elementos en varias filas cuando falta espacio. */
 #resumen .resumen-filtros {
     display: flex;
     align-items: flex-end;
@@ -27,9 +34,13 @@
     gap: 16px;
     margin-bottom: 20px;
 }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .campo { flex: 1 1 180px; margin: 0; }
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 #resumen .boton { font: inherit; }
+/* Indica visualmente que el control está temporalmente deshabilitado. */
 #resumen .boton:disabled { cursor: wait; opacity: .65; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-aviso {
     padding: 12px 16px;
     margin: 0 0 20px;
@@ -38,30 +49,52 @@
     border-radius: 6px;
     color: #1e40af;
 }
+/* Define los colores del componente manteniendo su contraste. */
 #resumen .resumen-aviso.error {
     background: #fff7ed;
     border-color: #fed7aa;
     color: #9a3412;
 }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-contexto { color: #475569; margin: 0 0 16px; }
+/* Ajusta el tamaño o la presentación del componente seleccionado. */
 #resumen .tarjeta { min-width: 0; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .tarjeta p { margin: 0 0 12px; }
+/* Permite cortar texto largo para evitar desbordamientos. */
 #resumen .tarjeta h3 { font-size: 26px; overflow-wrap: anywhere; margin: 0; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .tarjeta small { display: block; margin-top: 10px; color: #475569; line-height: 1.5; }
+/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
 #resumen .resumen-categoria { font-size: 21px !important; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-vacio { margin-top: 20px; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-grafico { margin-top: 24px; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-grafico h3, #resumen .resumen-comparacion h3 { margin-top: 0; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-barras { list-style: none; padding: 0; margin: 0; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-barras li + li { margin-top: 18px; }
+/* Distribuye los elementos en varias filas cuando falta espacio. */
 #resumen .resumen-barra-texto { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+/* Define el fondo y la altura de las barras del resumen. */
 #resumen .resumen-barra-base { height: 12px; background: #dbeafe; border-radius: 6px; overflow: hidden; }
+/* Colorea la proporción de gasto calculada por JavaScript. */
 #resumen .resumen-barra-valor { display: block; height: 100%; background: #2563eb; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-comparacion { margin-top: 24px; }
+/* Ajusta el espacio y la presentación del componente seleccionado. */
 #resumen .resumen-comparacion p { margin-bottom: 0; }
+/* Dibuja un contorno visible para identificar el foco de teclado. */
 #resumen a:focus-visible, #resumen button:focus-visible, #resumen select:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+/* Aplica estos ajustes cuando la pantalla tiene hasta setecientos píxeles de ancho. */
 @media (max-width: 700px) {
+    /* Ordena los elementos verticalmente mediante Flexbox. */
     #resumen .resumen-filtros { flex-direction: column; align-items: stretch; }
+    /* Ajusta el tamaño o la presentación del componente seleccionado. */
     #resumen .campo { flex: auto; }
+    /* Ajusta el tamaño o la presentación del componente seleccionado. */
     #resumen .resumen-cabecera { align-items: flex-start; }
 }

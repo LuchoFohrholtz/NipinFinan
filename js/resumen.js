@@ -1,6 +1,6 @@
-// NipinFinan - AE2, opción 2 - Luciano Fohrholtz.
-// El resumen solo lee movimientos; la demostración usa un JSON separado.
+// NipinFinan, resumen AE2 de Luciano Fohrholtz con demostración separada.
 const NipinResumen = (() => {
+    // Conserva filtros y datos separados para resumen real y demostración.
     if (!document.querySelector("#resumen")) return null;
     let modo = "real";
     let sinSesion = true;
@@ -21,6 +21,7 @@ const NipinResumen = (() => {
     const estado = panel.querySelector("#resumen-estado");
 
     function bloquear(ocupado) {
+        // Habilita o bloquea los controles durante la operación.
         cargando = ocupado;
         panel.setAttribute("aria-busy", String(ocupado));
         botonDemo.disabled = botonActualizar.disabled = ocupado;
@@ -28,30 +29,36 @@ const NipinResumen = (() => {
     }
 
     function mesActual() {
+        // Obtiene el año y mes de la fecha local.
         const hoy = new Date();
         return hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, "0");
     }
 
     function nombreMes(valor) {
+        // Convierte año-mes en un nombre de mes legible.
         const [anio, numero] = valor.split("-");
         const nombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         return nombres[Number(numero) - 1] + " de " + anio;
     }
 
     function mesAnterior(valor) {
+        // Calcula el mes anterior contemplando el cambio de año.
         const [anio, numero] = valor.split("-").map(Number);
         return (numero === 1 ? anio - 1 : anio) + "-" + String(numero === 1 ? 12 : numero - 1).padStart(2, "0");
     }
 
     function pesos(centavos) {
+        // Formatea el importe como moneda argentina.
         return (centavos / 100).toLocaleString("es-AR", { style: "currency", currency: "ARS", minimumFractionDigits: centavos % 100 === 0 ? 0 : 2 });
     }
 
     function porcentaje(valor) {
+        // Presenta un porcentaje con un decimal como máximo.
         return valor.toLocaleString("es-AR", { maximumFractionDigits: 1 }) + "%";
     }
 
     function mostrarAviso(texto, error = false) {
+        // Muestra u oculta el aviso y ajusta su prioridad para lectores de pantalla.
         aviso.textContent = texto;
         aviso.hidden = !texto;
         aviso.classList.toggle("error", error);
@@ -61,8 +68,10 @@ const NipinResumen = (() => {
 
     // Validamos sin corregir ni escribir los registros del módulo de Santiago.
     function validarMovimientos(datos) {
+        // Filtra registros incompletos o inválidos antes de resumirlos.
         if (!Array.isArray(datos)) throw new Error("Los movimientos no son una lista.");
         return datos.filter(m => {
+            // Descarta el registro que no cumple la condición comprobada.
             if (!m || !["ingreso", "gasto"].includes(m.tipo)) return false;
             if (typeof m.total !== "number" || m.total <= 0 || !Number.isFinite(m.total) || !Number.isSafeInteger(Math.round(m.total * 100)) || Number(m.total.toFixed(2)) !== m.total) return false;
             if (typeof m.categoria !== "string" || !m.categoria.trim()) return false;
@@ -75,11 +84,13 @@ const NipinResumen = (() => {
 
     // Una petición HTTP real; los ejemplos nunca se guardan en la cuenta.
     async function cargarEjemplo() {
+        // Obtiene los movimientos ficticios sin guardarlos en la cuenta.
         const datos = await NipinAPI.solicitarJSON("data/metricas.json");
         return datos.movimientos;
     }
 
     function agregarOpcion(select, valor, texto) {
+        // Agrega una opción al selector con texto seguro.
         const opcion = document.createElement("option");
         opcion.value = valor;
         opcion.textContent = texto;
@@ -87,6 +98,7 @@ const NipinResumen = (() => {
     }
 
     function prepararFiltros() {
+        // Reconstruye meses y categorías conservando una selección válida.
         const seleccionado = filtros[modo]?.mes;
         const seleccionCategoria = filtros[modo]?.categoria;
         const meses = [...new Set(movimientos.map(m => m.fecha.slice(0, 7)))];
@@ -107,16 +119,20 @@ const NipinResumen = (() => {
     }
 
     function guardarFiltros() {
+        // Conserva los filtros separados para datos reales y demostración.
         filtros[modo] = { mes: mes.value, categoria: categoria.value };
     }
 
     function filtrar(periodo) {
+        // Selecciona movimientos por período y categoría.
         return movimientos.filter(m => (periodo === "todos" || m.fecha.slice(0, 7) === periodo) && (categoria.value === "todas" || m.categoria === categoria.value));
     }
 
     // Sumamos en centavos y usamos total, sin volver a calcular las cuotas.
     function sumar(lista, tipo) {
+        // Acumula importes en centavos y comprueba el rango numérico seguro.
         return lista.filter(m => m.tipo === tipo).reduce((total, m) => {
+            // Acumula el total en centavos y controla que siga siendo un entero seguro.
             const suma = total + Math.round(m.total * 100);
             if (!Number.isSafeInteger(suma)) throw new Error("Los importes acumulados superan el rango seguro del tablero.");
             return suma;
@@ -124,18 +140,22 @@ const NipinResumen = (() => {
     }
 
     function gastosPorCategoria(lista) {
+        // Agrupa los gastos y los ordena de mayor a menor importe.
         const grupos = new Map();
         lista.filter(m => m.tipo === "gasto").forEach(m => {
+            // Acumula los gastos en centavos para cada categoría.
             grupos.set(m.categoria, (grupos.get(m.categoria) || 0) + Math.round(m.total * 100));
         });
         return [...grupos].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "es"));
     }
 
     function mostrarBarras(grupos, gastos) {
+        // Construye las barras y sus etiquetas de distribución de gastos.
         const lista = panel.querySelector("#resumen-barras");
         lista.replaceChildren();
         panel.querySelector("#resumen-sin-gastos").hidden = grupos.length > 0;
         grupos.forEach(([nombre, importe]) => {
+            // Construye una barra con su categoría, importe y porcentaje.
             const item = document.createElement("li");
             const texto = document.createElement("div");
             texto.className = "resumen-barra-texto";
@@ -158,11 +178,13 @@ const NipinResumen = (() => {
     }
 
     function diferencia(actual, anterior) {
+        // Describe la diferencia de importe respecto del período anterior.
         const valor = actual - anterior;
         return valor === 0 ? "Sin cambios" : (valor > 0 ? "+" : "−") + pesos(Math.abs(valor));
     }
 
     function mostrarComparacion(ingresos, gastos) {
+        // Compara ingresos y gastos contra el mes anterior con el mismo filtro.
         const bloque = panel.querySelector("#resumen-comparacion");
         bloque.hidden = !datosDisponibles || mes.value === "todos";
         if (bloque.hidden) return;
@@ -175,6 +197,7 @@ const NipinResumen = (() => {
     }
 
     function mostrarResumen() {
+        // Actualiza indicadores, estados vacíos, barras y anuncios del resumen.
         const lista = filtrar(mes.value);
         const ingresos = sumar(lista, "ingreso");
         const gastos = sumar(lista, "gasto");
@@ -213,6 +236,7 @@ const NipinResumen = (() => {
     }
 
     async function actualizarDatos(destino = modo) {
+        // Carga datos reales o ficticios y conserva la última vista válida ante errores.
         if (cargando) return;
         const revision = ++revisionDatos;
         const foco = document.activeElement;
@@ -220,14 +244,14 @@ const NipinResumen = (() => {
         bloquear(true);
         mostrarAviso(destino === "demo" ? "Cargando datos de ejemplo…" : "Actualizando resumen…");
         try {
+            // Ejecuta la operación y permite tratar sus errores.
             let datos;
             if (destino === "demo") datos = await cargarEjemplo();
             else {
+                // Consulta los movimientos propios mediante una sesión comprobada.
                 const sesion = await NipinSesion.consultar(true);
                 if (revision !== revisionDatos) {
-                    // Esta misma lectura puede detectar un cambio de cuenta.
-                    // La limpieza invalida lo anterior; releemos para la cuenta
-                    // ya verificada, sin restaurar la respuesta descartada.
+                    // Relee los datos de la cuenta comprobada cuando la lectura anterior provocó una limpieza.
                     if (activa && !cargando && revisionDatos === ultimaLimpieza && sesion?.usuario && NipinSesion.esUsuario(sesion.usuario.email)) return actualizarDatos("real");
                     return;
                 }
@@ -249,6 +273,7 @@ const NipinResumen = (() => {
             mostrarAviso(ignorados ? "Se omitieron " + ignorados + " movimientos con datos incompletos o inválidos. Los indicadores incluyen solo registros válidos." : "", ignorados > 0);
             if (modo === "real" && sinSesion) mostrarAviso("Iniciá sesión para ver tus movimientos. Mientras tanto podés ver la demostración.");
         } catch (error) {
+            // Informa el fallo sin sustituir el resultado por un éxito.
             if (revision !== revisionDatos) return;
             // Mantenemos la última vista correcta y ofrecemos reintentar.
             console.warn("No se pudo actualizar el resumen:", error.message);
@@ -256,6 +281,7 @@ const NipinResumen = (() => {
             mostrarAviso((destino === "demo" ? "No pudimos cargar la demostración." : "No pudimos leer tus movimientos.") + anterior + " Intentá nuevamente.", true);
             if (destino === "demo" && modo === "real") botonDemo.textContent = "Reintentar demostración";
         } finally {
+            // Restablece los controles y el estado al finalizar la operación.
             if (revision !== revisionDatos) return;
             bloquear(false);
             if (activa && devolverFoco && document.activeElement === document.body) foco.focus({ preventScroll: true });
@@ -264,7 +290,9 @@ const NipinResumen = (() => {
 
     // Los eventos se registran una sola vez, sin atributos on*.
     function cambiarFiltro() {
+        // Guarda la selección y recalcula el resumen cuando hay datos disponibles.
         if (!cargando && datosDisponibles) {
+            // Conserva la nueva selección antes de volver a representar el resumen.
             guardarFiltros();
             mostrarResumen();
         }
@@ -278,13 +306,13 @@ const NipinResumen = (() => {
     bloquear(false);
     return {
         actualizarTrasCambio() {
+            // Invalida el resumen anterior y consulta nuevamente los datos reales.
             revisionDatos++;
             bloquear(false);
             return actualizarDatos('real');
         },
         limpiar(usuario = null) {
-            // Invalida lecturas anteriores: un GET pendiente nunca repone los
-            // movimientos de la cuenta que acaba de cerrar sesión.
+            // Impide que una lectura pendiente restaure movimientos de una sesión cerrada.
             revisionDatos++;
             ultimaLimpieza = revisionDatos;
             movimientos = [];
@@ -298,12 +326,14 @@ const NipinResumen = (() => {
             mostrarAviso(usuario ? "Actualizá el resumen para consultar los movimientos de tu cuenta." : "Iniciá sesión para ver tus movimientos. Mientras tanto podés ver la demostración.");
         },
         entrar() {
+            // Activa la vista y prepara sus datos antes de habilitar controles.
             activa = true;
             revisionDatos++;
             bloquear(false);
             actualizarDatos();
         },
         salir() {
+            // Desactiva la vista para que las respuestas pendientes no la actualicen.
             activa = false;
             revisionDatos++;
             bloquear(false);

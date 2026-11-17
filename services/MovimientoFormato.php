@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
+// Adapta los nombres y tipos internos al contrato JSON de la API.
 final class MovimientoFormato
 {
+    // Transforma una fila de MySQL en los campos públicos del movimiento.
     public static function desdeFila(array $fila): array
     {
         return [
