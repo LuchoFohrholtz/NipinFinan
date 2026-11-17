@@ -141,6 +141,8 @@ Los resultados y las evidencias están en [docs/verificaciones/](docs/verificaci
 
 ## Documentación
 
+- [Informe técnico final AE4 (PDF)](docs/Informe_AE4_NipinFinan.pdf)
+
 - [Mapa de carpetas y archivos](docs/mapa-proyecto.md)
 
 - [Contrato de API](docs/contrato-api.md)
@@ -152,3 +154,9 @@ Los resultados y las evidencias están en [docs/verificaciones/](docs/verificaci
 ## Flujo de trabajo Git
 
 Cada integrante trabajó en su rama (`ae4/santi-backend`, `ae4/lucho-spa`, `ae4/juanqui-calidad`) e integró mediante Pull Requests en `ae4-integracion`, con *merge commit* para conservar el historial de los tres. La versión final se fusiona en `main`.
+
+## Versión del informe y resguardo
+
+El informe documenta la versión funcional `75888a2`. El commit `62d96e6` añadió comentarios y el mapa de archivos conservando las instrucciones ejecutables. Esta entrega incorpora además el PDF y las referencias de sus evidencias; el código funcional se mantiene. Las capturas de Chrome sobre XAMPP están en las páginas 16 a 18 del informe y la inspección de red en la página 20.
+
+Para ejecutar una copia de resguardo, extraer la carpeta `NipinFinan` en `htdocs` y seguir la instalación de este README. El paquete incluye el código, `sql/nipinfinan.sql` y el informe; los ajustes privados de conexión y las dependencias instaladas localmente no forman parte del repositorio.

@@ -2,7 +2,7 @@
 
 ## Estado de implementación
 
-Implementados y verificados: registro/login/logout con sesiones y CSRF; GET de sesión/token; CRUD de movimientos propios; GET catálogo de categorías y detalle con totales e historial privados. SQL en modelos con PDO Singleton por petición. MovimientoService comparte validación y cálculos; MovimientoFormato conserva el JSON de movimientos en ambos endpoints. La SPA de Luciano se desarrolla en su rama; su helper debe activar CSRF_REQUERIDO al integrar. No se declara terminada la interfaz ni su auditoría por tener la API lista. El módulo de promociones fue retirado del alcance por decisión del equipo.
+Implementados y verificados: registro/login/logout con sesiones y CSRF; GET de sesión/token; CRUD de movimientos propios; GET catálogo de categorías y detalle con totales e historial privados. SQL en modelos con PDO Singleton por petición. MovimientoService comparte validación y cálculos; MovimientoFormato conserva el JSON de movimientos en ambos endpoints. La SPA está integrada en main y el helper mantiene CSRF_REQUERIDO en true. El informe final documenta la interfaz, la auditoría y las capturas de accesibilidad sobre XAMPP. El módulo de promociones fue retirado del alcance por decisión del equipo.
 
 ## Reglas comunes
 

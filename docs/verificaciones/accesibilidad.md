@@ -67,7 +67,11 @@ En todos los pasos, el elemento enfocado tiene contorno (`outline`) sólido de 3
 
 Un movimiento con la descripción `<img src=x onerror=alert(1)> Heladera` se muestra como texto literal en el listado; no se crea ningún elemento `<img>` en la vista (`.textContent`).
 
-## Captura oficial (pendiente en XAMPP)
+## Capturas finales en XAMPP
+
+El [informe final AE4](../Informe_AE4_NipinFinan.pdf), incorporado el 17/11/2026, contiene las capturas de Chrome DevTools sobre XAMPP: Inicio (página 16), Movimientos (17) y Categorías (18), con Accesibilidad 100. La inspección de red del alta de un movimiento está en la página 20. Estas imágenes complementan la auditoría automatizada documentada arriba; su incorporación no representa una nueva ejecución de las pruebas.
+
+### Cómo repetir la captura
 
 1. Abrir `http://localhost/NipinFinan/` en Chrome, en una ventana de incógnito para que las extensiones no alteren el resultado.
 2. F12 → pestaña **Lighthouse** → Mode *Navigation*, Device *Desktop*, Categories: solo **Accessibility** → *Analyze page load*.
