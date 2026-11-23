@@ -1,4 +1,4 @@
-// Resuelve rutas registradas y detalles de categoría por su identificador público.
+// Muestra la vista de index.html indicada por el hash y coordina su módulo y foco.
 const NipinNavegacion = (() => {
     // Registra rutas y coordina la navegación sin recargar.
     const contenido = document.querySelector("#contenido");

@@ -18,7 +18,7 @@ $usuario = isset($_SESSION['usuario_id']) ? [
     'email' => $_SESSION['usuario_email'],
 ] : null;
 
-// Entrega el estado público y el token para preparar futuras escrituras.
+// Devuelve JSON a js/api.js; el token se obtiene de config/seguridad.php.
 echo json_encode([
     'estado' => 'exito',
     'usuario' => $usuario,

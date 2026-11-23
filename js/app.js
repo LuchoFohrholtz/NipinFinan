@@ -1,4 +1,4 @@
-// NipinFinan - módulos compartidos y estado de sesión en memoria.
+// Estado de sesión y formulario compartido: el envío continúa en js/api.js.
 const NipinSesion = (() => {
     // Coordina la identidad visible y la limpieza de datos privados.
     const caja = document.querySelector('#sesion');

@@ -91,7 +91,7 @@ try {
         responder(200, ['estado' => 'exito', 'mensaje' => 'Movimiento eliminado correctamente.', 'id' => $id]);
     }
 
-    // Lee y recalcula los datos tanto para alta como para edición.
+    // POST y PUT comparten las reglas de services/MovimientoService.php.
     $id = $metodo === 'PUT' ? leerIdMovimiento() : null;
     $entrada = leerEntradaMovimiento();
     $servicio = new MovimientoService();
@@ -110,7 +110,7 @@ try {
         ]);
     }
 
-    // Inserta un movimiento propio y responde 201 con sus datos.
+    // MovimientoModel.php ejecuta el INSERT; esta API responde 201 con el resultado.
     $movimiento['id'] = $movimientos->crear($usuarioId, $movimiento);
     responder(201, [
         'estado' => 'exito',

@@ -1,5 +1,9 @@
 # NipinFinan
 
+## Encontrar y explicar el código
+
+Abrir `NipinFinan.code-workspace` en VS Code para ver las capas ordenadas. La guía [EMPEZAR_AQUI.md](EMPEZAR_AQUI.md) indica qué archivo abrir y qué función buscar en cada recorrido. Esta organización del editor conserva las rutas de la aplicación y los números de línea del código.
+
 Aplicación web de finanzas personales para registrar ingresos y gastos, consultarlos, editarlos y eliminarlos, y analizarlos por período y por categoría. Trabajo integrador AE4 / TIFAS de **Paradigmas y Lenguajes de Programación III**, Ingeniería en Sistemas de Información, Universidad de la Cuenca del Plata. Profesor: Ing. Dante Sicardi. Comisión A.
 
 ## Equipo
@@ -48,7 +52,7 @@ NipinFinan/
 │   ├── api.js               Cliente HTTP único: fetch, JSON, sesión y token CSRF
 │   ├── navegacion.js        Enrutador por hash (#/inicio, #/movimientos, ...) y gestión del foco
 │   ├── app.js               Alta de movimientos y estado de sesión
-│   ├── acceso.js            Registro, login y logout
+│   ├── acceso.js            Registro y login
 │   ├── listado.js           Listado, edición y baja
 │   ├── categorias.js        Catálogo y detalle de categorías
 │   └── resumen.js           Resumen por período y modo de demostración

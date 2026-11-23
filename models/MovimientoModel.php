@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Encapsula el CRUD y filtra siempre los movimientos por propietario.
+// Persistencia de api/mis_movimientos.php: SQL preparado y filtro por propietario.
 final class MovimientoModel
 {
     private PDO $conexion;

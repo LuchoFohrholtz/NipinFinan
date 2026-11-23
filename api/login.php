@@ -42,7 +42,7 @@ if ($email === '' || $password === '') {
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/UsuarioModel.php';
 
-// Busca la cuenta y procesa la autenticación.
+// Consulta UsuarioModel.php; luego verifica el hash y establece la sesión.
 try {
     $usuarios = new UsuarioModel($pdo);
     $usuario = $usuarios->buscarPorEmail($email);

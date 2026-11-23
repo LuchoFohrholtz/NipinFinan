@@ -30,7 +30,7 @@ require_once __DIR__ . '/../models/CategoriaModel.php';
 require_once __DIR__ . '/../models/MovimientoModel.php';
 require_once __DIR__ . '/../services/MovimientoFormato.php';
 
-// Consulta el catálogo o su detalle para el usuario de la sesión.
+// CategoriaModel.php calcula totales; MovimientoModel.php obtiene el historial propio.
 try {
     $usuarioId = (int) $_SESSION['usuario_id'];
     $categorias = new CategoriaModel($pdo);

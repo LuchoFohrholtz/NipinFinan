@@ -68,7 +68,7 @@ if (strlen($password) < 8 || strlen($password) > 72 || str_contains($password, "
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/UsuarioModel.php';
 
-// Genera el hash y persiste la cuenta sin iniciar sesión automáticamente.
+// Genera BCRYPT y guarda con UsuarioModel.php; luego se debe iniciar sesión.
 try {
     $usuarios = new UsuarioModel($pdo);
     // Transforma la contraseña en un hash BCRYPT antes de guardarla.

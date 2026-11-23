@@ -1,4 +1,4 @@
-// Catálogo y detalle privados. El catálogo y todos sus importes vienen de PHP.
+// Pide catálogo e historial a api/categorias.php y los presenta como texto.
 const NipinCategorias = (() => {
     // Coordina las vistas privadas de catálogo y detalle.
     if (!document.querySelector('#vista-categorias')) return null;

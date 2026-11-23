@@ -1,4 +1,4 @@
-// Formularios persistentes de la SPA: un evento por formulario y un solo envío.
+// Formularios de index.html: envían registro y login mediante js/api.js.
 const NipinAcceso = (() => {
     // Conecta los formularios de registro y login con la API.
     const login = document.querySelector("#form-login");

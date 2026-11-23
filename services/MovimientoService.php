@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Concentra la validación y los cálculos compartidos por POST y PUT.
+// Reglas compartidas por POST y PUT de api/mis_movimientos.php.
 final class MovimientoService
 {
     private array $tarifas;

@@ -1,4 +1,4 @@
-// Capa HTTP compartida. Se carga antes de app.js y los módulos de cada página.
+// Conecta las vistas con api/: prepara HTTP, JSON, sesión, CSRF y errores.
 const NipinAPI = (() => {
     // Exige el token real de sesión en todas las escrituras.
     const CSRF_REQUERIDO = true;

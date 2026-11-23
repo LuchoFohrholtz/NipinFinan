@@ -1,0 +1,73 @@
+{
+  "folders": [
+    {
+      "name": "00 - Inicio: HTML y guía",
+      "path": "."
+    },
+    {
+      "name": "01 - Vista: CSS",
+      "path": "css"
+    },
+    {
+      "name": "02 - Vista: JavaScript",
+      "path": "js"
+    },
+    {
+      "name": "03 - Controladores: API PHP",
+      "path": "api"
+    },
+    {
+      "name": "04 - Reglas de negocio: servicios",
+      "path": "services"
+    },
+    {
+      "name": "05 - Modelos: SQL y PDO",
+      "path": "models"
+    },
+    {
+      "name": "06 - Conexión, sesión y seguridad",
+      "path": "config"
+    },
+    {
+      "name": "07 - Catálogos y tarifas JSON",
+      "path": "data"
+    },
+    {
+      "name": "08 - Base de datos MySQL",
+      "path": "sql"
+    },
+    {
+      "name": "09 - Documentación e informe",
+      "path": "docs"
+    },
+    {
+      "name": "10 - Pruebas",
+      "path": "tests"
+    }
+  ],
+  "settings": {
+    "explorer.sortOrder": "default",
+    "explorer.compactFolders": false,
+    "workbench.editor.enablePreview": false,
+    "breadcrumbs.enabled": true,
+    "files.exclude": {
+      "api": true,
+      "config": true,
+      "css": true,
+      "data": true,
+      "docs": true,
+      "js": true,
+      "models": true,
+      "services": true,
+      "sql": true,
+      "tests": true,
+      "comprar.html": true,
+      "listado_box.html": true,
+      "listado_tabla.html": true,
+      "login.html": true,
+      "producto.html": true,
+      "**/.git": true,
+      "**/node_modules": true
+    }
+  }
+}

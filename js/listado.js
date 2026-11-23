@@ -1,4 +1,4 @@
-// Listado privado de la SPA. Los importes y las filas proceden siempre de la API.
+// Consulta, edita y elimina mediante js/api.js; PHP autoriza cada operación.
 const NipinListado = (() => {
     // Prepara el listado privado, el editor y el diálogo de baja.
     const panel = document.querySelector('#vista-movimientos');

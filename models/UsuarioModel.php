@@ -12,7 +12,7 @@ final class UsuarioModel
         $this->conexion = $conexion;
     }
 
-    // Busca una cuenta por correo mediante una consulta parametrizada.
+    // SELECT usado por api/login.php; recibe correo y devuelve una cuenta o null.
     public function buscarPorEmail(string $email): ?array
     {
         $consulta = $this->conexion->prepare(
