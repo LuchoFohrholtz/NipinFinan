@@ -1,351 +1,492 @@
-<!DOCTYPE html> <!-- Declara un documento HTML5. -->
-<html lang="es"> <!-- Inicia el documento y declara su idioma para tecnología de asistencia. -->
-<!-- Configura idioma, adaptación de pantalla, estilos y scripts del documento. -->
-<head> <!-- Agrupa metadatos, hojas de estilo y scripts. -->
-    <meta charset="UTF-8"> <!-- Usa UTF-8 para representar correctamente los caracteres. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adapta el ancho de la página al dispositivo. -->
-    <title>NipinFinan</title> <!-- Define el título de la pestaña del navegador. -->
-    <!-- Carga las hojas CSS respetando el orden de sus ajustes. -->
-    <link rel="stylesheet" href="css/style.css"> <!-- Carga css/style.css para la presentación. -->
-    <link rel="stylesheet" href="css/resumen.css"> <!-- Carga css/resumen.css para la presentación. -->
-    <link rel="stylesheet" href="css/vistas.css"> <!-- Carga css/vistas.css para la presentación. -->
-    <!-- Carga JavaScript con defer para usar el DOM y respetar las dependencias. -->
-    <script src="js/api.js" defer></script> <!-- Carga js/api.js; defer espera al HTML y conserva el orden de ejecución. -->
-    <script src="js/app.js" defer></script> <!-- Carga js/app.js; defer espera al HTML y conserva el orden de ejecución. -->
-    <script src="js/resumen.js" defer></script> <!-- Carga js/resumen.js; defer espera al HTML y conserva el orden de ejecución. -->
-    <script src="js/acceso.js" defer></script> <!-- Carga js/acceso.js; defer espera al HTML y conserva el orden de ejecución. -->
-    <script src="js/listado.js" defer></script> <!-- Carga js/listado.js; defer espera al HTML y conserva el orden de ejecución. -->
-    <script src="js/categorias.js" defer></script> <!-- Carga js/categorias.js; defer espera al HTML y conserva el orden de ejecución. -->
-    <script src="js/navegacion.js" defer></script> <!-- Carga js/navegacion.js; defer espera al HTML y conserva el orden de ejecución. -->
-</head> <!-- Cierra head y vuelve al contenedor anterior. -->
+<!-- Declara un documento HTML5. -->
+<!DOCTYPE html>
+<!-- Inicia el documento y declara su idioma para tecnología de asistencia. -->
+<html lang="es">
+<!-- Agrupa metadatos, hojas de estilo y scripts. -->
+<head>
+    <!-- Usa UTF-8 para representar correctamente los caracteres. -->
+    <meta charset="UTF-8">
+    <!-- Adapta el ancho de la página al dispositivo. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Define el título de la pestaña del navegador. -->
+    <title>NipinFinan</title>
+    <!-- Carga css/style.css para la presentación. -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Carga css/resumen.css para la presentación. -->
+    <link rel="stylesheet" href="css/resumen.css">
+    <!-- Carga css/vistas.css para la presentación. -->
+    <link rel="stylesheet" href="css/vistas.css">
+    <!-- Carga js/api.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/api.js" defer></script>
+    <!-- Carga js/app.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/app.js" defer></script>
+    <!-- Carga js/resumen.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/resumen.js" defer></script>
+    <!-- Carga js/acceso.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/acceso.js" defer></script>
+    <!-- Carga js/listado.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/listado.js" defer></script>
+    <!-- Carga js/categorias.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/categorias.js" defer></script>
+    <!-- Carga js/navegacion.js; defer espera al HTML y conserva el orden de ejecución. -->
+    <script src="js/navegacion.js" defer></script>
+</head>
 
-<body> <!-- Inicia el contenido de la página. -->
+<!-- Inicia el contenido de la página. -->
+<body>
 
 <!-- Permite saltar la navegación y enfocar el contenido con teclado. -->
-<a href="#contenido" class="boton salto-contenido" id="saltar-contenido">Saltar al contenido</a> <!-- Define un enlace hacia la dirección indicada en href. -->
+<a href="#contenido" class="boton salto-contenido" id="saltar-contenido">Saltar al contenido</a>
 
-<!-- ========== ENCABEZADO Y NAVEGACION ========== -->
-<header> <!-- Inicia el encabezado del sitio. -->
-    <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-        <a href="index.html#/inicio" class="logo" data-ruta="inicio">NipinFinan</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+<!-- Inicia el encabezado del sitio. -->
+<header>
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div class="contenedor">
+        <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+        <a href="index.html#/inicio" class="logo" data-ruta="inicio">NipinFinan</a>
 
-        <!-- Agrupa los enlaces de navegación del sitio. -->
-        <nav aria-label="Navegación principal"> <!-- Agrupa los enlaces de navegación principal. -->
-            <ul class="nav-lista"> <!-- Organiza los elementos como una lista. -->
-                <li><a href="index.html#/inicio" data-ruta="inicio" aria-current="page">Inicio</a></li> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-                <li><a href="index.html#/movimientos" data-ruta="movimientos">Movimientos</a></li> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-                <li><a href="index.html#/categorias" data-ruta="categorias">Categorías</a></li> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-                <li><a href="index.html#/registrar" data-ruta="registrar">Registrar</a></li> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-            </ul> <!-- Cierra ul y vuelve al contenedor anterior. -->
-        </nav> <!-- Cierra nav y vuelve al contenedor anterior. -->
+        <!-- Agrupa los enlaces de navegación principal. -->
+        <nav aria-label="Navegación principal">
+            <!-- Organiza los elementos como una lista. -->
+            <ul class="nav-lista">
+                <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                <li><a href="index.html#/inicio" data-ruta="inicio" aria-current="page">Inicio</a></li>
+                <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                <li><a href="index.html#/movimientos" data-ruta="movimientos">Movimientos</a></li>
+                <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                <li><a href="index.html#/categorias" data-ruta="categorias">Categorías</a></li>
+                <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                <li><a href="index.html#/registrar" data-ruta="registrar">Registrar</a></li>
+            </ul>
+        </nav>
 
-        <!-- Estado de la sesión: lo alterna js/app.js consultando api/mis_movimientos.php -->
-        <div class="sesion" id="sesion"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <a href="index.html#/acceso" data-ruta="acceso" class="boton" id="sesion-ingresar" hidden>Ingresar</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span> <!-- Reserva un fragmento de texto que puede actualizar JavaScript. -->
-            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-</header> <!-- Cierra header y vuelve al contenedor anterior. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="sesion" id="sesion">
+            <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton" id="sesion-ingresar" hidden>Ingresar</a>
+            <!-- Reserva un fragmento de texto que puede actualizar JavaScript. -->
+            <span id="sesion-usuario" hidden>Hola, <strong id="sesion-nombre"></strong></span>
+            <!-- Define un botón operable con teclado para la acción indicada. -->
+            <button type="button" class="boton secundario" id="sesion-salir" hidden>Cerrar sesión</button>
+        </div>
+    </div>
+</header>
 
+<!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+<p id="estado-navegacion" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p>
+<!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+<main id="contenido" tabindex="-1">
 
-<!-- ========== CONTENIDO PRINCIPAL ========== -->
-<p id="estado-navegacion" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-<!-- Agrupa el contenido principal y permite recibir foco programático. -->
-<main id="contenido" tabindex="-1"> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div id="vista-inicio" data-vista="inicio">
 
-    <!-- Agrupa la portada y el resumen dentro de la vista Inicio. -->
-    <div id="vista-inicio" data-vista="inicio"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <!-- Agrupa una sección temática de la vista. -->
+    <section class="inicio">
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="contenedor">
 
-    <!-- Portada -->
-    <section class="inicio"> <!-- Agrupa una sección temática de la vista. -->
-        <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="inicio-texto">
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p class="etiqueta">FINANZAS PERSONALES</p>
 
-            <div class="inicio-texto"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <p class="etiqueta">FINANZAS PERSONALES</p> <!-- Presenta un párrafo informativo o de estado. -->
+                <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+                <h1 id="inicio-titulo" tabindex="-1">Controlá tus gastos de forma simple.</h1>
 
-                <h1 id="inicio-titulo" tabindex="-1">Controlá tus gastos de forma simple.</h1> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    NipinFinan te permite registrar tus gastos e ingresos
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    y organizar tu dinero de manera sencilla.
+                </p>
 
-                <p> <!-- Presenta un párrafo informativo o de estado. -->
-                    NipinFinan te permite registrar tus gastos e ingresos <!-- Presenta el contenido de este elemento en la vista. -->
-                    y organizar tu dinero de manera sencilla. <!-- Presenta el contenido de este elemento en la vista. -->
-                </p> <!-- Cierra p y vuelve al contenedor anterior. -->
+                <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                <a href="index.html#/registrar" data-ruta="registrar" class="boton">
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    Registrar movimiento
+                </a>
+            </div>
 
-                <a href="index.html#/registrar" data-ruta="registrar" class="boton"> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-                    Registrar movimiento <!-- Presenta el contenido de este elemento en la vista. -->
-                </a> <!-- Cierra a y vuelve al contenedor anterior. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
-
+        </div>
+    </section>
 
     <!-- AE2 - Tablero de indicadores de Luciano Fohrholtz -->
-    <section class="seccion" id="resumen" data-modo="real" aria-labelledby="resumen-titulo"> <!-- Agrupa una sección temática de la vista. -->
-        <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <div class="resumen-cabecera"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <div> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <h2 id="resumen-titulo">Resumen de tus movimientos</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <p>Elegí un período y mirá cómo se distribuye tu dinero.</p> <!-- Presenta un párrafo informativo o de estado. -->
-                </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-                <div class="resumen-modo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <span class="resumen-etiqueta" id="resumen-fuente">Mis movimientos</span> <!-- Reserva un fragmento de texto que puede actualizar JavaScript. -->
-                    <button type="button" class="boton secundario" id="resumen-demo" aria-pressed="false">Ver demostración</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-                </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    <section class="seccion" id="resumen" data-modo="real" aria-labelledby="resumen-titulo">
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="contenedor">
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="resumen-cabecera">
+                <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                <div>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h2 id="resumen-titulo">Resumen de tus movimientos</h2>
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Elegí un período y mirá cómo se distribuye tu dinero.</p>
+                </div>
+                <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                <div class="resumen-modo">
+                    <!-- Reserva un fragmento de texto que puede actualizar JavaScript. -->
+                    <span class="resumen-etiqueta" id="resumen-fuente">Mis movimientos</span>
+                    <!-- Define un botón operable con teclado para la acción indicada. -->
+                    <button type="button" class="boton secundario" id="resumen-demo" aria-pressed="false">Ver demostración</button>
+                </div>
+            </div>
 
-            <div class="resumen-filtros"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <label for="resumen-mes">Período</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-                    <select id="resumen-mes"></select> <!-- Define un selector de valores que JavaScript consulta o completa. -->
-                </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-                <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <label for="resumen-filtro-categoria">Categoría</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-                    <select id="resumen-filtro-categoria"></select> <!-- Define un selector de valores que JavaScript consulta o completa. -->
-                </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-                <button type="button" class="boton" id="resumen-actualizar">Actualizar resumen</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="resumen-filtros">
+                <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                <div class="campo">
+                    <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                    <label for="resumen-mes">Período</label>
+                    <!-- Define un selector de valores que JavaScript consulta o completa. -->
+                    <select id="resumen-mes"></select>
+                </div>
+                <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                <div class="campo">
+                    <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                    <label for="resumen-filtro-categoria">Categoría</label>
+                    <!-- Define un selector de valores que JavaScript consulta o completa. -->
+                    <select id="resumen-filtro-categoria"></select>
+                </div>
+                <!-- Define un botón operable con teclado para la acción indicada. -->
+                <button type="button" class="boton" id="resumen-actualizar">Actualizar resumen</button>
+            </div>
 
-            <p id="resumen-demostracion" class="resumen-aviso" hidden><strong>Modo demostración.</strong> Estos importes son ficticios, no pertenecen a tu cuenta y no se guardan como movimientos.</p> <!-- Presenta un párrafo informativo o de estado. -->
-            <!-- Anuncia avisos o errores del resumen cuando cambia su contenido. -->
-            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" aria-atomic="true" hidden></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-            <!-- Resume los indicadores para lectores de pantalla. -->
-            <p id="resumen-estado" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-            <p class="resumen-contexto" id="resumen-contexto"></p> <!-- Presenta un párrafo informativo o de estado. -->
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p id="resumen-demostracion" class="resumen-aviso" hidden><strong>Modo demostración.</strong> Estos importes son ficticios, no pertenecen a tu cuenta y no se guardan como movimientos.</p>
+            <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+            <p id="resumen-aviso" class="resumen-aviso" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+            <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+            <p id="resumen-estado" class="solo-lectores" role="status" aria-live="polite" aria-atomic="true"></p>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p class="resumen-contexto" id="resumen-contexto"></p>
 
-            <ul class="tarjetas"> <!-- Organiza los elementos como una lista. -->
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <p>Ingresos</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <h3 class="ingreso" id="resumen-ingresos">$0</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <small>Total recibido en el período.</small> <!-- Presenta el contenido de este elemento en la vista. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <p>Gastos</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <h3 class="gasto" id="resumen-gastos">$0</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <small>Importe final de los gastos registrados.</small> <!-- Presenta el contenido de este elemento en la vista. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <p>Saldo del período</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <h3 id="resumen-saldo">$0</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <small>Ingresos menos gastos de la selección.</small> <!-- Presenta el contenido de este elemento en la vista. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <p>Porcentaje disponible</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <h3 id="resumen-porcentaje">—</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <small>Parte de tus ingresos que queda disponible.</small> <!-- Presenta el contenido de este elemento en la vista. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <p>Movimientos</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <h3 id="resumen-cantidad">0</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <small>Cantidad de ingresos y gastos registrados.</small> <!-- Presenta el contenido de este elemento en la vista. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <p>Categoría de mayor gasto</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <h3 class="resumen-categoria" id="resumen-categoria-mayor">Sin gastos</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <small id="resumen-categoria-importe">Todavía no hay una categoría de mayor gasto.</small> <!-- Presenta el contenido de este elemento en la vista. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
-            </ul> <!-- Cierra ul y vuelve al contenedor anterior. -->
+            <!-- Organiza los elementos como una lista. -->
+            <ul class="tarjetas">
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Ingresos</p>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3 class="ingreso" id="resumen-ingresos">$0</h3>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    <small>Total recibido en el período.</small>
+                </li>
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Gastos</p>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3 class="gasto" id="resumen-gastos">$0</h3>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    <small>Importe final de los gastos registrados.</small>
+                </li>
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Saldo del período</p>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3 id="resumen-saldo">$0</h3>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    <small>Ingresos menos gastos de la selección.</small>
+                </li>
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Porcentaje disponible</p>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3 id="resumen-porcentaje">—</h3>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    <small>Parte de tus ingresos que queda disponible.</small>
+                </li>
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Movimientos</p>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3 id="resumen-cantidad">0</h3>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    <small>Cantidad de ingresos y gastos registrados.</small>
+                </li>
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Categoría de mayor gasto</p>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3 class="resumen-categoria" id="resumen-categoria-mayor">Sin gastos</h3>
+                    <!-- Presenta el contenido de este elemento en la vista. -->
+                    <small id="resumen-categoria-importe">Todavía no hay una categoría de mayor gasto.</small>
+                </li>
+            </ul>
 
-            <div class="resumen-vacio" id="resumen-vacio"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <p id="resumen-vacio-texto">Todavía no hay movimientos para mostrar.</p> <!-- Presenta un párrafo informativo o de estado. -->
-                <a href="index.html#/registrar" data-ruta="registrar" id="resumen-registrar">Registrar un movimiento →</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="resumen-vacio" id="resumen-vacio">
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p id="resumen-vacio-texto">Todavía no hay movimientos para mostrar.</p>
+                <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                <a href="index.html#/registrar" data-ruta="registrar" id="resumen-registrar">Registrar un movimiento →</a>
+            </div>
 
-            <div class="tarjeta resumen-grafico"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <h3>Gastos por categoría</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                <p>Importe y porcentaje del total de gastos de la selección.</p> <!-- Presenta un párrafo informativo o de estado. -->
-                <p id="resumen-sin-gastos">No hay gastos para graficar con estos filtros.</p> <!-- Presenta un párrafo informativo o de estado. -->
-                <ul id="resumen-barras" class="resumen-barras" aria-label="Distribución de gastos por categoría"></ul> <!-- Organiza los elementos como una lista. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="tarjeta resumen-grafico">
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <h3>Gastos por categoría</h3>
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p>Importe y porcentaje del total de gastos de la selección.</p>
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p id="resumen-sin-gastos">No hay gastos para graficar con estos filtros.</p>
+                <!-- Organiza los elementos como una lista. -->
+                <ul id="resumen-barras" class="resumen-barras" aria-label="Distribución de gastos por categoría"></ul>
+            </div>
 
-            <div class="tarjeta resumen-comparacion" id="resumen-comparacion"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <h3 id="resumen-comparacion-titulo">Comparación con el mes anterior</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                <p>Ingresos: <strong id="resumen-diferencia-ingresos">Sin cambios</strong></p> <!-- Presenta un párrafo informativo o de estado. -->
-                <p>Gastos: <strong id="resumen-diferencia-gastos">Sin cambios</strong></p> <!-- Presenta un párrafo informativo o de estado. -->
-                <small id="resumen-comparacion-nota"></small> <!-- Presenta el contenido de este elemento en la vista. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-            <!-- Explica la necesidad de JavaScript cuando está desactivado. -->
-            <noscript><p>Activá JavaScript para cargar y actualizar el resumen de tus movimientos.</p></noscript> <!-- Muestra esta ayuda cuando JavaScript está desactivado. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="tarjeta resumen-comparacion" id="resumen-comparacion">
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <h3 id="resumen-comparacion-titulo">Comparación con el mes anterior</h3>
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p>Ingresos: <strong id="resumen-diferencia-ingresos">Sin cambios</strong></p>
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p>Gastos: <strong id="resumen-diferencia-gastos">Sin cambios</strong></p>
+                <!-- Presenta el contenido de este elemento en la vista. -->
+                <small id="resumen-comparacion-nota"></small>
+            </div>
+            <!-- Muestra esta ayuda cuando JavaScript está desactivado. -->
+            <noscript><p>Activá JavaScript para cargar y actualizar el resumen de tus movimientos.</p></noscript>
+        </div>
+    </section>
 
+    <!-- Agrupa una sección temática de la vista. -->
+    <section class="seccion">
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="contenedor">
 
-    <!-- Funcionalidades -->
-    <section class="seccion"> <!-- Agrupa una sección temática de la vista. -->
-        <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h2>¿Qué podés hacer?</h2>
 
-            <h2>¿Qué podés hacer?</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <!-- Organiza los elementos como una lista. -->
+            <ul class="tarjetas">
 
-            <ul class="tarjetas"> <!-- Organiza los elementos como una lista. -->
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                    <div class="icono" aria-hidden="true">+</div>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3>Registrar gastos</h3>
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>
+                        <!-- Presenta el contenido de este elemento en la vista. -->
+                        Guardá tus gastos e ingresos.
+                    </p>
+                </li>
 
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <div class="icono" aria-hidden="true">+</div> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <h3>Registrar gastos</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <p> <!-- Presenta un párrafo informativo o de estado. -->
-                        Guardá tus gastos e ingresos. <!-- Presenta el contenido de este elemento en la vista. -->
-                    </p> <!-- Cierra p y vuelve al contenedor anterior. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                    <div class="icono" aria-hidden="true">C</div>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3>Organizar categorías</h3>
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>
+                        <!-- Presenta el contenido de este elemento en la vista. -->
+                        Clasificá tus movimientos.
+                    </p>
+                </li>
 
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <div class="icono" aria-hidden="true">C</div> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <h3>Organizar categorías</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <p> <!-- Presenta un párrafo informativo o de estado. -->
-                        Clasificá tus movimientos. <!-- Presenta el contenido de este elemento en la vista. -->
-                    </p> <!-- Cierra p y vuelve al contenedor anterior. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
+                <!-- Organiza los elementos como una lista. -->
+                <li class="tarjeta">
+                    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                    <div class="icono" aria-hidden="true">$</div>
+                    <!-- Define un título que organiza la lectura y navegación accesible. -->
+                    <h3>Controlar tu dinero</h3>
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>
+                        <!-- Presenta el contenido de este elemento en la vista. -->
+                        Consultá cuánto gastaste.
+                    </p>
+                </li>
 
-                <li class="tarjeta"> <!-- Organiza los elementos como una lista. -->
-                    <div class="icono" aria-hidden="true">$</div> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <h3>Controlar tu dinero</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                    <p> <!-- Presenta un párrafo informativo o de estado. -->
-                        Consultá cuánto gastaste. <!-- Presenta el contenido de este elemento en la vista. -->
-                    </p> <!-- Cierra p y vuelve al contenedor anterior. -->
-                </li> <!-- Cierra li y vuelve al contenedor anterior. -->
+            </ul>
 
-            </ul> <!-- Cierra ul y vuelve al contenedor anterior. -->
+        </div>
+    </section>
 
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+    </div>
 
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    <!-- Agrupa una sección temática de la vista. -->
+    <section id="vista-acceso" class="contenedor pagina" data-vista="acceso" aria-labelledby="acceso-titulo" hidden>
 
-    <!-- Contiene registro e inicio de sesión dentro de la SPA. -->
-    <section id="vista-acceso" class="contenedor pagina" data-vista="acceso" aria-labelledby="acceso-titulo" hidden> <!-- Agrupa una sección temática de la vista. -->
+    <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+    <h1 id="acceso-titulo" tabindex="-1">Mi cuenta</h1>
 
-    <h1 id="acceso-titulo" tabindex="-1">Mi cuenta</h1> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+    <!-- Presenta un párrafo informativo o de estado. -->
+    <p>Ingresá o creá una cuenta para guardar tus movimientos.</p>
 
-    <p>Ingresá o creá una cuenta para guardar tus movimientos.</p> <!-- Presenta un párrafo informativo o de estado. -->
+    <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+    <p id="mensaje-acceso" role="status" aria-live="polite"></p>
+    <!-- Define un botón operable con teclado para la acción indicada. -->
+    <button type="button" class="boton secundario" id="acceso-reintentar" hidden>Reintentar acceso</button>
 
-    <!-- Anuncia la preparación o el fallo de acceso. -->
-    <p id="mensaje-acceso" role="status" aria-live="polite"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-    <button type="button" class="boton secundario" id="acceso-reintentar" hidden>Reintentar acceso</button> <!-- Define un botón operable con teclado para la acción indicada. -->
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div class="acceso-pestanas">
+        <!-- Define un botón operable con teclado para la acción indicada. -->
+        <button type="button" class="boton" id="tab-ingresar" aria-pressed="true">Ingresar</button>
+        <!-- Define un botón operable con teclado para la acción indicada. -->
+        <button type="button" class="boton secundario" id="tab-crear" aria-pressed="false">Crear cuenta</button>
+    </div>
 
-    <!-- Pestañas y formularios: js/acceso.js, mediante NipinAPI. -->
-    <div class="acceso-pestanas"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-        <button type="button" class="boton" id="tab-ingresar" aria-pressed="true">Ingresar</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        <button type="button" class="boton secundario" id="tab-crear" aria-pressed="false">Crear cuenta</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    <!-- Formulario de acceso: js/acceso.js envía sus datos mediante NipinAPI.ingresar. -->
+    <form class="formulario" id="form-login" novalidate>
 
+        <!-- Define un título que organiza la lectura y navegación accesible. -->
+        <h2>Ingresar</h2>
 
-    <!-- Login -->
-    <form class="formulario" id="form-login" novalidate> <!-- Formulario de acceso: js/acceso.js envía sus datos mediante NipinAPI.ingresar. -->
+        <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <div id="mensaje-login" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div>
 
-        <h2>Ingresar</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="login-email">Correo electrónico</label>
+            <!-- Define un campo del formulario con su tipo y restricciones. -->
+            <input type="email" id="login-email" name="email" placeholder="ejemplo@ucp.edu.ar" autocomplete="email" required>
+        </div>
 
-        <div id="mensaje-login" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="login-pass">Contraseña</label>
+            <!-- Define un campo del formulario con su tipo y restricciones. -->
+            <input type="password" id="login-pass" name="password" autocomplete="current-password" required>
+        </div>
 
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="login-email">Correo electrónico</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-            <input type="email" id="login-email" name="email" placeholder="ejemplo@ucp.edu.ar" autocomplete="email" required> <!-- Define un campo del formulario con su tipo y restricciones. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario-botones">
+            <!-- Define un botón operable con teclado para la acción indicada. -->
+            <button type="submit" class="boton" disabled>Ingresar</button>
+        </div>
 
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="login-pass">Contraseña</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-            <input type="password" id="login-pass" name="password" autocomplete="current-password" required> <!-- Define un campo del formulario con su tipo y restricciones. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    </form>
 
-        <div class="formulario-botones"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <button type="submit" class="boton" disabled>Ingresar</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    <!-- Formulario de cuenta nueva: js/acceso.js envía POST a api/registro.php. -->
+    <form class="formulario" id="form-registro" novalidate hidden>
 
-    </form> <!-- Cierra form y vuelve al contenedor anterior. -->
+        <!-- Define un título que organiza la lectura y navegación accesible. -->
+        <h2>Crear cuenta</h2>
 
+        <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <div id="mensaje-registro" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div>
 
-    <!-- Registro -->
-    <form class="formulario" id="form-registro" novalidate hidden> <!-- Formulario de cuenta nueva: js/acceso.js envía POST a api/registro.php. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="reg-nombre">Nombre</label>
+            <!-- Define un campo del formulario con su tipo y restricciones. -->
+            <input type="text" id="reg-nombre" name="nombre" maxlength="100" placeholder="Juan Pérez" autocomplete="name" required>
+        </div>
 
-        <h2>Crear cuenta</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="reg-email">Correo electrónico</label>
+            <!-- Define un campo del formulario con su tipo y restricciones. -->
+            <input type="email" id="reg-email" name="email" maxlength="150" placeholder="juan@ucp.edu.ar" autocomplete="email" required>
+        </div>
 
-        <div id="mensaje-registro" class="mensaje" role="alert" aria-atomic="true" tabindex="-1"></div> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="reg-pass">Contraseña</label>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p id="reg-password-ayuda">Entre 8 y 72 bytes UTF-8. Una letra acentuada o un emoji puede ocupar más de un byte.</p>
+            <!-- Define un campo del formulario con su tipo y restricciones. -->
+            <input type="password" id="reg-pass" name="password" aria-describedby="reg-password-ayuda" autocomplete="new-password" required>
+        </div>
 
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="reg-nombre">Nombre</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-            <input type="text" id="reg-nombre" name="nombre" maxlength="100" placeholder="Juan Pérez" autocomplete="name" required> <!-- Define un campo del formulario con su tipo y restricciones. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario-botones">
+            <!-- Define un botón operable con teclado para la acción indicada. -->
+            <button type="submit" class="boton" disabled>Crear cuenta</button>
+        </div>
 
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="reg-email">Correo electrónico</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-            <input type="email" id="reg-email" name="email" maxlength="150" placeholder="juan@ucp.edu.ar" autocomplete="email" required> <!-- Define un campo del formulario con su tipo y restricciones. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    </form>
 
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="reg-pass">Contraseña</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-            <p id="reg-password-ayuda">Entre 8 y 72 bytes UTF-8. Una letra acentuada o un emoji puede ocupar más de un byte.</p> <!-- Presenta un párrafo informativo o de estado. -->
-            <input type="password" id="reg-pass" name="password" aria-describedby="reg-password-ayuda" autocomplete="new-password" required> <!-- Define un campo del formulario con su tipo y restricciones. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    </section>
 
-        <div class="formulario-botones"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <button type="submit" class="boton" disabled>Crear cuenta</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    <!-- Agrupa una sección temática de la vista. -->
+    <section id="vista-registrar" class="contenedor pagina" data-vista="registrar" aria-labelledby="registrar-titulo" hidden>
 
-    </form> <!-- Cierra form y vuelve al contenedor anterior. -->
+    <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+    <h1 id="registrar-titulo" tabindex="-1">Registrar movimiento</h1>
 
+    <!-- Presenta un párrafo informativo o de estado. -->
+    <p>Completá los datos para registrar un gasto o ingreso.</p>
 
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+    <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+    <p id="registro-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+    <!-- Define un botón operable con teclado para la acción indicada. -->
+    <button type="button" id="registro-reintentar" class="boton secundario" hidden>Reintentar carga</button>
 
-    <!-- Agrupa el alta de movimientos y sus estados de sesión. -->
-    <section id="vista-registrar" class="contenedor pagina" data-vista="registrar" aria-labelledby="registrar-titulo" hidden> <!-- Agrupa una sección temática de la vista. -->
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div class="formulario aviso-sesion" id="aviso-sesion" hidden>
+        <!-- Define un título que organiza la lectura y navegación accesible. -->
+        <h2>Iniciá sesión para registrar</h2>
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>Tus movimientos se guardan en tu cuenta, así podés verlos desde cualquier dispositivo.</p>
+        <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+        <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+    </div>
 
-    <h1 id="registrar-titulo" tabindex="-1">Registrar movimiento</h1> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+    <!-- Formulario de alta: js/app.js envía datos a api/mis_movimientos.php. -->
+    <form class="formulario" id="form-movimiento" novalidate hidden>
 
-    <p>Completá los datos para registrar un gasto o ingreso.</p> <!-- Presenta un párrafo informativo o de estado. -->
+        <!-- Define un título que organiza la lectura y navegación accesible. -->
+        <h2>Datos del movimiento</h2>
 
-    <!-- Anuncia la carga o los errores de preparación del formulario. -->
-    <p id="registro-estado" role="status" aria-live="polite" aria-atomic="true"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-    <button type="button" id="registro-reintentar" class="boton secundario" hidden>Reintentar carga</button> <!-- Define un botón operable con teclado para la acción indicada. -->
+        <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+        <div id="mensaje" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></div>
 
-    <!-- Sin sesión se muestra este aviso en lugar del formulario (lo alterna js/app.js) -->
-    <div class="formulario aviso-sesion" id="aviso-sesion" hidden> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-        <h2>Iniciá sesión para registrar</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-        <p>Tus movimientos se guardan en tu cuenta, así podés verlos desde cualquier dispositivo.</p> <!-- Presenta un párrafo informativo o de estado. -->
-        <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+        <!-- Agrupa campos relacionados dentro del formulario. -->
+        <fieldset class="tipo">
+            <!-- Da un nombre accesible al grupo de campos. -->
+            <legend>Tipo de movimiento</legend>
 
-    <!-- Formulario: el submit se maneja con addEventListener en js/app.js -->
-    <!-- novalidate para que las validaciones las muestre app.js -->
-    <!-- hidden hasta que app.js confirme que hay sesión -->
-    <form class="formulario" id="form-movimiento" novalidate hidden> <!-- Formulario de alta: js/app.js envía datos a api/mis_movimientos.php. -->
+            <!-- Presenta el contenido de este elemento en la vista. -->
+            <label>
+                <!-- Define un campo del formulario con su tipo y restricciones. -->
+                <input type="radio" name="tipo" value="gasto" checked>
+                <!-- Presenta el contenido de este elemento en la vista. -->
+                Gasto
+            </label>
 
-        <h2>Datos del movimiento</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <!-- Presenta el contenido de este elemento en la vista. -->
+            <label>
+                <!-- Define un campo del formulario con su tipo y restricciones. -->
+                <input type="radio" name="tipo" value="ingreso">
+                <!-- Presenta el contenido de este elemento en la vista. -->
+                Ingreso
+            </label>
+        </fieldset>
 
-        <!-- Mensajes de exito / error -->
-        <div id="mensaje" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></div> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-
-
-        <!-- Tipo de movimiento -->
-        <fieldset class="tipo"> <!-- Agrupa campos relacionados dentro del formulario. -->
-            <legend>Tipo de movimiento</legend> <!-- Da un nombre accesible al grupo de campos. -->
-
-            <label> <!-- Presenta el contenido de este elemento en la vista. -->
-                <input type="radio" name="tipo" value="gasto" checked> <!-- Define un campo del formulario con su tipo y restricciones. -->
-                Gasto <!-- Presenta el contenido de este elemento en la vista. -->
-            </label> <!-- Cierra label y vuelve al contenedor anterior. -->
-
-            <label> <!-- Presenta el contenido de este elemento en la vista. -->
-                <input type="radio" name="tipo" value="ingreso"> <!-- Define un campo del formulario con su tipo y restricciones. -->
-                Ingreso <!-- Presenta el contenido de este elemento en la vista. -->
-            </label> <!-- Cierra label y vuelve al contenedor anterior. -->
-        </fieldset> <!-- Cierra fieldset y vuelve al contenedor anterior. -->
-
-
-        <!-- Descripcion -->
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="descripcion">Descripción</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="descripcion">Descripción</label>
             <input
                 type="text"
                 id="descripcion"
                 name="descripcion"
                 placeholder="Ej: Compra en supermercado"
                 required
-            > <!-- Completa los atributos del control iniciado arriba. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+            >
+        </div>
 
-
-        <!-- Monto y fecha -->
-        <div class="fila"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <!-- Monto de contado, el descuento o recargo lo calcula app.js -->
-                <label for="monto">Monto</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="fila">
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="campo">
+                <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                <label for="monto">Monto</label>
                 <input
                     type="number"
                     id="monto"
@@ -354,222 +495,317 @@
                     min="0.01" max="999999999.99"
                     step="0.01"
                     required
-                > <!-- Completa los atributos del control iniciado arriba. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+                >
+            </div>
 
-            <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <label for="fecha">Fecha</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-                <input type="date" id="fecha" min="1900-01-01" max="2100-12-31" name="fecha" required> <!-- Define un campo del formulario con su tipo y restricciones. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="campo">
+                <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                <label for="fecha">Fecha</label>
+                <!-- Define un campo del formulario con su tipo y restricciones. -->
+                <input type="date" id="fecha" min="1900-01-01" max="2100-12-31" name="fecha" required>
+            </div>
+        </div>
 
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="fila">
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="campo">
+                <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                <label for="categoria">Categoría</label>
+                <!-- Define un selector de valores que JavaScript consulta o completa. -->
+                <select id="categoria" name="categoria" required>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option value="">Seleccionar</option>
+                    <!-- Agrupa las opciones del selector por tipo de movimiento. -->
+                    <optgroup label="Gastos" data-tipo="gasto">
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Alimentación</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Transporte</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Entretenimiento</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Servicios</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Salud</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Educación</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Alquiler</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Indumentaria</option>
+                    </optgroup>
+                    <!-- Agrupa las opciones del selector por tipo de movimiento. -->
+                    <optgroup label="Ingresos" data-tipo="ingreso">
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Sueldo</option>
+                        <!-- Define el valor y el texto de una opción del selector. -->
+                        <option>Freelance</option>
+                    </optgroup>
+                </select>
+            </div>
 
-        <!-- Categoria y medio de pago -->
-        <div class="fila"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <label for="categoria">Categoría</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
-                <select id="categoria" name="categoria" required> <!-- Define un selector de valores que JavaScript consulta o completa. -->
-                    <option value="">Seleccionar</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <optgroup label="Gastos" data-tipo="gasto"> <!-- Agrupa las opciones del selector por tipo de movimiento. -->
-                        <option>Alimentación</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Transporte</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Entretenimiento</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Servicios</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Salud</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Educación</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Alquiler</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Indumentaria</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    </optgroup> <!-- Cierra optgroup y vuelve al contenedor anterior. -->
-                    <optgroup label="Ingresos" data-tipo="ingreso"> <!-- Agrupa las opciones del selector por tipo de movimiento. -->
-                        <option>Sueldo</option> <!-- Define el valor y el texto de una opción del selector. -->
-                        <option>Freelance</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    </optgroup> <!-- Cierra optgroup y vuelve al contenedor anterior. -->
-                </select> <!-- Cierra select y vuelve al contenedor anterior. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-
-            <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <label for="pago">Medio de pago</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="campo">
+                <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                <label for="pago">Medio de pago</label>
                 <!-- Los textos tienen que ser iguales a las claves de data/tarifas.json -->
-                <select id="pago" name="pago" required> <!-- Define un selector de valores que JavaScript consulta o completa. -->
-                    <option value="">Seleccionar</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option>Efectivo</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option>Transferencia</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option>Tarjeta de débito</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option>Mercado Pago</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option>Tarjeta de crédito</option> <!-- Define el valor y el texto de una opción del selector. -->
-                </select> <!-- Cierra select y vuelve al contenedor anterior. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+                <select id="pago" name="pago" required>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option value="">Seleccionar</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option>Efectivo</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option>Transferencia</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option>Tarjeta de débito</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option>Mercado Pago</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option>Tarjeta de crédito</option>
+                </select>
+            </div>
+        </div>
 
-
-        <!-- Cuotas: solo aparece con gasto + tarjeta de credito -->
-        <div class="fila" id="fila-cuotas" hidden> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <label for="cuotas">Cantidad de cuotas</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="fila" id="fila-cuotas" hidden>
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="campo">
+                <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+                <label for="cuotas">Cantidad de cuotas</label>
                 <!-- El value es la clave de "cuotas" en el JSON, de ahi sale el interes -->
-                <select id="cuotas" name="cuotas" disabled> <!-- Define un selector de valores que JavaScript consulta o completa. -->
-                    <option value="1">1 cuota</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option value="3">3 cuotas</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option value="6">6 cuotas</option> <!-- Define el valor y el texto de una opción del selector. -->
-                    <option value="12">12 cuotas</option> <!-- Define el valor y el texto de una opción del selector. -->
-                </select> <!-- Cierra select y vuelve al contenedor anterior. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+                <select id="cuotas" name="cuotas" disabled>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option value="1">1 cuota</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option value="3">3 cuotas</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option value="6">6 cuotas</option>
+                    <!-- Define el valor y el texto de una opción del selector. -->
+                    <option value="12">12 cuotas</option>
+                </select>
+            </div>
+        </div>
 
+        <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+        <section class="resultado" id="resultado" aria-live="polite">
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h3>Resumen</h3>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p>Subtotal: <span id="res-subtotal">$0</span></p>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p>Descuento / recargo: <span id="res-ajuste">$0</span></p>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p><strong>Total: <span id="res-total">$0</span></strong></p>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p id="res-cuota-linea" hidden>Valor de cada cuota: <span id="res-cuota">$0</span></p>
+        </section>
 
-        <!-- Resumen del calculo (se actualiza solo con cada cambio) -->
-        <section class="resultado" id="resultado" aria-live="polite"> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-            <h3>Resumen</h3> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            <p>Subtotal: <span id="res-subtotal">$0</span></p> <!-- Presenta un párrafo informativo o de estado. -->
-            <p>Descuento / recargo: <span id="res-ajuste">$0</span></p> <!-- Presenta un párrafo informativo o de estado. -->
-            <p><strong>Total: <span id="res-total">$0</span></strong></p> <!-- Presenta un párrafo informativo o de estado. -->
-            <p id="res-cuota-linea" hidden>Valor de cada cuota: <span id="res-cuota">$0</span></p> <!-- Presenta un párrafo informativo o de estado. -->
-        </section> <!-- Cierra section y vuelve al contenedor anterior. -->
-
-
-        <!-- Comentario opcional -->
-        <div class="campo"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <label for="comentario">Comentario</label> <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="campo">
+            <!-- Asocia una etiqueta visible con el campo indicado por for. -->
+            <label for="comentario">Comentario</label>
             <textarea
                 id="comentario"
                 name="comentario"
                 rows="4"
                 placeholder="Información adicional"
-            ></textarea> <!-- Completa los atributos del control iniciado arriba. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+            ></textarea>
+        </div>
 
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario-botones">
+            <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+            <a href="index.html#/inicio" data-ruta="inicio" class="boton secundario">Volver al inicio</a>
+            <!-- Define un botón operable con teclado para la acción indicada. -->
+            <button type="submit" class="boton" disabled>Guardar</button>
+        </div>
 
-        <!-- Botones -->
-        <div class="formulario-botones"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <a href="index.html#/inicio" data-ruta="inicio" class="boton secundario">Volver al inicio</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-            <button type="submit" class="boton" disabled>Guardar</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
+    </form>
 
-    </form> <!-- Cierra form y vuelve al contenedor anterior. -->
+    </section>
 
-
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
-
-    <!-- Agrupa el listado privado y sus operaciones de edición y baja. -->
-    <section id="vista-movimientos" class="contenedor pagina" data-vista="movimientos" aria-labelledby="movimientos-titulo" hidden> <!-- Agrupa una sección temática de la vista. -->
-        <h1 id="movimientos-titulo" tabindex="-1">Movimientos</h1> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
-        <p>Lista de gastos e ingresos registrados.</p> <!-- Presenta un párrafo informativo o de estado. -->
-        <div class="formulario-botones"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-            <button type="button" id="movimientos-actualizar" class="boton secundario">Actualizar</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        <!-- Anuncia el estado del listado y permite enfocar su resultado. -->
-        <p id="movimientos-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-        <div class="formulario aviso-sesion" id="movimientos-sin-sesion" hidden> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <h2>Iniciá sesión para ver tus movimientos</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            <p>Los movimientos son privados: solo los ve el dueño de la cuenta.</p> <!-- Presenta un párrafo informativo o de estado. -->
-            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        <ul class="tabla-resumen" id="tabla-resumen" hidden> <!-- Organiza los elementos como una lista. -->
-            <li><span>Ingresos</span><strong class="ingreso" id="total-ingresos">$0</strong></li> <!-- Organiza los elementos como una lista. -->
-            <li><span>Gastos</span><strong class="gasto" id="total-gastos">$0</strong></li> <!-- Organiza los elementos como una lista. -->
-            <li><span>Disponible</span><strong id="total-disponible">$0</strong></li> <!-- Organiza los elementos como una lista. -->
-        </ul> <!-- Cierra ul y vuelve al contenedor anterior. -->
-        <p id="sin-movimientos" hidden>Todavía no registraste movimientos. <a href="index.html#/registrar" data-ruta="registrar">Registrar el primero</a></p> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-        <!-- Permite enfocar y desplazar horizontalmente la tabla. -->
-        <div class="tabla-contenedor" id="tabla-contenedor" tabindex="0" role="region" aria-label="Tabla de movimientos; desplazamiento horizontal disponible" hidden> <!-- Incluye el elemento en el orden natural de navegación con Tab. -->
-            <!-- Presenta movimientos con encabezados y filas de datos. -->
-            <table> <!-- Organiza los movimientos o indicadores en filas y columnas. -->
-                <caption class="solo-lectores">Tus movimientos, del más reciente al más antiguo</caption> <!-- Presenta el contenido de este elemento en la vista. -->
-                <thead><tr> <!-- Define el encabezado de una columna o grupo de la tabla. -->
-                    <th scope="col">Descripción</th><th scope="col">Categoría</th><th scope="col">Tipo</th> <!-- Define el encabezado de una columna o grupo de la tabla. -->
-                    <th scope="col">Fecha</th><th scope="col">Monto</th><th scope="col">Acciones</th> <!-- Define el encabezado de una columna o grupo de la tabla. -->
-                </tr></thead> <!-- Cierra tr, thead y vuelve al contenedor anterior. -->
-                <!-- Recibe las filas creadas por listado.js con texto seguro. -->
-                <tbody id="tbody-movimientos"></tbody> <!-- Contenedor donde JavaScript inserta las filas de movimientos. -->
-            </table> <!-- Cierra table y vuelve al contenedor anterior. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        <!-- Aloja el formulario clonado con identificadores propios. -->
-        <section id="movimientos-edicion" aria-labelledby="edicion-titulo" hidden> <!-- Agrupa una sección temática de la vista. -->
-            <h2 id="edicion-titulo" tabindex="-1">Editar movimiento</h2> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
-            <!-- Anuncia la preparación y los errores del editor. -->
-            <p id="edicion-estado" role="status" aria-live="polite" aria-atomic="true"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-            <button type="button" id="edicion-reintentar" class="boton secundario" hidden>Reintentar carga</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-            <!-- Se reutiliza una copia independiente del formulario de alta. -->
-        </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+    <!-- Agrupa una sección temática de la vista. -->
+    <section id="vista-movimientos" class="contenedor pagina" data-vista="movimientos" aria-labelledby="movimientos-titulo" hidden>
+        <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <h1 id="movimientos-titulo" tabindex="-1">Movimientos</h1>
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>Lista de gastos e ingresos registrados.</p>
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario-botones">
+            <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+            <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a>
+            <!-- Define un botón operable con teclado para la acción indicada. -->
+            <button type="button" id="movimientos-actualizar" class="boton secundario">Actualizar</button>
+        </div>
+        <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+        <p id="movimientos-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario aviso-sesion" id="movimientos-sin-sesion" hidden>
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h2>Iniciá sesión para ver tus movimientos</h2>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p>Los movimientos son privados: solo los ve el dueño de la cuenta.</p>
+            <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <!-- Organiza los elementos como una lista. -->
+        <ul class="tabla-resumen" id="tabla-resumen" hidden>
+            <!-- Organiza los elementos como una lista. -->
+            <li><span>Ingresos</span><strong class="ingreso" id="total-ingresos">$0</strong></li>
+            <!-- Organiza los elementos como una lista. -->
+            <li><span>Gastos</span><strong class="gasto" id="total-gastos">$0</strong></li>
+            <!-- Organiza los elementos como una lista. -->
+            <li><span>Disponible</span><strong id="total-disponible">$0</strong></li>
+        </ul>
+        <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+        <p id="sin-movimientos" hidden>Todavía no registraste movimientos. <a href="index.html#/registrar" data-ruta="registrar">Registrar el primero</a></p>
+        <!-- Incluye el elemento en el orden natural de navegación con Tab. -->
+        <div class="tabla-contenedor" id="tabla-contenedor" tabindex="0" role="region" aria-label="Tabla de movimientos; desplazamiento horizontal disponible" hidden>
+            <!-- Organiza los movimientos o indicadores en filas y columnas. -->
+            <table>
+                <!-- Presenta el contenido de este elemento en la vista. -->
+                <caption class="solo-lectores">Tus movimientos, del más reciente al más antiguo</caption>
+                <!-- Define el encabezado de una columna o grupo de la tabla. -->
+                <thead><tr>
+                    <!-- Define el encabezado de una columna o grupo de la tabla. -->
+                    <th scope="col">Descripción</th><th scope="col">Categoría</th><th scope="col">Tipo</th>
+                    <!-- Define el encabezado de una columna o grupo de la tabla. -->
+                    <th scope="col">Fecha</th><th scope="col">Monto</th><th scope="col">Acciones</th>
+                </tr></thead>
+                <!-- Contenedor donde JavaScript inserta las filas de movimientos. -->
+                <tbody id="tbody-movimientos"></tbody>
+            </table>
+        </div>
+        <!-- Agrupa una sección temática de la vista. -->
+        <section id="movimientos-edicion" aria-labelledby="edicion-titulo" hidden>
+            <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+            <h2 id="edicion-titulo" tabindex="-1">Editar movimiento</h2>
+            <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+            <p id="edicion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+            <!-- Define un botón operable con teclado para la acción indicada. -->
+            <button type="button" id="edicion-reintentar" class="boton secundario" hidden>Reintentar carga</button>
+        </section>
         <!-- Confirma la baja y mantiene el foco dentro del diálogo modal. -->
-        <dialog id="confirmar-eliminacion" aria-labelledby="eliminacion-titulo" aria-describedby="eliminacion-detalle"> <!-- Define el diálogo de confirmación de baja controlado por js/listado.js. -->
-            <h2 id="eliminacion-titulo">Eliminar movimiento</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            <p id="eliminacion-detalle"></p> <!-- Presenta un párrafo informativo o de estado. -->
-            <p>Esta acción no se puede deshacer.</p> <!-- Presenta un párrafo informativo o de estado. -->
-            <div class="formulario-botones"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <button type="button" id="eliminacion-cancelar" class="boton secundario" autofocus>Cancelar</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-                <button type="button" id="eliminacion-confirmar" class="boton">Eliminar definitivamente</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-            <!-- Anuncia el progreso o el error de la baja. -->
-            <p id="eliminacion-estado" role="status" aria-live="polite" aria-atomic="true"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-        </dialog> <!-- Cierra dialog y vuelve al contenedor anterior. -->
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+        <dialog id="confirmar-eliminacion" aria-labelledby="eliminacion-titulo" aria-describedby="eliminacion-detalle">
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h2 id="eliminacion-titulo">Eliminar movimiento</h2>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p id="eliminacion-detalle"></p>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p>Esta acción no se puede deshacer.</p>
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="formulario-botones">
+                <!-- Define un botón operable con teclado para la acción indicada. -->
+                <button type="button" id="eliminacion-cancelar" class="boton secundario" autofocus>Cancelar</button>
+                <!-- Define un botón operable con teclado para la acción indicada. -->
+                <button type="button" id="eliminacion-confirmar" class="boton">Eliminar definitivamente</button>
+            </div>
+            <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+            <p id="eliminacion-estado" role="status" aria-live="polite" aria-atomic="true"></p>
+        </dialog>
+    </section>
 
-    <!-- Muestra el catálogo con totales propios de la cuenta. -->
-    <section id="vista-categorias" class="contenedor pagina" data-vista="categorias" aria-labelledby="categorias-titulo" hidden> <!-- Agrupa una sección temática de la vista. -->
-        <h1 id="categorias-titulo" tabindex="-1">Categorías</h1> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
-        <p>Categorías para organizar tus movimientos. Los importes corresponden a tu cuenta, sin filtro de fechas.</p> <!-- Presenta un párrafo informativo o de estado. -->
-        <button type="button" id="categorias-actualizar" class="boton secundario">Actualizar categorías</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        <!-- Anuncia la carga y los resultados del catálogo. -->
-        <p id="categorias-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-        <div class="formulario aviso-sesion" id="categorias-sin-sesion" hidden> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <h2>Iniciá sesión para ver tus categorías</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            <p>Los importes y movimientos pertenecen únicamente a tu cuenta.</p> <!-- Presenta un párrafo informativo o de estado. -->
-            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        <p id="categorias-vacio" hidden>No hay categorías disponibles.</p> <!-- Presenta un párrafo informativo o de estado. -->
-        <ul id="categorias-lista" class="categorias" aria-label="Categorías y totales propios" hidden></ul> <!-- Organiza los elementos como una lista. -->
-        <!-- Explica la necesidad de JavaScript cuando está desactivado. -->
-        <noscript><p>Activá JavaScript para consultar las categorías y su historial.</p></noscript> <!-- Muestra esta ayuda cuando JavaScript está desactivado. -->
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+    <!-- Agrupa una sección temática de la vista. -->
+    <section id="vista-categorias" class="contenedor pagina" data-vista="categorias" aria-labelledby="categorias-titulo" hidden>
+        <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <h1 id="categorias-titulo" tabindex="-1">Categorías</h1>
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>Categorías para organizar tus movimientos. Los importes corresponden a tu cuenta, sin filtro de fechas.</p>
+        <!-- Define un botón operable con teclado para la acción indicada. -->
+        <button type="button" id="categorias-actualizar" class="boton secundario">Actualizar categorías</button>
+        <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+        <p id="categorias-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario aviso-sesion" id="categorias-sin-sesion" hidden>
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h2>Iniciá sesión para ver tus categorías</h2>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p>Los importes y movimientos pertenecen únicamente a tu cuenta.</p>
+            <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p id="categorias-vacio" hidden>No hay categorías disponibles.</p>
+        <!-- Organiza los elementos como una lista. -->
+        <ul id="categorias-lista" class="categorias" aria-label="Categorías y totales propios" hidden></ul>
+        <!-- Muestra esta ayuda cuando JavaScript está desactivado. -->
+        <noscript><p>Activá JavaScript para consultar las categorías y su historial.</p></noscript>
+    </section>
 
-    <!-- Muestra los importes y el historial de una categoría elegida. -->
-    <section id="vista-categoria" class="contenedor pagina" data-vista="categoria" aria-labelledby="categoria-titulo" hidden> <!-- Agrupa una sección temática de la vista. -->
-        <a href="index.html#/categorias" data-ruta="categorias">← Volver a categorías</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-        <h1 id="categoria-titulo" tabindex="-1">Detalle de categoría</h1> <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
-        <button type="button" id="categoria-actualizar" class="boton secundario">Actualizar detalle</button> <!-- Define un botón operable con teclado para la acción indicada. -->
-        <!-- Anuncia la carga y los errores del detalle de categoría. -->
-        <p id="categoria-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p> <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
-        <div class="formulario aviso-sesion" id="categoria-sin-sesion" hidden> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <h2>Iniciá sesión para ver el detalle</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            <p>El historial y los importes son privados.</p> <!-- Presenta un párrafo informativo o de estado. -->
-            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-        <div id="categoria-datos" hidden> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-            <div class="detalle"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <div class="icono grande" id="categoria-icono" aria-hidden="true"></div> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                <div> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-                    <p class="etiqueta" id="categoria-tipo"></p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <p>Totales de tus movimientos en esta categoría, sin filtro de fechas.</p> <!-- Presenta un párrafo informativo o de estado. -->
-                    <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a> <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
-                </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-            </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-            <h2>Resumen de la categoría</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            <ul class="tarjetas"> <!-- Organiza los elementos como una lista. -->
-                <li class="tarjeta"><p>Ingresos</p><h3 class="ingreso" id="categoria-ingresos">$0</h3></li> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                <li class="tarjeta"><p>Gastos</p><h3 class="gasto" id="categoria-gastos">$0</h3></li> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                <li class="tarjeta"><p>Saldo</p><h3 id="categoria-saldo">$0</h3></li> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                <li class="tarjeta"><p>Movimientos</p><h3 id="categoria-cantidad">0</h3></li> <!-- Define un título que organiza la lectura y navegación accesible. -->
-            </ul> <!-- Cierra ul y vuelve al contenedor anterior. -->
-            <section class="historial" aria-labelledby="categoria-historial-titulo"> <!-- Agrupa una sección temática de la vista. -->
-                <h2 id="categoria-historial-titulo">Historial de movimientos</h2> <!-- Define un título que organiza la lectura y navegación accesible. -->
-                <p id="categoria-sin-movimientos" hidden>Todavía no registraste movimientos en esta categoría.</p> <!-- Presenta un párrafo informativo o de estado. -->
-                <ul class="historial-lista" id="categoria-historial"></ul> <!-- Organiza los elementos como una lista. -->
-            </section> <!-- Cierra section y vuelve al contenedor anterior. -->
-        </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-    </section> <!-- Cierra section y vuelve al contenedor anterior. -->
+    <!-- Agrupa una sección temática de la vista. -->
+    <section id="vista-categoria" class="contenedor pagina" data-vista="categoria" aria-labelledby="categoria-titulo" hidden>
+        <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+        <a href="index.html#/categorias" data-ruta="categorias">← Volver a categorías</a>
+        <!-- Permite enfocar este elemento desde JavaScript sin agregarlo al orden Tab. -->
+        <h1 id="categoria-titulo" tabindex="-1">Detalle de categoría</h1>
+        <!-- Define un botón operable con teclado para la acción indicada. -->
+        <button type="button" id="categoria-actualizar" class="boton secundario">Actualizar detalle</button>
+        <!-- Región viva que anuncia cambios de texto a lectores de pantalla. -->
+        <p id="categoria-estado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div class="formulario aviso-sesion" id="categoria-sin-sesion" hidden>
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h2>Iniciá sesión para ver el detalle</h2>
+            <!-- Presenta un párrafo informativo o de estado. -->
+            <p>El historial y los importes son privados.</p>
+            <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+            <a href="index.html#/acceso" data-ruta="acceso" class="boton">Ingresar o crear cuenta</a>
+        </div>
+        <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+        <div id="categoria-datos" hidden>
+            <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+            <div class="detalle">
+                <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                <div class="icono grande" id="categoria-icono" aria-hidden="true"></div>
+                <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+                <div>
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p class="etiqueta" id="categoria-tipo"></p>
+                    <!-- Presenta un párrafo informativo o de estado. -->
+                    <p>Totales de tus movimientos en esta categoría, sin filtro de fechas.</p>
+                    <!-- Enlace que js/navegacion.js transforma en cambio de vista sin recarga. -->
+                    <a href="index.html#/registrar" data-ruta="registrar" class="boton">Registrar movimiento</a>
+                </div>
+            </div>
+            <!-- Define un título que organiza la lectura y navegación accesible. -->
+            <h2>Resumen de la categoría</h2>
+            <!-- Organiza los elementos como una lista. -->
+            <ul class="tarjetas">
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <li class="tarjeta"><p>Ingresos</p><h3 class="ingreso" id="categoria-ingresos">$0</h3></li>
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <li class="tarjeta"><p>Gastos</p><h3 class="gasto" id="categoria-gastos">$0</h3></li>
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <li class="tarjeta"><p>Saldo</p><h3 id="categoria-saldo">$0</h3></li>
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <li class="tarjeta"><p>Movimientos</p><h3 id="categoria-cantidad">0</h3></li>
+            </ul>
+            <!-- Agrupa una sección temática de la vista. -->
+            <section class="historial" aria-labelledby="categoria-historial-titulo">
+                <!-- Define un título que organiza la lectura y navegación accesible. -->
+                <h2 id="categoria-historial-titulo">Historial de movimientos</h2>
+                <!-- Presenta un párrafo informativo o de estado. -->
+                <p id="categoria-sin-movimientos" hidden>Todavía no registraste movimientos en esta categoría.</p>
+                <!-- Organiza los elementos como una lista. -->
+                <ul class="historial-lista" id="categoria-historial"></ul>
+            </section>
+        </div>
+    </section>
 
-</main> <!-- Cierra main y vuelve al contenedor anterior. -->
+</main>
 
+<!-- Inicia el pie de página. -->
+<footer>
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div class="contenedor">
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>NipinFinan - Finanzas personales</p>
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>© 2026</p>
+    </div>
+</footer>
 
-<!-- ========== PIE DE PAGINA ========== -->
-<footer> <!-- Inicia el pie de página. -->
-    <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-        <p>NipinFinan - Finanzas personales</p> <!-- Presenta un párrafo informativo o de estado. -->
-        <p>© 2026</p> <!-- Presenta un párrafo informativo o de estado. -->
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-</footer> <!-- Cierra footer y vuelve al contenedor anterior. -->
-
-</body> <!-- Cierra body y vuelve al contenedor anterior. -->
-</html> <!-- Cierra html y vuelve al contenedor anterior. -->
+</body>
+</html>

@@ -1,235 +1,366 @@
 // Pide catálogo e historial a api/categorias.php y los presenta como texto.
-const NipinCategorias = (() => { // Inicializa NipinCategorias.
-    // Coordina las vistas privadas de catálogo y detalle.
-    if (!document.querySelector('#vista-categorias')) return null; // Localiza '#vista-categorias' en el HTML para controlar ese elemento.
-    let revisionSesion = 0; // Inicializa la variable revisionSesion: versión del estado de sesión en JavaScript.
-    const vistas = []; // Inicializa vistas.
-    const idValido = id => typeof id === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(id); // Inicializa idValido.
-    const pesos = valor => valor.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: Number.isInteger(valor) ? 0 : 2 }); // Inicializa pesos.
-    const centavos = valor => typeof valor === 'number' && Number.isFinite(valor) && Number.isSafeInteger(Math.round(valor * 100)) && Number(valor.toFixed(2)) === valor; // Inicializa centavos.
+const NipinCategorias = (() => {
+    // Localiza '#vista-categorias' en el HTML para controlar ese elemento.
+    if (!document.querySelector('#vista-categorias')) return null;
+    // Inicia revisionSesion: versión del estado de sesión en JavaScript.
+    let revisionSesion = 0;
+    // Inicializa vistas.
+    const vistas = [];
+    // Inicializa idValido.
+    const idValido = id => typeof id === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(id);
+    // Inicializa pesos.
+    const pesos = valor => valor.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: Number.isInteger(valor) ? 0 : 2 });
+    // Inicializa centavos.
+    const centavos = valor => typeof valor === 'number' && Number.isFinite(valor) && Number.isSafeInteger(Math.round(valor * 100)) && Number(valor.toFixed(2)) === valor;
 
-    function validarCategoria(categoria) { // Define validarCategoria con sus entradas y el resultado que devuelve.
-        // Comprueba la estructura y coherencia de los totales de la categoría.
-        if (!categoria || !idValido(categoria.id) || typeof categoria.nombre !== 'string' || !categoria.nombre.trim() || !['ingreso', 'gasto'].includes(categoria.tipo)) throw new Error('La categoría recibida es inválida.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        if (!['ingresos', 'gastos', 'saldo'].every(campo => centavos(categoria[campo])) || categoria.ingresos < 0 || categoria.gastos < 0 || Math.round(categoria.saldo * 100) !== Math.round(categoria.ingresos * 100) - Math.round(categoria.gastos * 100) || !Number.isSafeInteger(categoria.cantidad) || categoria.cantidad < 0) throw new Error('Los totales de la categoría son inválidos.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        if (categoria.cantidad === 0 && (categoria.ingresos !== 0 || categoria.gastos !== 0)) throw new Error('Los totales no corresponden a la categoría.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        return categoria; // Devuelve categoría seleccionada al código que llamó.
-    } // Finaliza este bloque.
+    // Define validarCategoria con sus entradas y el resultado que devuelve.
+    function validarCategoria(categoria) {
+        // Interrumpe la función y comunica el error.
+        if (!categoria || !idValido(categoria.id) || typeof categoria.nombre !== 'string' || !categoria.nombre.trim() || !['ingreso', 'gasto'].includes(categoria.tipo)) throw new Error('La categoría recibida es inválida.');
+        // Interrumpe la función y comunica el error.
+        if (!['ingresos', 'gastos', 'saldo'].every(campo => centavos(categoria[campo])) || categoria.ingresos < 0 || categoria.gastos < 0 || Math.round(categoria.saldo * 100) !== Math.round(categoria.ingresos * 100) - Math.round(categoria.gastos * 100) || !Number.isSafeInteger(categoria.cantidad) || categoria.cantidad < 0) throw new Error('Los totales de la categoría son inválidos.');
+        // Interrumpe la función y comunica el error.
+        if (categoria.cantidad === 0 && (categoria.ingresos !== 0 || categoria.gastos !== 0)) throw new Error('Los totales no corresponden a la categoría.');
+        // Devuelve categoría seleccionada al código que llamó.
+        return categoria;
+    }
 
-    function texto(tag, valor, clase = '') { // Define texto con sus entradas y el resultado que devuelve.
-        // Crea un elemento e inserta su contenido como texto.
-        const elemento = document.createElement(tag); // Crea un elemento HTML que se completará antes de insertarlo.
-        elemento.textContent = valor; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        elemento.className = clase; // Actualiza elemento.className.
-        return elemento; // Devuelve elemento al código que llamó.
-    } // Finaliza este bloque.
+    // Define texto con sus entradas y el resultado que devuelve.
+    function texto(tag, valor, clase = '') {
+        // Crea un elemento HTML que se completará antes de insertarlo.
+        const elemento = document.createElement(tag);
+        // Muestra texto sin interpretarlo como HTML.
+        elemento.textContent = valor;
+        // Actualiza elemento.className.
+        elemento.className = clase;
+        // Devuelve elemento al código que llamó.
+        return elemento;
+    }
 
-    function mostrarCatalogo(datos) { // Define mostrarCatalogo con sus entradas y el resultado que devuelve.
-        // Construye las tarjetas del catálogo con totales propios de la cuenta.
-        if (!Array.isArray(datos.categorias)) throw new Error('El catálogo recibido es inválido.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        const categorias = datos.categorias.map(validarCategoria); // Inicializa la variable categorias: categorías admitidas.
-        if (new Set(categorias.map(c => c.id)).size !== categorias.length) throw new Error('El catálogo contiene IDs repetidos.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        const lista = document.querySelector('#categorias-lista'); // Localiza '#categorias-lista' en el HTML para controlar ese elemento.
-        lista.replaceChildren(...categorias.map(categoria => { // Reemplaza los elementos hijos sin interpretar texto como HTML.
-            // Construye una tarjeta de categoría.
-            const item = document.createElement('li'); // Crea un elemento li que se completará antes de insertarlo.
-            const enlace = document.createElement('a'); // Crea un elemento a que se completará antes de insertarlo.
-            enlace.className = 'categoria'; // Actualiza enlace.className.
-            enlace.dataset.ruta = 'categorias/' + categoria.id; // Actualiza enlace.dataset.ruta.
-            enlace.href = 'index.html#/' + enlace.dataset.ruta; // Actualiza enlace.href.
-            const icono = texto('div', Array.from(categoria.nombre)[0], 'icono'); // Inicializa icono.
-            icono.setAttribute('aria-hidden', 'true'); // Actualiza aria-hidden: propiedad del elemento en el DOM.
-            const totales = document.createElement('dl'); // Crea un elemento dl que se completará antes de insertarlo.
-            [['Ingresos', pesos(categoria.ingresos)], ['Gastos', pesos(categoria.gastos)], ['Saldo', pesos(categoria.saldo)], ['Movimientos', categoria.cantidad]].forEach(([etiqueta, valor]) => { // Ejecuta la función indicada para cada elemento de la lista.
-                // Actualiza los elementos de la interfaz con los datos de este bloque.
-                totales.append(texto('dt', etiqueta), texto('dd', valor)); // Inserta los elementos construidos en la estructura del documento.
-            }); // Cierra la función de respuesta y su registro o llamada.
-            enlace.append(icono, texto('h2', categoria.nombre), texto('p', categoria.tipo === 'gasto' ? 'Categoría de gastos' : 'Categoría de ingresos'), totales); // Inserta los elementos construidos en la estructura del documento.
-            item.append(enlace); // Inserta los elementos construidos en la estructura del documento.
-            return item; // Devuelve item al código que llamó.
-        })); // Completa la estructura o llamada iniciada arriba.
-        lista.hidden = !categorias.length; // Muestra u oculta el elemento según el estado actual.
-        document.querySelector('#categorias-vacio').hidden = categorias.length > 0; // Localiza '#categorias-vacio' en el HTML para controlar ese elemento.
-        return categorias.length + (categorias.length === 1 ? ' categoría disponible.' : ' categorías disponibles.') + ' Los importes corresponden a tu cuenta.'; // Devuelve categorias.length + (categorias.length === 1 ? ' categoría disponible… al código que llamó.
-    } // Finaliza este bloque.
+    // Define mostrarCatalogo con sus entradas y el resultado que devuelve.
+    function mostrarCatalogo(datos) {
+        // Interrumpe la función y comunica el error.
+        if (!Array.isArray(datos.categorias)) throw new Error('El catálogo recibido es inválido.');
+        // Inicia categorias: categorías admitidas.
+        const categorias = datos.categorias.map(validarCategoria);
+        // Interrumpe la función y comunica el error.
+        if (new Set(categorias.map(c => c.id)).size !== categorias.length) throw new Error('El catálogo contiene IDs repetidos.');
+        // Localiza '#categorias-lista' en el HTML para controlar ese elemento.
+        const lista = document.querySelector('#categorias-lista');
+        // Reemplaza los elementos hijos sin interpretar texto como HTML.
+        lista.replaceChildren(...categorias.map(categoria => {
+            // Crea un elemento li que se completará antes de insertarlo.
+            const item = document.createElement('li');
+            // Crea un elemento a que se completará antes de insertarlo.
+            const enlace = document.createElement('a');
+            // Actualiza enlace.className.
+            enlace.className = 'categoria';
+            // Actualiza enlace.dataset.ruta.
+            enlace.dataset.ruta = 'categorias/' + categoria.id;
+            // Actualiza enlace.href.
+            enlace.href = 'index.html#/' + enlace.dataset.ruta;
+            // Inicializa icono.
+            const icono = texto('div', Array.from(categoria.nombre)[0], 'icono');
+            // Actualiza aria-hidden: propiedad del elemento en el DOM.
+            icono.setAttribute('aria-hidden', 'true');
+            // Crea un elemento dl que se completará antes de insertarlo.
+            const totales = document.createElement('dl');
+            // Ejecuta la función indicada para cada elemento de la lista.
+            [['Ingresos', pesos(categoria.ingresos)], ['Gastos', pesos(categoria.gastos)], ['Saldo', pesos(categoria.saldo)], ['Movimientos', categoria.cantidad]].forEach(([etiqueta, valor]) => {
+                // Inserta los elementos construidos en la estructura del documento.
+                totales.append(texto('dt', etiqueta), texto('dd', valor));
+            });
+            // Inserta los elementos construidos en la estructura del documento.
+            enlace.append(icono, texto('h2', categoria.nombre), texto('p', categoria.tipo === 'gasto' ? 'Categoría de gastos' : 'Categoría de ingresos'), totales);
+            // Inserta los elementos construidos en la estructura del documento.
+            item.append(enlace);
+            // Devuelve item al código que llamó.
+            return item;
+        }));
+        // Muestra u oculta el elemento según el estado actual.
+        lista.hidden = !categorias.length;
+        // Localiza '#categorias-vacio' en el HTML para controlar ese elemento.
+        document.querySelector('#categorias-vacio').hidden = categorias.length > 0;
+        // Devuelve categorias.length + (categorias.length === 1 ? ' categoría disponible… al código que llamó.
+        return categorias.length + (categorias.length === 1 ? ' categoría disponible.' : ' categorías disponibles.') + ' Los importes corresponden a tu cuenta.';
+    }
 
-    function validarHistorial(datos, categoria) { // Define validarHistorial con sus entradas y el resultado que devuelve.
-        // Valida el historial y verifica que coincida con los totales recibidos.
-        if (!Array.isArray(datos) || datos.length !== categoria.cantidad) throw new Error('El historial recibido es inválido.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        const ids = new Set(); // Inicializa ids.
-        let ingresos = 0, gastos = 0; // Inicializa ingresos.
-        datos.forEach(movimiento => { // Ejecuta la función indicada para cada elemento de la lista.
-            // Comprueba cada movimiento del historial antes de sumar sus importes.
-            const fecha = typeof movimiento?.fecha === 'string' ? movimiento.fecha : ''; // Inicializa la variable fecha: fecha del movimiento.
-            const fechaReal = new Date(fecha + 'T00:00:00Z'); // Inicializa fechaReal.
-            if (!movimiento || !Number.isSafeInteger(movimiento.id) || movimiento.id <= 0 || ids.has(movimiento.id) || !['ingreso', 'gasto'].includes(movimiento.tipo) || movimiento.categoria !== categoria.nombre || typeof movimiento.descripcion !== 'string' || !movimiento.descripcion.trim() || !centavos(movimiento.total) || movimiento.total <= 0 || typeof movimiento.medioPago !== 'string' || !movimiento.medioPago || ![1, 3, 6, 12].includes(movimiento.cuotas) || (movimiento.comentario != null && typeof movimiento.comentario !== 'string') || !/^\d{4}-\d{2}-\d{2}$/.test(fecha) || fecha < '1900-01-01' || fecha > '2100-12-31' || Number.isNaN(fechaReal.getTime()) || fechaReal.toISOString().slice(0, 10) !== fecha) throw new Error('El historial contiene movimientos inválidos.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-            ids.add(movimiento.id); // Llama a ids.add con los datos indicados.
-            if (movimiento.tipo === 'ingreso') ingresos += Math.round(movimiento.total * 100); // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
-            else gastos += Math.round(movimiento.total * 100); // Ejecuta la alternativa cuando no se cumple la condición anterior.
-        }); // Cierra la función de respuesta y su registro o llamada.
-        if (!Number.isSafeInteger(ingresos) || !Number.isSafeInteger(gastos) || ingresos !== Math.round(categoria.ingresos * 100) || gastos !== Math.round(categoria.gastos * 100)) throw new Error('El historial no coincide con los totales recibidos.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        return [...datos].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id); // Devuelve [...datos].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.… al código que llamó.
-    } // Finaliza este bloque.
+    // Define validarHistorial con sus entradas y el resultado que devuelve.
+    function validarHistorial(datos, categoria) {
+        // Interrumpe la función y comunica el error.
+        if (!Array.isArray(datos) || datos.length !== categoria.cantidad) throw new Error('El historial recibido es inválido.');
+        // Inicializa ids.
+        const ids = new Set();
+        // Inicializa ingresos.
+        let ingresos = 0, gastos = 0;
+        // Ejecuta la función indicada para cada elemento de la lista.
+        datos.forEach(movimiento => {
+            // Inicia fecha: fecha del movimiento.
+            const fecha = typeof movimiento?.fecha === 'string' ? movimiento.fecha : '';
+            // Inicializa fechaReal.
+            const fechaReal = new Date(fecha + 'T00:00:00Z');
+            // Interrumpe la función y comunica el error.
+            if (!movimiento || !Number.isSafeInteger(movimiento.id) || movimiento.id <= 0 || ids.has(movimiento.id) || !['ingreso', 'gasto'].includes(movimiento.tipo) || movimiento.categoria !== categoria.nombre || typeof movimiento.descripcion !== 'string' || !movimiento.descripcion.trim() || !centavos(movimiento.total) || movimiento.total <= 0 || typeof movimiento.medioPago !== 'string' || !movimiento.medioPago || ![1, 3, 6, 12].includes(movimiento.cuotas) || (movimiento.comentario != null && typeof movimiento.comentario !== 'string') || !/^\d{4}-\d{2}-\d{2}$/.test(fecha) || fecha < '1900-01-01' || fecha > '2100-12-31' || Number.isNaN(fechaReal.getTime()) || fechaReal.toISOString().slice(0, 10) !== fecha) throw new Error('El historial contiene movimientos inválidos.');
+            // Llama a ids.add con los datos indicados.
+            ids.add(movimiento.id);
+            // Comprueba esta condición.
+            if (movimiento.tipo === 'ingreso') ingresos += Math.round(movimiento.total * 100);
+            // Ejecuta la alternativa cuando no se cumple la condición anterior.
+            else gastos += Math.round(movimiento.total * 100);
+        });
+        // Interrumpe la función y comunica el error.
+        if (!Number.isSafeInteger(ingresos) || !Number.isSafeInteger(gastos) || ingresos !== Math.round(categoria.ingresos * 100) || gastos !== Math.round(categoria.gastos * 100)) throw new Error('El historial no coincide con los totales recibidos.');
+        // Devuelve [...datos].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.… al código que llamó.
+        return [...datos].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id);
+    }
 
-    function mostrarDetalle(datos, id) { // Define mostrarDetalle con sus entradas y el resultado que devuelve.
-        // Presenta la categoría elegida y sus movimientos como texto seguro.
-        const categoria = validarCategoria(datos.categoria); // Inicializa la variable categoria: categoría seleccionada.
-        if (categoria.id !== id) throw new Error('El servidor devolvió otra categoría.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-        const movimientos = validarHistorial(datos.movimientos, categoria); // Inicializa la variable movimientos: lista de ingresos y gastos.
-        const panel = document.querySelector('#vista-categoria'); // Localiza '#vista-categoria' en el HTML para controlar ese elemento.
-        panel.querySelector('#categoria-titulo').textContent = categoria.nombre; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        document.title = categoria.nombre + ' - NipinFinan'; // Actualiza document.title.
-        panel.querySelector('#categoria-icono').textContent = Array.from(categoria.nombre)[0]; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        panel.querySelector('#categoria-tipo').textContent = categoria.tipo === 'gasto' ? 'Categoría de gastos' : 'Categoría de ingresos'; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        ['ingresos', 'gastos', 'saldo'].forEach(campo => { // Ejecuta la función indicada para cada elemento de la lista.
-            // Actualiza los elementos de la interfaz con los datos de este bloque.
-            panel.querySelector('#categoria-' + campo).textContent = pesos(categoria[campo]); // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        }); // Cierra la función de respuesta y su registro o llamada.
-        panel.querySelector('#categoria-saldo').className = categoria.saldo < 0 ? 'gasto' : categoria.saldo > 0 ? 'ingreso' : ''; // Localiza '#categoria-saldo' en el HTML para controlar ese elemento.
-        panel.querySelector('#categoria-cantidad').textContent = categoria.cantidad; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        panel.querySelector('#categoria-historial').replaceChildren(...movimientos.map(movimiento => { // Localiza '#categoria-historial' en el HTML para controlar ese elemento.
-            // Construye un registro visible del historial.
-            const item = document.createElement('li'); // Crea un elemento li que se completará antes de insertarlo.
-            item.className = 'movimiento'; // Actualiza item.className.
-            const info = document.createElement('div'); // Crea un elemento div que se completará antes de insertarlo.
-            const [anio, mes, dia] = movimiento.fecha.split('-'); // Separa los valores recibidos en las variables [anio, mes, dia].
-            const cuotas = movimiento.cuotas > 1 ? ' · ' + movimiento.cuotas + ' cuotas' : ''; // Inicializa la variable cuotas: cantidad de cuotas.
-            info.append(texto('strong', movimiento.descripcion), texto('p', [dia, mes, anio].join('/') + ' · ' + movimiento.medioPago + cuotas)); // Inserta los elementos construidos en la estructura del documento.
-            if (movimiento.comentario) info.append(texto('p', movimiento.comentario)); // Inserta los elementos construidos en la estructura del documento.
-            item.append(info, texto('strong', (movimiento.tipo === 'gasto' ? '−' : '+') + pesos(movimiento.total), movimiento.tipo)); // Inserta los elementos construidos en la estructura del documento.
-            return item; // Devuelve item al código que llamó.
-        })); // Completa la estructura o llamada iniciada arriba.
-        panel.querySelector('#categoria-sin-movimientos').hidden = movimientos.length > 0; // Localiza '#categoria-sin-movimientos' en el HTML para controlar ese elemento.
-        panel.querySelector('#categoria-datos').hidden = false; // Localiza '#categoria-datos' en el HTML para controlar ese elemento.
-        return categoria.nombre + ': ' + movimientos.length + (movimientos.length === 1 ? ' movimiento.' : ' movimientos.') + ' Saldo: ' + pesos(categoria.saldo) + '.'; // Devuelve categoria.nombre + ': ' + movimientos.length + (movimientos.length ==… al código que llamó.
-    } // Finaliza este bloque.
+    // Define mostrarDetalle con sus entradas y el resultado que devuelve.
+    function mostrarDetalle(datos, id) {
+        // Inicia categoria: categoría seleccionada.
+        const categoria = validarCategoria(datos.categoria);
+        // Interrumpe la función y comunica el error.
+        if (categoria.id !== id) throw new Error('El servidor devolvió otra categoría.');
+        // Inicia movimientos: lista de ingresos y gastos.
+        const movimientos = validarHistorial(datos.movimientos, categoria);
+        // Localiza '#vista-categoria' en el HTML para controlar ese elemento.
+        const panel = document.querySelector('#vista-categoria');
+        // Muestra texto sin interpretarlo como HTML.
+        panel.querySelector('#categoria-titulo').textContent = categoria.nombre;
+        // Actualiza document.title.
+        document.title = categoria.nombre + ' - NipinFinan';
+        // Muestra texto sin interpretarlo como HTML.
+        panel.querySelector('#categoria-icono').textContent = Array.from(categoria.nombre)[0];
+        // Muestra texto sin interpretarlo como HTML.
+        panel.querySelector('#categoria-tipo').textContent = categoria.tipo === 'gasto' ? 'Categoría de gastos' : 'Categoría de ingresos';
+        // Ejecuta la función indicada para cada elemento de la lista.
+        ['ingresos', 'gastos', 'saldo'].forEach(campo => {
+            // Muestra texto sin interpretarlo como HTML.
+            panel.querySelector('#categoria-' + campo).textContent = pesos(categoria[campo]);
+        });
+        // Localiza '#categoria-saldo' en el HTML para controlar ese elemento.
+        panel.querySelector('#categoria-saldo').className = categoria.saldo < 0 ? 'gasto' : categoria.saldo > 0 ? 'ingreso' : '';
+        // Muestra texto sin interpretarlo como HTML.
+        panel.querySelector('#categoria-cantidad').textContent = categoria.cantidad;
+        // Localiza '#categoria-historial' en el HTML para controlar ese elemento.
+        panel.querySelector('#categoria-historial').replaceChildren(...movimientos.map(movimiento => {
+            // Crea un elemento li que se completará antes de insertarlo.
+            const item = document.createElement('li');
+            // Actualiza item.className.
+            item.className = 'movimiento';
+            // Crea un elemento div que se completará antes de insertarlo.
+            const info = document.createElement('div');
+            // Separa los valores recibidos en las variables [anio, mes, dia].
+            const [anio, mes, dia] = movimiento.fecha.split('-');
+            // Inicia cuotas: cantidad de cuotas.
+            const cuotas = movimiento.cuotas > 1 ? ' · ' + movimiento.cuotas + ' cuotas' : '';
+            // Inserta los elementos construidos en la estructura del documento.
+            info.append(texto('strong', movimiento.descripcion), texto('p', [dia, mes, anio].join('/') + ' · ' + movimiento.medioPago + cuotas));
+            // Inserta los elementos construidos en la estructura del documento.
+            if (movimiento.comentario) info.append(texto('p', movimiento.comentario));
+            // Inserta los elementos construidos en la estructura del documento.
+            item.append(info, texto('strong', (movimiento.tipo === 'gasto' ? '−' : '+') + pesos(movimiento.total), movimiento.tipo));
+            // Devuelve item al código que llamó.
+            return item;
+        }));
+        // Localiza '#categoria-sin-movimientos' en el HTML para controlar ese elemento.
+        panel.querySelector('#categoria-sin-movimientos').hidden = movimientos.length > 0;
+        // Localiza '#categoria-datos' en el HTML para controlar ese elemento.
+        panel.querySelector('#categoria-datos').hidden = false;
+        // Devuelve categoria.nombre + ': ' + movimientos.length + (movimientos.length ==… al código que llamó.
+        return categoria.nombre + ': ' + movimientos.length + (movimientos.length === 1 ? ' movimiento.' : ' movimientos.') + ' Saldo: ' + pesos(categoria.saldo) + '.';
+    }
 
-    function crearVista(nombre, mostrar, vaciar) { // Define crearVista con sus entradas y el resultado que devuelve.
-        // Reutiliza la carga, los mensajes y el estado de catálogo y detalle.
-        const panel = document.querySelector('#vista-' + nombre); // Localiza '#vista-' + nombre en el HTML para controlar ese elemento.
-        const estado = panel.querySelector('#' + nombre + '-estado'); // Localiza '#' + nombre + '-estado' en el HTML para controlar ese elemento.
-        const aviso = panel.querySelector('#' + nombre + '-sin-sesion'); // Localiza '#' + nombre + '-sin-sesion' en el HTML para controlar ese elemento.
-        const actualizar = panel.querySelector('#' + nombre + '-actualizar'); // Localiza '#' + nombre + '-actualizar' en el HTML para controlar ese elemento.
-        let activa = false, cargando = false, entrada = 0, id = null; // Inicializa la variable activa: estado de la vista actual.
-        const vigente = intento => activa && intento === entrada; // Inicializa vigente.
+    // Define crearVista con sus entradas y el resultado que devuelve.
+    function crearVista(nombre, mostrar, vaciar) {
+        // Localiza '#vista-' + nombre en el HTML para controlar ese elemento.
+        const panel = document.querySelector('#vista-' + nombre);
+        // Localiza '#' + nombre + '-estado' en el HTML para controlar ese elemento.
+        const estado = panel.querySelector('#' + nombre + '-estado');
+        // Localiza '#' + nombre + '-sin-sesion' en el HTML para controlar ese elemento.
+        const aviso = panel.querySelector('#' + nombre + '-sin-sesion');
+        // Localiza '#' + nombre + '-actualizar' en el HTML para controlar ese elemento.
+        const actualizar = panel.querySelector('#' + nombre + '-actualizar');
+        // Inicia activa: estado de la vista actual.
+        let activa = false, cargando = false, entrada = 0, id = null;
+        // Inicializa vigente.
+        const vigente = intento => activa && intento === entrada;
 
-        function mensaje(valor, error = false) { // Define mensaje con sus entradas y el resultado que devuelve.
-            // Actualiza el texto de estado y sus atributos accesibles.
-            estado.textContent = valor; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-            estado.setAttribute('role', error ? 'alert' : 'status'); // Actualiza role: función accesible del elemento.
-            estado.setAttribute('aria-live', error ? 'assertive' : 'polite'); // Actualiza aria-live: prioridad del anuncio para lectores de pantalla.
-        } // Finaliza este bloque.
+        // Define mensaje con sus entradas y el resultado que devuelve.
+        function mensaje(valor, error = false) {
+            // Muestra texto sin interpretarlo como HTML.
+            estado.textContent = valor;
+            // Actualiza role: función accesible del elemento.
+            estado.setAttribute('role', error ? 'alert' : 'status');
+            // Actualiza aria-live: prioridad del anuncio para lectores de pantalla.
+            estado.setAttribute('aria-live', error ? 'assertive' : 'polite');
+        }
 
-        function bloquear(ocupado) { // Define bloquear con sus entradas y el resultado que devuelve.
-            // Habilita o bloquea los controles durante la operación.
-            cargando = ocupado; // Actualiza estado de carga.
-            actualizar.disabled = ocupado; // Habilita o bloquea el control según el estado de la operación.
-            panel.setAttribute('aria-busy', String(ocupado)); // Actualiza aria-busy: estado de carga para tecnología de asistencia.
-        } // Finaliza este bloque.
+        // Define bloquear con sus entradas y el resultado que devuelve.
+        function bloquear(ocupado) {
+            // Actualiza estado de carga.
+            cargando = ocupado;
+            // Habilita o bloquea el control según el estado de la operación.
+            actualizar.disabled = ocupado;
+            // Actualiza aria-busy: estado de carga para tecnología de asistencia.
+            panel.setAttribute('aria-busy', String(ocupado));
+        }
 
-        function limpiar(usuario = null) { // Define limpiar con sus entradas y el resultado que devuelve.
-            // Limpia los datos de la vista e invalida las respuestas anteriores.
-            vaciar(); // Llama a vaciar con los datos indicados.
-            bloquear(false); // Llama a bloquear con los datos indicados.
-            aviso.hidden = Boolean(usuario); // Muestra u oculta el elemento según el estado actual.
-            mensaje(usuario ? 'La cuenta cambió. Actualizá para consultar tus datos.' : 'Iniciá sesión para consultar tus categorías.'); // Llama a mensaje con los datos indicados.
-        } // Finaliza este bloque.
+        // Define limpiar con sus entradas y el resultado que devuelve.
+        function limpiar(usuario = null) {
+            // Llama a vaciar con los datos indicados.
+            vaciar();
+            // Llama a bloquear con los datos indicados.
+            bloquear(false);
+            // Muestra u oculta el elemento según el estado actual.
+            aviso.hidden = Boolean(usuario);
+            // Llama a mensaje con los datos indicados.
+            mensaje(usuario ? 'La cuenta cambió. Actualizá para consultar tus datos.' : 'Iniciá sesión para consultar tus categorías.');
+        }
 
-        async function cargar() { // Define cargar con sus entradas y el resultado que devuelve.
+        // Define cargar con sus entradas y el resultado que devuelve.
+        async function cargar() {
             // Consulta los datos privados y descarta respuestas de vistas o cuentas anteriores.
-            if (!activa || cargando) return; // Consulta los datos privados y descarta respuestas de vistas o cuentas anteriores.
-            const intento = ++entrada; // Inicializa intento.
-            let version = revisionSesion; // Inicializa version.
-            const devolverFoco = document.activeElement === actualizar; // Inicializa devolverFoco.
-            vaciar(); // Llama a vaciar con los datos indicados.
-            aviso.hidden = true; // Muestra u oculta el elemento según el estado actual.
-            bloquear(true); // Llama a bloquear con los datos indicados.
-            mensaje('Verificando sesión y cargando categorías…'); // Llama a mensaje con los datos indicados.
-            try { // Intenta la operación; catch manejará sus posibles errores.
-                // Ejecuta la operación y permite tratar sus errores.
-                const sesion = await NipinSesion.consultar(true); // Inicializa la variable sesion: datos de sesión recibidos de PHP.
-                if (!vigente(intento)) return; // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
-                if (!sesion) { // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
+            if (!activa || cargando) return;
+            // Inicializa intento.
+            const intento = ++entrada;
+            // Inicializa version.
+            let version = revisionSesion;
+            // Inicializa devolverFoco.
+            const devolverFoco = document.activeElement === actualizar;
+            // Llama a vaciar con los datos indicados.
+            vaciar();
+            // Muestra u oculta el elemento según el estado actual.
+            aviso.hidden = true;
+            // Llama a bloquear con los datos indicados.
+            bloquear(true);
+            // Llama a mensaje con los datos indicados.
+            mensaje('Verificando sesión y cargando categorías…');
+            // Intenta la operación y permite capturar sus errores.
+            try {
+                // Inicia sesion: datos de sesión recibidos de PHP.
+                const sesion = await NipinSesion.consultar(true);
+                // Comprueba esta condición.
+                if (!vigente(intento)) return;
+                // Comprueba esta condición.
+                if (!sesion) {
                     // Ajusta los datos según la identidad de la sesión comprobada.
-                    if (version === revisionSesion) limpiar(); // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
-                    return; // Sale de esta función sin continuar con las instrucciones siguientes.
-                } // Finaliza este bloque.
-                const cuenta = sesion.usuario?.email; // Inicializa cuenta.
-                if (typeof cuenta !== 'string' || !cuenta || !NipinSesion.esUsuario(cuenta)) throw new Error('No se pudo verificar la cuenta.'); // Interrumpe el recorrido y comunica el error al código que llamó.
-                version = revisionSesion; // Actualiza version.
-                bloquear(true); // Llama a bloquear con los datos indicados.
-                const datos = await NipinAPI.solicitarJSON('api/categorias.php' + (id ? '?id=' + encodeURIComponent(id) : ''), { privada: true }); // Prepara HTTP y JSON; luego fetch envía el pedido a la URL indicada.
-                if (!vigente(intento) || version !== revisionSesion || !NipinSesion.esUsuario(cuenta)) return; // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
+                    if (version === revisionSesion) limpiar();
+                    // Sale de esta función sin continuar con las instrucciones siguientes.
+                    return;
+                }
+                // Inicializa cuenta.
+                const cuenta = sesion.usuario?.email;
+                // Interrumpe la función y comunica el error.
+                if (typeof cuenta !== 'string' || !cuenta || !NipinSesion.esUsuario(cuenta)) throw new Error('No se pudo verificar la cuenta.');
+                // Actualiza version.
+                version = revisionSesion;
+                // Llama a bloquear con los datos indicados.
+                bloquear(true);
+                // Prepara HTTP y JSON; luego fetch envía el pedido a la URL indicada.
+                const datos = await NipinAPI.solicitarJSON('api/categorias.php' + (id ? '?id=' + encodeURIComponent(id) : ''), { privada: true });
+                // Comprueba esta condición.
+                if (!vigente(intento) || version !== revisionSesion || !NipinSesion.esUsuario(cuenta)) return;
                 // Revalida la identidad para no atribuir categorías a otra cuenta.
-                const confirmacion = await NipinSesion.consultar(true); // Inicializa confirmacion.
-                if (!vigente(intento)) return; // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
-                if (version !== revisionSesion || !confirmacion || confirmacion.usuario?.email !== cuenta || !NipinSesion.esUsuario(cuenta)) { // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
+                const confirmacion = await NipinSesion.consultar(true);
+                // Comprueba esta condición.
+                if (!vigente(intento)) return;
+                // Comprueba esta condición.
+                if (version !== revisionSesion || !confirmacion || confirmacion.usuario?.email !== cuenta || !NipinSesion.esUsuario(cuenta)) {
                     // Ajusta los datos según la identidad de la sesión comprobada.
-                    if (confirmacion?.usuario && !cargando && NipinSesion.esUsuario(confirmacion.usuario.email)) cargar(); // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
-                    return; // Sale de esta función sin continuar con las instrucciones siguientes.
-                } // Finaliza este bloque.
-                mensaje(mostrar(datos, id)); // Llama a mensaje con los datos indicados.
-            } catch (error) { // Recibe el fallo y permite responder sin continuar como si hubiera éxito.
+                    if (confirmacion?.usuario && !cargando && NipinSesion.esUsuario(confirmacion.usuario.email)) cargar();
+                    // Sale de esta función sin continuar con las instrucciones siguientes.
+                    return;
+                }
+                // Llama a mensaje con los datos indicados.
+                mensaje(mostrar(datos, id));
+            // Captura el error para responder de forma controlada.
+            } catch (error) {
                 // Informa el fallo sin sustituir el resultado por un éxito.
-                if (!vigente(intento) || version !== revisionSesion) return; // Informa el fallo sin sustituir el resultado por un éxito.
-                if (error.status === 401) { // Evalúa la condición y ejecuta este bloque sólo si resulta verdadera.
-                    // Descarta datos privados cuando el servidor informa sesión vencida.
-                    NipinSesion.establecer(null, { conservarBorrador: true }); // Continúa en js/app.js: actualiza la identidad visible y limpia las vistas.
-                    mensaje('La sesión venció. Iniciá sesión para consultar tus categorías.', true); // Llama a mensaje con los datos indicados.
-                    aviso.querySelector('a').focus(); // Lleva el foco al control para continuar con teclado.
-                } else { // Ejecuta la alternativa cuando no se cumple la condición anterior.
+                if (!vigente(intento) || version !== revisionSesion) return;
+                // Comprueba esta condición.
+                if (error.status === 401) {
+                    // Continúa en js/app.js: actualiza la identidad visible y limpia las vistas.
+                    NipinSesion.establecer(null, { conservarBorrador: true });
+                    // Llama a mensaje con los datos indicados.
+                    mensaje('La sesión venció. Iniciá sesión para consultar tus categorías.', true);
+                    // Lleva el foco al control.
+                    aviso.querySelector('a').focus();
+                // Ejecuta la alternativa cuando no se cumple la condición anterior.
+                } else {
                     // Distingue una categoría inexistente de otros fallos de consulta.
-                    const texto = error.status === 404 && id ? 'Esta categoría no está disponible. Volvé al catálogo para elegir otra.' : 'No se pudieron cargar las categorías. ' + error.message; // Inicializa texto.
-                    mensaje(texto, true); // Llama a mensaje con los datos indicados.
-                } // Finaliza este bloque.
-            } finally { // Ejecuta la limpieza final aunque la operación haya fallado.
+                    const texto = error.status === 404 && id ? 'Esta categoría no está disponible. Volvé al catálogo para elegir otra.' : 'No se pudieron cargar las categorías. ' + error.message;
+                    // Llama a mensaje con los datos indicados.
+                    mensaje(texto, true);
+                }
+            // Limpia el estado, incluso si la operación falló.
+            } finally {
                 // Restablece los controles y el estado al finalizar la operación.
-                if (vigente(intento)) { // Restablece los controles y el estado al finalizar la operación.
-                    // Mantiene el resultado sólo para la vista o sesión vigente.
-                    bloquear(false); // Llama a bloquear con los datos indicados.
-                    if (devolverFoco && document.activeElement === document.body) actualizar.focus({ preventScroll: true }); // Lleva el foco al control para continuar con teclado.
-                } // Finaliza este bloque.
-            } // Finaliza este bloque.
-        } // Finaliza este bloque.
+                if (vigente(intento)) {
+                    // Llama a bloquear con los datos indicados.
+                    bloquear(false);
+                    // Lleva el foco al control.
+                    if (devolverFoco && document.activeElement === document.body) actualizar.focus({ preventScroll: true });
+                }
+            }
+        }
 
-        actualizar.addEventListener('click', cargar); // Registra la acción que se ejecuta al recibir click.
-        const vista = { // Inicializa vista.
-            limpiar, // Expone estas funciones para utilizarlas desde otros módulos.
-            entrar(categoriaId = null) { // Llama a entrar con los datos indicados.
-                // Activa la vista y prepara sus datos antes de habilitar controles.
-                activa = true; id = categoriaId; cargar(); // Actualiza estado de la vista actual.
-            }, // Completa la estructura o llamada iniciada arriba.
-            salir() { // Llama a salir con los datos indicados.
-                // Desactiva la vista para que las respuestas pendientes no la actualicen.
-                activa = false; entrada++; vaciar(); bloquear(false); aviso.hidden = true; mensaje(''); // Muestra u oculta el elemento según el estado actual.
-            } // Finaliza este bloque.
-        }; // Completa la estructura o llamada iniciada arriba.
-        vistas.push(vista); // Llama a vistas.push con los datos indicados.
-        return vista; // Devuelve vista al código que llamó.
-    } // Finaliza este bloque.
+        // Registra la acción que se ejecuta al recibir click.
+        actualizar.addEventListener('click', cargar);
+        // Inicializa vista.
+        const vista = {
+            // Expone estas funciones para utilizarlas desde otros módulos.
+            limpiar,
+            // Llama a entrar con los datos indicados.
+            entrar(categoriaId = null) {
+                // Actualiza estado de la vista actual.
+                activa = true; id = categoriaId; cargar();
+            },
+            // Llama a salir con los datos indicados.
+            salir() {
+                // Muestra u oculta el elemento según el estado actual.
+                activa = false; entrada++; vaciar(); bloquear(false); aviso.hidden = true; mensaje('');
+            }
+        };
+        // Llama a vistas.push con los datos indicados.
+        vistas.push(vista);
+        // Devuelve vista al código que llamó.
+        return vista;
+    }
 
-    const catalogo = crearVista('categorias', mostrarCatalogo, () => { // Inicializa la variable catalogo: catálogo de categorías.
-        // Actualiza los elementos de la interfaz con los datos de este bloque.
-        document.querySelector('#categorias-lista').replaceChildren(); // Localiza '#categorias-lista' en el HTML para controlar ese elemento.
-        document.querySelector('#categorias-lista').hidden = true; // Localiza '#categorias-lista' en el HTML para controlar ese elemento.
-        document.querySelector('#categorias-vacio').hidden = true; // Localiza '#categorias-vacio' en el HTML para controlar ese elemento.
-    }); // Cierra la función de respuesta y su registro o llamada.
-    const detalle = crearVista('categoria', mostrarDetalle, () => { // Inicializa detalle.
-        // Vacía el detalle para no mostrar datos de una consulta anterior.
-        document.querySelector('#categoria-datos').hidden = true; // Localiza '#categoria-datos' en el HTML para controlar ese elemento.
-        document.querySelector('#categoria-titulo').textContent = 'Detalle de categoría'; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        document.querySelector('#categoria-icono').textContent = ''; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        document.querySelector('#categoria-tipo').textContent = ''; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        ['ingresos', 'gastos', 'saldo'].forEach(campo => { // Ejecuta la función indicada para cada elemento de la lista.
-            // Actualiza los elementos de la interfaz con los datos de este bloque.
-            document.querySelector('#categoria-' + campo).textContent = '$0'; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        }); // Cierra la función de respuesta y su registro o llamada.
-        document.querySelector('#categoria-cantidad').textContent = '0'; // Escribe texto en el DOM sin interpretarlo como HTML; evita insertar etiquetas.
-        document.querySelector('#categoria-historial').replaceChildren(); // Localiza '#categoria-historial' en el HTML para controlar ese elemento.
-        document.querySelector('#categoria-sin-movimientos').hidden = true; // Localiza '#categoria-sin-movimientos' en el HTML para controlar ese elemento.
-    }); // Cierra la función de respuesta y su registro o llamada.
-    return { catalogo, detalle, limpiar(usuario = null) { // Devuelve las funciones o datos públicos al código que llamó.
-        // Limpia los datos de la vista e invalida las respuestas anteriores.
-        revisionSesion++; vistas.forEach(vista => vista.limpiar(usuario)); // Incrementa revisionSesion++; vistas.forEach(vista => vista.limpiar(usuario en uno.
-    } }; // Completa la estructura o llamada iniciada arriba.
-})(); // Ejecuta el módulo y conserva sus funciones públicas.
+    // Inicia catalogo: catálogo de categorías.
+    const catalogo = crearVista('categorias', mostrarCatalogo, () => {
+        // Localiza '#categorias-lista' en el HTML para controlar ese elemento.
+        document.querySelector('#categorias-lista').replaceChildren();
+        // Localiza '#categorias-lista' en el HTML para controlar ese elemento.
+        document.querySelector('#categorias-lista').hidden = true;
+        // Localiza '#categorias-vacio' en el HTML para controlar ese elemento.
+        document.querySelector('#categorias-vacio').hidden = true;
+    });
+    // Inicializa detalle.
+    const detalle = crearVista('categoria', mostrarDetalle, () => {
+        // Localiza '#categoria-datos' en el HTML para controlar ese elemento.
+        document.querySelector('#categoria-datos').hidden = true;
+        // Muestra texto sin interpretarlo como HTML.
+        document.querySelector('#categoria-titulo').textContent = 'Detalle de categoría';
+        // Muestra texto sin interpretarlo como HTML.
+        document.querySelector('#categoria-icono').textContent = '';
+        // Muestra texto sin interpretarlo como HTML.
+        document.querySelector('#categoria-tipo').textContent = '';
+        // Ejecuta la función indicada para cada elemento de la lista.
+        ['ingresos', 'gastos', 'saldo'].forEach(campo => {
+            // Muestra texto sin interpretarlo como HTML.
+            document.querySelector('#categoria-' + campo).textContent = '$0';
+        });
+        // Muestra texto sin interpretarlo como HTML.
+        document.querySelector('#categoria-cantidad').textContent = '0';
+        // Localiza '#categoria-historial' en el HTML para controlar ese elemento.
+        document.querySelector('#categoria-historial').replaceChildren();
+        // Localiza '#categoria-sin-movimientos' en el HTML para controlar ese elemento.
+        document.querySelector('#categoria-sin-movimientos').hidden = true;
+    });
+    // Devuelve las funciones o datos públicos al código que llamó.
+    return { catalogo, detalle, limpiar(usuario = null) {
+        // Incrementa revisionSesion++; vistas.forEach(vista => vista.limpiar(usuario en uno.
+        revisionSesion++; vistas.forEach(vista => vista.limpiar(usuario));
+    } };
+})();

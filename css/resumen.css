@@ -1,100 +1,126 @@
 /* AE2 - Luciano Fohrholtz. Estilos limitados al resumen del inicio. */
-/* Oculta los elementos marcados con hidden aunque otra clase use display. */
-#resumen [hidden] { display: none !important; } /* Continúa el selector o los valores de la regla CSS. */
+#resumen [hidden] { display: none !important; }
 /* Distribuye los elementos en varias filas cuando falta espacio. */
-#resumen .resumen-cabecera { /* Selecciona #resumen .resumen-cabecera para aplicar las propiedades siguientes. */
-    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
-    align-items: center; /* Alinea los elementos en el eje transversal (center). */
-    justify-content: space-between; /* Distribuye los elementos en el eje principal (space-between). */
-    flex-wrap: wrap; /* Permite o evita el salto de los elementos a otra fila (wrap). */
-    gap: 16px; /* Separa los elementos de la distribución (16px). */
-    margin-bottom: 24px; /* Configura margin-bottom (24px). */
-} /* Finaliza esta regla o grupo de estilos. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen h2 { margin: 0 0 8px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-cabecera p { margin: 0; color: #475569; } /* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-cabecera {
+    /* Define cómo se distribuye o muestra el elemento (flex). */
+    display: flex;
+    /* Alinea los elementos en el eje transversal (center). */
+    align-items: center;
+    /* Distribuye los elementos en el eje principal (space-between). */
+    justify-content: space-between;
+    /* Permite o evita el salto de los elementos a otra fila (wrap). */
+    flex-wrap: wrap;
+    /* Separa los elementos de la distribución (16px). */
+    gap: 16px;
+    /* Configura margin-bottom (24px). */
+    margin-bottom: 24px;
+}
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen h2 { margin: 0 0 8px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-cabecera p { margin: 0; color: #475569; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-modo { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+/* Selecciona #resumen .resumen-etiqueta para aplicar las propiedades siguientes. */
+#resumen .resumen-etiqueta {
+    /* Define el borde (1px solid #bfdbfe). */
+    border: 1px solid #bfdbfe;
+    /* Redondea las esquinas (6px). */
+    border-radius: 6px;
+    /* Define el espacio interior (6px 10px). */
+    padding: 6px 10px;
+    /* Define el fondo (#eff6ff). */
+    background: #eff6ff;
+    /* Define el color del texto (#1d4ed8). */
+    color: #1d4ed8;
+    /* Define el tamaño de letra (14px). */
+    font-size: 14px;
+    /* Define el grosor de letra (bold). */
+    font-weight: bold;
+}
 /* Distribuye los elementos en varias filas cuando falta espacio. */
-#resumen .resumen-modo { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-etiqueta { /* Selecciona #resumen .resumen-etiqueta para aplicar las propiedades siguientes. */
-    border: 1px solid #bfdbfe; /* Define el borde (1px solid #bfdbfe). */
-    border-radius: 6px; /* Redondea las esquinas (6px). */
-    padding: 6px 10px; /* Define el espacio interior (6px 10px). */
-    background: #eff6ff; /* Define el fondo (#eff6ff). */
-    color: #1d4ed8; /* Define el color del texto (#1d4ed8). */
-    font-size: 14px; /* Define el tamaño de letra (14px). */
-    font-weight: bold; /* Define el grosor de letra (bold). */
-} /* Finaliza esta regla o grupo de estilos. */
-/* Distribuye los elementos en varias filas cuando falta espacio. */
-#resumen .resumen-filtros { /* Selecciona #resumen .resumen-filtros para aplicar las propiedades siguientes. */
-    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
-    align-items: flex-end; /* Alinea los elementos en el eje transversal (flex-end). */
-    flex-wrap: wrap; /* Permite o evita el salto de los elementos a otra fila (wrap). */
-    gap: 16px; /* Separa los elementos de la distribución (16px). */
-    margin-bottom: 20px; /* Configura margin-bottom (20px). */
-} /* Finaliza esta regla o grupo de estilos. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .campo { flex: 1 1 180px; margin: 0; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-#resumen .boton { font: inherit; } /* Continúa el selector o los valores de la regla CSS. */
-/* Indica visualmente que el control está temporalmente deshabilitado. */
-#resumen .boton:disabled { cursor: wait; opacity: .65; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-aviso { /* Selecciona #resumen .resumen-aviso para aplicar las propiedades siguientes. */
-    padding: 12px 16px; /* Define el espacio interior (12px 16px). */
-    margin: 0 0 20px; /* Define el espacio exterior (0 0 20px). */
-    background: #eff6ff; /* Define el fondo (#eff6ff). */
-    border: 1px solid #bfdbfe; /* Define el borde (1px solid #bfdbfe). */
-    border-radius: 6px; /* Redondea las esquinas (6px). */
-    color: #1e40af; /* Define el color del texto (#1e40af). */
-} /* Finaliza esta regla o grupo de estilos. */
+#resumen .resumen-filtros {
+    /* Define cómo se distribuye o muestra el elemento (flex). */
+    display: flex;
+    /* Alinea los elementos en el eje transversal (flex-end). */
+    align-items: flex-end;
+    /* Permite o evita el salto de los elementos a otra fila (wrap). */
+    flex-wrap: wrap;
+    /* Separa los elementos de la distribución (16px). */
+    gap: 16px;
+    /* Configura margin-bottom (20px). */
+    margin-bottom: 20px;
+}
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .campo { flex: 1 1 180px; margin: 0; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .boton { font: inherit; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .boton:disabled { cursor: wait; opacity: .65; }
+/* Selecciona #resumen .resumen-aviso para aplicar las propiedades siguientes. */
+#resumen .resumen-aviso {
+    /* Define el espacio interior (12px 16px). */
+    padding: 12px 16px;
+    /* Define el espacio exterior (0 0 20px). */
+    margin: 0 0 20px;
+    /* Define el fondo (#eff6ff). */
+    background: #eff6ff;
+    /* Define el borde (1px solid #bfdbfe). */
+    border: 1px solid #bfdbfe;
+    /* Redondea las esquinas (6px). */
+    border-radius: 6px;
+    /* Define el color del texto (#1e40af). */
+    color: #1e40af;
+}
 /* Define los colores del componente manteniendo su contraste. */
-#resumen .resumen-aviso.error { /* Selecciona #resumen .resumen-aviso.error para aplicar las propiedades siguientes. */
-    background: #fff7ed; /* Define el fondo (#fff7ed). */
-    border-color: #fed7aa; /* Define el color del borde (#fed7aa). */
-    color: #9a3412; /* Define el color del texto (#9a3412). */
-} /* Finaliza esta regla o grupo de estilos. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-contexto { color: #475569; margin: 0 0 16px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el tamaño o la presentación del componente seleccionado. */
-#resumen .tarjeta { min-width: 0; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .tarjeta p { margin: 0 0 12px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Permite cortar texto largo para evitar desbordamientos. */
-#resumen .tarjeta h3 { font-size: 26px; overflow-wrap: anywhere; margin: 0; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .tarjeta small { display: block; margin-top: 10px; color: #475569; line-height: 1.5; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-#resumen .resumen-categoria { font-size: 21px !important; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-vacio { margin-top: 20px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-grafico { margin-top: 24px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-grafico h3, #resumen .resumen-comparacion h3 { margin-top: 0; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-barras { list-style: none; padding: 0; margin: 0; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-barras li + li { margin-top: 18px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Distribuye los elementos en varias filas cuando falta espacio. */
-#resumen .resumen-barra-texto { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Define el fondo y la altura de las barras del resumen. */
-#resumen .resumen-barra-base { height: 12px; background: #dbeafe; border-radius: 6px; overflow: hidden; } /* Continúa el selector o los valores de la regla CSS. */
-/* Colorea la proporción de gasto calculada por JavaScript. */
-#resumen .resumen-barra-valor { display: block; height: 100%; background: #2563eb; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-comparacion { margin-top: 24px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#resumen .resumen-comparacion p { margin-bottom: 0; } /* Continúa el selector o los valores de la regla CSS. */
-/* Dibuja un contorno visible para identificar el foco de teclado. */
-#resumen a:focus-visible, #resumen button:focus-visible, #resumen select:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; } /* Continúa el selector o los valores de la regla CSS. */
-/* Aplica estos ajustes cuando la pantalla tiene hasta setecientos píxeles de ancho. */
-@media (max-width: 700px) { /* Aplica estos estilos únicamente al tamaño de pantalla indicado. */
-    /* Ordena los elementos verticalmente mediante Flexbox. */
-    #resumen .resumen-filtros { flex-direction: column; align-items: stretch; } /* Continúa el selector o los valores de la regla CSS. */
-    /* Ajusta el tamaño o la presentación del componente seleccionado. */
-    #resumen .campo { flex: auto; } /* Continúa el selector o los valores de la regla CSS. */
-    /* Ajusta el tamaño o la presentación del componente seleccionado. */
-    #resumen .resumen-cabecera { align-items: flex-start; } /* Continúa el selector o los valores de la regla CSS. */
-} /* Finaliza esta regla o grupo de estilos. */
+#resumen .resumen-aviso.error {
+    /* Define el fondo (#fff7ed). */
+    background: #fff7ed;
+    /* Define el color del borde (#fed7aa). */
+    border-color: #fed7aa;
+    /* Define el color del texto (#9a3412). */
+    color: #9a3412;
+}
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-contexto { color: #475569; margin: 0 0 16px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .tarjeta { min-width: 0; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .tarjeta p { margin: 0 0 12px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .tarjeta h3 { font-size: 26px; overflow-wrap: anywhere; margin: 0; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .tarjeta small { display: block; margin-top: 10px; color: #475569; line-height: 1.5; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-categoria { font-size: 21px !important; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-vacio { margin-top: 20px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-grafico { margin-top: 24px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-grafico h3, #resumen .resumen-comparacion h3 { margin-top: 0; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-barras { list-style: none; padding: 0; margin: 0; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-barras li + li { margin-top: 18px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-barra-texto { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-barra-base { height: 12px; background: #dbeafe; border-radius: 6px; overflow: hidden; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-barra-valor { display: block; height: 100%; background: #2563eb; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-comparacion { margin-top: 24px; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen .resumen-comparacion p { margin-bottom: 0; }
+/* Continúa el selector o los valores de la regla CSS. */
+#resumen a:focus-visible, #resumen button:focus-visible, #resumen select:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+/* Aplica estos estilos únicamente al tamaño de pantalla indicado. */
+@media (max-width: 700px) {
+    /* Continúa el selector o los valores de la regla CSS. */
+    #resumen .resumen-filtros { flex-direction: column; align-items: stretch; }
+    /* Continúa el selector o los valores de la regla CSS. */
+    #resumen .campo { flex: auto; }
+    /* Continúa el selector o los valores de la regla CSS. */
+    #resumen .resumen-cabecera { align-items: flex-start; }
+}

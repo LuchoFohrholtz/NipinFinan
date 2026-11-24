@@ -1,125 +1,165 @@
 <?php
-declare(strict_types=1); // Activa el control estricto de tipos en las llamadas de este archivo.
+// Activa el control estricto de tipos en las llamadas de este archivo.
+declare(strict_types=1);
 
 // Persistencia de api/mis_movimientos.php: SQL preparado y filtro por propietario.
-final class MovimientoModel // Define la clase MovimientoModel.
-{ // Comienza el cuerpo de la función, clase o condición.
-    private PDO $conexion; // Conserva conexión PDO compartida como propiedad del objeto.
+final class MovimientoModel
+{
+    // Conserva conexión PDO compartida como propiedad del objeto.
+    private PDO $conexion;
 
     // Recibe la conexión PDO compartida por el controlador.
-    public function __construct(PDO $conexion) // Define __construct con sus entradas y el resultado que devuelve.
-    { // Comienza el cuerpo de la función, clase o condición.
-        $this->conexion = $conexion; // Conserva el mismo objeto PDO; los métodos no abren otra conexión.
-    } // Finaliza este bloque.
+    public function __construct(PDO $conexion)
+    {
+        // Conserva el mismo objeto PDO; los métodos no abren otra conexión.
+        $this->conexion = $conexion;
+    }
 
-    // Consulta los movimientos propios del más reciente al más antiguo.
-    public function listarPorUsuario(int $usuarioId): array // Consulta únicamente movimientos del propietario autenticado.
-    { // Comienza el cuerpo de la función, clase o condición.
-        $consulta = $this->conexion->prepare( // Prepara la sentencia SQL; los valores se vinculan después con execute.
+    // Consulta únicamente movimientos del propietario autenticado.
+    public function listarPorUsuario(int $usuarioId): array
+    {
+        // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        $consulta = $this->conexion->prepare(
             'SELECT id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
                     fecha, categoria, medio_pago, comentario
              FROM movimientos
              WHERE usuario_id = :usuario_id
-             ORDER BY fecha DESC, id DESC' // Ordena el resultado SQL del más reciente al más antiguo.
-        ); // Completa la estructura o llamada iniciada arriba.
-        // Vincula el usuario autenticado y recupera las filas.
-        $consulta->execute(['usuario_id' => $usuarioId]); // Ejecuta SQL vinculando valores separados de las instrucciones.
+             ORDER BY fecha DESC, id DESC'
+        );
+        // Ejecuta SQL vinculando valores separados de las instrucciones.
+        $consulta->execute(['usuario_id' => $usuarioId]);
 
-        return $consulta->fetchAll(PDO::FETCH_ASSOC); // Recupera todas las filas SQL como arrays con nombres de columnas.
-    } // Finaliza este bloque.
+        // Recupera todas las filas SQL como arrays con nombres de columnas.
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // Inserta los importes ya validados y calculados por el servicio.
-    public function crear(int $usuarioId, array $movimiento): int // Define crear con sus entradas y el resultado que devuelve.
-    { // Comienza el cuerpo de la función, clase o condición.
-        $consulta = $this->conexion->prepare( // Prepara la sentencia SQL; los valores se vinculan después con execute.
+    public function crear(int $usuarioId, array $movimiento): int
+    {
+        // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        $consulta = $this->conexion->prepare(
             'INSERT INTO movimientos
                 (usuario_id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
                  fecha, categoria, medio_pago, comentario)
              VALUES
                 (:usuario_id, :tipo, :descripcion, :monto, :ajuste, :total, :cuotas, :valor_cuota,
-                 :fecha, :categoria, :medio_pago, :comentario)' // Selecciona este valor cuando no se cumple la condición anterior.
-        ); // Completa la estructura o llamada iniciada arriba.
-        // Vincula el propietario y los campos del movimiento como parámetros.
-        $consulta->execute([ // Ejecuta SQL vinculando valores separados de las instrucciones.
-            'usuario_id' => $usuarioId, // Incluye el campo usuario_id en esta estructura.
-            'tipo' => $movimiento['tipo'], // Incluye el tipo de movimiento en esta estructura.
-            'descripcion' => $movimiento['descripcion'], // Incluye el campo descripcion en esta estructura.
-            'monto' => $movimiento['monto'], // Incluye el importe original en esta estructura.
-            'ajuste' => $movimiento['ajuste'], // Incluye la diferencia entre importe final y original en esta estructura.
-            'total' => $movimiento['total'], // Incluye el importe final en esta estructura.
-            'cuotas' => $movimiento['cuotas'], // Incluye la cantidad de cuotas en esta estructura.
-            'valor_cuota' => $movimiento['valor_cuota'], // Incluye el importe de cada cuota en esta estructura.
-            'fecha' => $movimiento['fecha'], // Incluye la fecha del movimiento en esta estructura.
-            'categoria' => $movimiento['categoria'], // Incluye la categoría del movimiento en esta estructura.
-            'medio_pago' => $movimiento['medio_pago'], // Incluye el medio de pago en esta estructura.
-            'comentario' => $movimiento['comentario'], // Incluye el comentario opcional en esta estructura.
-        ]); // Completa la estructura o llamada iniciada arriba.
+                 :fecha, :categoria, :medio_pago, :comentario)'
+        );
+        // Ejecuta SQL vinculando valores separados de las instrucciones.
+        $consulta->execute([
+            // Incluye el campo usuario_id.
+            'usuario_id' => $usuarioId,
+            // Incluye el tipo de movimiento.
+            'tipo' => $movimiento['tipo'],
+            // Incluye el campo descripcion.
+            'descripcion' => $movimiento['descripcion'],
+            // Incluye el importe original.
+            'monto' => $movimiento['monto'],
+            // Incluye la diferencia entre importe final y original.
+            'ajuste' => $movimiento['ajuste'],
+            // Incluye el importe final.
+            'total' => $movimiento['total'],
+            // Incluye la cantidad de cuotas.
+            'cuotas' => $movimiento['cuotas'],
+            // Incluye el importe de cada cuota.
+            'valor_cuota' => $movimiento['valor_cuota'],
+            // Incluye la fecha del movimiento.
+            'fecha' => $movimiento['fecha'],
+            // Incluye la categoría del movimiento.
+            'categoria' => $movimiento['categoria'],
+            // Incluye el medio de pago.
+            'medio_pago' => $movimiento['medio_pago'],
+            // Incluye el comentario opcional.
+            'comentario' => $movimiento['comentario'],
+        ]);
 
-        // Devuelve el identificador del movimiento creado.
-        return (int) $this->conexion->lastInsertId(); // Devuelve al controlador el identificador generado por el INSERT.
-    } // Finaliza este bloque.
+        // Devuelve al controlador el identificador generado por el INSERT.
+        return (int) $this->conexion->lastInsertId();
+    }
 
     // Actualiza sólo el movimiento que coincide con identificador y usuario.
-    public function actualizar(int $usuarioId, int $id, array $movimiento): ?array // Define actualizar con sus entradas y el resultado que devuelve.
-    { // Comienza el cuerpo de la función, clase o condición.
-        $consulta = $this->conexion->prepare( // Prepara la sentencia SQL; los valores se vinculan después con execute.
+    public function actualizar(int $usuarioId, int $id, array $movimiento): ?array
+    {
+        // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        $consulta = $this->conexion->prepare(
             'UPDATE movimientos SET tipo = :tipo, descripcion = :descripcion,
                 monto = :monto, ajuste = :ajuste, total = :total, cuotas = :cuotas,
                 valor_cuota = :valor_cuota, fecha = :fecha, categoria = :categoria,
                 medio_pago = :medio_pago, comentario = :comentario
-             WHERE id = :id AND usuario_id = :usuario_id' // Restringe la consulta SQL al identificador y propietario solicitados.
-        ); // Completa la estructura o llamada iniciada arriba.
-        // Vincula los datos editables junto con el identificador y propietario.
-        $consulta->execute([ // Ejecuta SQL vinculando valores separados de las instrucciones.
-            'id' => $id, // Incluye el identificador del recurso en esta estructura.
-            'usuario_id' => $usuarioId, // Incluye el campo usuario_id en esta estructura.
-            'tipo' => $movimiento['tipo'], // Incluye el tipo de movimiento en esta estructura.
-            'descripcion' => $movimiento['descripcion'], // Incluye el campo descripcion en esta estructura.
-            'monto' => $movimiento['monto'], // Incluye el importe original en esta estructura.
-            'ajuste' => $movimiento['ajuste'], // Incluye la diferencia entre importe final y original en esta estructura.
-            'total' => $movimiento['total'], // Incluye el importe final en esta estructura.
-            'cuotas' => $movimiento['cuotas'], // Incluye la cantidad de cuotas en esta estructura.
-            'valor_cuota' => $movimiento['valor_cuota'], // Incluye el importe de cada cuota en esta estructura.
-            'fecha' => $movimiento['fecha'], // Incluye la fecha del movimiento en esta estructura.
-            'categoria' => $movimiento['categoria'], // Incluye la categoría del movimiento en esta estructura.
-            'medio_pago' => $movimiento['medio_pago'], // Incluye el medio de pago en esta estructura.
-            'comentario' => $movimiento['comentario'], // Incluye el comentario opcional en esta estructura.
-        ]); // Completa la estructura o llamada iniciada arriba.
+             WHERE id = :id AND usuario_id = :usuario_id'
+        );
+        // Ejecuta SQL vinculando valores separados de las instrucciones.
+        $consulta->execute([
+            // Incluye el identificador del recurso.
+            'id' => $id,
+            // Incluye el campo usuario_id.
+            'usuario_id' => $usuarioId,
+            // Incluye el tipo de movimiento.
+            'tipo' => $movimiento['tipo'],
+            // Incluye el campo descripcion.
+            'descripcion' => $movimiento['descripcion'],
+            // Incluye el importe original.
+            'monto' => $movimiento['monto'],
+            // Incluye la diferencia entre importe final y original.
+            'ajuste' => $movimiento['ajuste'],
+            // Incluye el importe final.
+            'total' => $movimiento['total'],
+            // Incluye la cantidad de cuotas.
+            'cuotas' => $movimiento['cuotas'],
+            // Incluye el importe de cada cuota.
+            'valor_cuota' => $movimiento['valor_cuota'],
+            // Incluye la fecha del movimiento.
+            'fecha' => $movimiento['fecha'],
+            // Incluye la categoría del movimiento.
+            'categoria' => $movimiento['categoria'],
+            // Incluye el medio de pago.
+            'medio_pago' => $movimiento['medio_pago'],
+            // Incluye el comentario opcional.
+            'comentario' => $movimiento['comentario'],
+        ]);
 
-        // Recupera también los movimientos guardados sin cambios de valores.
-        $consulta = $this->conexion->prepare( // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        $consulta = $this->conexion->prepare(
             'SELECT id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
                     fecha, categoria, medio_pago, comentario
-             FROM movimientos WHERE id = :id AND usuario_id = :usuario_id' // Consulta únicamente el movimiento que pertenece al usuario autenticado.
-        ); // Completa la estructura o llamada iniciada arriba.
-        // Consulta la fila actual y devuelve null si el recurso no pertenece al usuario.
-        $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]); // Ejecuta SQL vinculando valores separados de las instrucciones.
-        $fila = $consulta->fetch(PDO::FETCH_ASSOC); // Recupera una fila SQL; este fetch de PDO no envía HTTP.
-        return $fila === false ? null : $fila; // Devuelve fila === false ? null : $fila al código que llamó.
-    } // Finaliza este bloque.
+             FROM movimientos WHERE id = :id AND usuario_id = :usuario_id'
+        );
+        // Ejecuta SQL vinculando valores separados de las instrucciones.
+        $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]);
+        // Recupera una fila SQL; este fetch de PDO no envía HTTP.
+        $fila = $consulta->fetch(PDO::FETCH_ASSOC);
+        // Devuelve fila === false ? null : $fila al código que llamó.
+        return $fila === false ? null : $fila;
+    }
 
     // Elimina únicamente un movimiento propio e informa si existía.
-    public function eliminar(int $usuarioId, int $id): bool // Define eliminar con sus entradas y el resultado que devuelve.
-    { // Comienza el cuerpo de la función, clase o condición.
-        $consulta = $this->conexion->prepare( // Prepara la sentencia SQL; los valores se vinculan después con execute.
-            'DELETE FROM movimientos WHERE id = :id AND usuario_id = :usuario_id' // Define la baja SQL filtrada por identificador y propietario.
-        ); // Completa la estructura o llamada iniciada arriba.
-        $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]); // Ejecuta SQL vinculando valores separados de las instrucciones.
-        return $consulta->rowCount() === 1; // Indica si se eliminó exactamente un movimiento propio.
-    } // Finaliza este bloque.
+    public function eliminar(int $usuarioId, int $id): bool
+    {
+        // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        $consulta = $this->conexion->prepare(
+            // Define la baja SQL filtrada por identificador y propietario.
+            'DELETE FROM movimientos WHERE id = :id AND usuario_id = :usuario_id'
+        );
+        // Ejecuta SQL vinculando valores separados de las instrucciones.
+        $consulta->execute(['id' => $id, 'usuario_id' => $usuarioId]);
+        // Indica si se eliminó exactamente un movimiento propio.
+        return $consulta->rowCount() === 1;
+    }
 
-    // Consulta el historial propio de una categoría con coincidencia exacta.
-    public function listarPorCategoria(int $usuarioId, string $categoria): array // Consulta el historial propio de la categoría solicitada.
-    { // Comienza el cuerpo de la función, clase o condición.
-        $consulta = $this->conexion->prepare( // Prepara la sentencia SQL; los valores se vinculan después con execute.
+    // Consulta el historial propio de la categoría solicitada.
+    public function listarPorCategoria(int $usuarioId, string $categoria): array
+    {
+        // Prepara la sentencia SQL; los valores se vinculan después con execute.
+        $consulta = $this->conexion->prepare(
             'SELECT id, tipo, descripcion, monto, ajuste, total, cuotas, valor_cuota,
                     fecha, categoria, medio_pago, comentario
              FROM movimientos
              WHERE usuario_id = :usuario_id AND BINARY categoria = :categoria
-             ORDER BY fecha DESC, id DESC' // Ordena el resultado SQL del más reciente al más antiguo.
-        ); // Completa la estructura o llamada iniciada arriba.
-        // Vincula cuenta y categoría antes de recuperar el historial.
-        $consulta->execute(['usuario_id' => $usuarioId, 'categoria' => $categoria]); // Ejecuta SQL vinculando valores separados de las instrucciones.
-        return $consulta->fetchAll(PDO::FETCH_ASSOC); // Recupera todas las filas SQL como arrays con nombres de columnas.
-    } // Finaliza este bloque.
-} // Finaliza este bloque.
+             ORDER BY fecha DESC, id DESC'
+        );
+        // Ejecuta SQL vinculando valores separados de las instrucciones.
+        $consulta->execute(['usuario_id' => $usuarioId, 'categoria' => $categoria]);
+        // Recupera todas las filas SQL como arrays con nombres de columnas.
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+}

@@ -1,105 +1,135 @@
-/* Ajustes de las vistas de la SPA (movimientos, diálogo de baja, resumen y categorías). Se carga después de style.css y resumen.css para conservar la cascada original. */
+/* Selecciona #vista-movimientos para aplicar las propiedades siguientes. */
+#vista-movimientos {
+    /* Limita el ancho mínimo (0). */
+    min-width: 0;
+}
 
-/* Ajusta el tamaño o la presentación del componente seleccionado. */
-#vista-movimientos { /* Selecciona #vista-movimientos para aplicar las propiedades siguientes. */
-    min-width: 0; /* Limita el ancho mínimo (0). */
-} /* Finaliza esta regla o grupo de estilos. */
-
-/* Ajusta el tamaño o la presentación del componente seleccionado. */
-#vista-movimientos table { /* Selecciona #vista-movimientos table para aplicar las propiedades siguientes. */
-    min-width: 740px; /* Limita el ancho mínimo (740px). */
-} /* Finaliza esta regla o grupo de estilos. */
+/* Selecciona #vista-movimientos table para aplicar las propiedades siguientes. */
+#vista-movimientos table {
+    /* Limita el ancho mínimo (740px). */
+    min-width: 740px;
+}
 
 /* Permite cortar texto largo para evitar desbordamientos. */
-#vista-movimientos td { /* Selecciona #vista-movimientos td para aplicar las propiedades siguientes. */
-    overflow-wrap: anywhere; /* Permite cortar palabras largas (anywhere). */
-} /* Finaliza esta regla o grupo de estilos. */
+#vista-movimientos td {
+    /* Permite cortar palabras largas (anywhere). */
+    overflow-wrap: anywhere;
+}
 
 /* Mantiene el contenido de estas celdas en una sola línea. */
-#vista-movimientos td:nth-child(n+3) { /* Selecciona #vista-movimientos td:nth-child(n+3) para aplicar las propiedades siguientes. */
-    white-space: nowrap; /* Define cómo se conservan espacios y saltos de línea (nowrap). */
-} /* Finaliza esta regla o grupo de estilos. */
+#vista-movimientos td:nth-child(n+3) {
+    /* Define cómo se conservan espacios y saltos de línea (nowrap). */
+    white-space: nowrap;
+}
 
 /* Permite cortar texto largo para evitar desbordamientos. */
-#eliminacion-detalle { /* Selecciona #eliminacion-detalle para aplicar las propiedades siguientes. */
-    overflow-wrap: anywhere; /* Permite cortar palabras largas (anywhere). */
-} /* Finaliza esta regla o grupo de estilos. */
+#eliminacion-detalle {
+    /* Permite cortar palabras largas (anywhere). */
+    overflow-wrap: anywhere;
+}
 
 /* Distribuye los elementos en varias filas cuando falta espacio. */
-.acciones-movimiento { /* Selecciona .acciones-movimiento para aplicar las propiedades siguientes. */
-    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
-    flex-wrap: wrap; /* Permite o evita el salto de los elementos a otra fila (wrap). */
-    gap: 8px; /* Separa los elementos de la distribución (8px). */
-} /* Finaliza esta regla o grupo de estilos. */
+.acciones-movimiento {
+    /* Define cómo se distribuye o muestra el elemento (flex). */
+    display: flex;
+    /* Permite o evita el salto de los elementos a otra fila (wrap). */
+    flex-wrap: wrap;
+    /* Separa los elementos de la distribución (8px). */
+    gap: 8px;
+}
 
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#confirmar-eliminacion { /* Selecciona #confirmar-eliminacion para aplicar las propiedades siguientes. */
-    max-width: min(90vw, 480px); /* Limita el ancho máximo (min(90vw, 480px)). */
-    border: 1px solid #64748b; /* Define el borde (1px solid #64748b). */
-    border-radius: 8px; /* Redondea las esquinas (8px). */
-    padding: 24px; /* Define el espacio interior (24px). */
-} /* Finaliza esta regla o grupo de estilos. */
+/* Selecciona #confirmar-eliminacion para aplicar las propiedades siguientes. */
+#confirmar-eliminacion {
+    /* Limita el ancho máximo (min(90vw, 480px)). */
+    max-width: min(90vw, 480px);
+    /* Define el borde (1px solid #64748b). */
+    border: 1px solid #64748b;
+    /* Redondea las esquinas (8px). */
+    border-radius: 8px;
+    /* Define el espacio interior (24px). */
+    padding: 24px;
+}
 
 /* Oscurece el fondo detrás del diálogo modal. */
-#confirmar-eliminacion::backdrop { /* Selecciona #confirmar-eliminacion::backdrop para aplicar las propiedades siguientes. */
-    background: rgb(0 0 0 / 45%); /* Define el fondo (rgb(0 0 0 / 45%)). */
-} /* Finaliza esta regla o grupo de estilos. */
+#confirmar-eliminacion::backdrop {
+    /* Define el fondo (rgb(0 0 0 / 45%)). */
+    background: rgb(0 0 0 / 45%);
+}
 
 /* Permite cortar texto largo para evitar desbordamientos. */
-#resumen .tarjeta, #resumen .resumen-barra-texto { /* Selecciona #resumen .tarjeta, #resumen .resumen-barra-texto para aplicar las propiedades siguientes. */
-    overflow-wrap: anywhere; /* Permite cortar palabras largas (anywhere). */
-} /* Finaliza esta regla o grupo de estilos. */
+#resumen .tarjeta, #resumen .resumen-barra-texto {
+    /* Permite cortar palabras largas (anywhere). */
+    overflow-wrap: anywhere;
+}
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-#resumen .tarjeta h3 { /* Selecciona #resumen .tarjeta h3 para aplicar las propiedades siguientes. */
-    line-height: 1.3; /* Define la separación entre líneas (1.3). */
-    font-variant-numeric: tabular-nums; /* Configura font-variant-numeric (tabular-nums). */
-} /* Finaliza esta regla o grupo de estilos. */
+#resumen .tarjeta h3 {
+    /* Define la separación entre líneas (1.3). */
+    line-height: 1.3;
+    /* Configura font-variant-numeric (tabular-nums). */
+    font-variant-numeric: tabular-nums;
+}
 
 /* Distingue visualmente los datos ficticios del modo demostración. */
-#resumen[data-modo="demo"] .resumen-etiqueta { /* Selecciona #resumen[data-modo="demo"] .resumen-etiqueta para aplicar las propiedades siguientes. */
-    background: #fef3c7; /* Define el fondo (#fef3c7). */
-    border-color: #d97706; /* Define el color del borde (#d97706). */
-    color: #713f12; /* Define el color del texto (#713f12). */
-} /* Finaliza esta regla o grupo de estilos. */
+#resumen[data-modo="demo"] .resumen-etiqueta {
+    /* Define el fondo (#fef3c7). */
+    background: #fef3c7;
+    /* Define el color del borde (#d97706). */
+    border-color: #d97706;
+    /* Define el color del texto (#713f12). */
+    color: #713f12;
+}
 
 /* Distingue visualmente los datos ficticios del modo demostración. */
-#resumen #resumen-demostracion { /* Selecciona #resumen #resumen-demostracion para aplicar las propiedades siguientes. */
-    border-color: #d97706; /* Define el color del borde (#d97706). */
-    background: #fffbeb; /* Define el fondo (#fffbeb). */
-    color: #713f12; /* Define el color del texto (#713f12). */
-} /* Finaliza esta regla o grupo de estilos. */
+#resumen #resumen-demostracion {
+    /* Define el color del borde (#d97706). */
+    border-color: #d97706;
+    /* Define el fondo (#fffbeb). */
+    background: #fffbeb;
+    /* Define el color del texto (#713f12). */
+    color: #713f12;
+}
 
 /* Permite cortar texto largo para evitar desbordamientos. */
-#vista-categorias .categoria { /* Selecciona #vista-categorias .categoria para aplicar las propiedades siguientes. */
-    height: 100%; /* Define la altura (100%). */
-    overflow-wrap: anywhere; /* Permite cortar palabras largas (anywhere). */
-} /* Finaliza esta regla o grupo de estilos. */
+#vista-categorias .categoria {
+    /* Define la altura (100%). */
+    height: 100%;
+    /* Permite cortar palabras largas (anywhere). */
+    overflow-wrap: anywhere;
+}
 
-/* Ajusta el espacio y la presentación del componente seleccionado. */
-#vista-categorias dl { /* Selecciona #vista-categorias dl para aplicar las propiedades siguientes. */
-    margin: 0; /* Define el espacio exterior (0). */
-} /* Finaliza esta regla o grupo de estilos. */
+/* Selecciona #vista-categorias dl para aplicar las propiedades siguientes. */
+#vista-categorias dl {
+    /* Define el espacio exterior (0). */
+    margin: 0;
+}
 
 /* Define los colores del componente manteniendo su contraste. */
-#vista-categorias dt { /* Selecciona #vista-categorias dt para aplicar las propiedades siguientes. */
-    color: #475569; /* Define el color del texto (#475569). */
-} /* Finaliza esta regla o grupo de estilos. */
+#vista-categorias dt {
+    /* Define el color del texto (#475569). */
+    color: #475569;
+}
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-#vista-categorias dd { /* Selecciona #vista-categorias dd para aplicar las propiedades siguientes. */
-    margin: 0 0 8px; /* Define el espacio exterior (0 0 8px). */
-    font-weight: bold; /* Define el grosor de letra (bold). */
-} /* Finaliza esta regla o grupo de estilos. */
+#vista-categorias dd {
+    /* Define el espacio exterior (0 0 8px). */
+    margin: 0 0 8px;
+    /* Define el grosor de letra (bold). */
+    font-weight: bold;
+}
 
 /* Permite cortar texto largo para evitar desbordamientos. */
-#vista-categoria .tarjeta, #categoria-historial li { /* Selecciona #vista-categoria .tarjeta, #categoria-historial li para aplicar las propiedades siguientes. */
-    min-width: 0; /* Limita el ancho mínimo (0). */
-    overflow-wrap: anywhere; /* Permite cortar palabras largas (anywhere). */
-} /* Finaliza esta regla o grupo de estilos. */
+#vista-categoria .tarjeta, #categoria-historial li {
+    /* Limita el ancho mínimo (0). */
+    min-width: 0;
+    /* Permite cortar palabras largas (anywhere). */
+    overflow-wrap: anywhere;
+}
 
 /* Distribuye los elementos en varias filas cuando falta espacio. */
-#categoria-historial .movimiento { /* Selecciona #categoria-historial .movimiento para aplicar las propiedades siguientes. */
-    flex-wrap: wrap; /* Permite o evita el salto de los elementos a otra fila (wrap). */
-    gap: 12px; /* Separa los elementos de la distribución (12px). */
-} /* Finaliza esta regla o grupo de estilos. */
+#categoria-historial .movimiento {
+    /* Permite o evita el salto de los elementos a otra fila (wrap). */
+    flex-wrap: wrap;
+    /* Separa los elementos de la distribución (12px). */
+    gap: 12px;
+}

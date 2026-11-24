@@ -2,7 +2,7 @@
 
 ## Encontrar y explicar el código
 
-Abrir `NipinFinan.code-workspace` en VS Code para ver las capas ordenadas. La guía [EMPEZAR_AQUI.md](EMPEZAR_AQUI.md) indica qué archivo abrir y qué función buscar en cada recorrido. Esta organización del editor conserva las rutas de la aplicación y los números de línea del código.
+Abrir `NipinFinan.code-workspace` en VS Code para ver las capas ordenadas. La guía [EMPEZAR_AQUI.md](EMPEZAR_AQUI.md) indica qué archivo abrir y qué función buscar en cada recorrido. Esta organización del editor conserva las rutas de la aplicación.
 
 Aplicación web de finanzas personales para registrar ingresos y gastos, consultarlos, editarlos y eliminarlos, y analizarlos por período y por categoría. Trabajo integrador AE4 / TIFAS de **Paradigmas y Lenguajes de Programación III**, Ingeniería en Sistemas de Información, Universidad de la Cuenca del Plata. Profesor: Ing. Dante Sicardi. Comisión A.
 

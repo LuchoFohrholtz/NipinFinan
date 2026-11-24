@@ -1,54 +1,70 @@
-<!DOCTYPE html> <!-- Declara un documento HTML5. -->
-<html lang="es"> <!-- Inicia el documento y declara su idioma para tecnología de asistencia. -->
-<!-- Configura idioma, adaptación de pantalla, estilos y scripts del documento. -->
-<head> <!-- Agrupa metadatos, hojas de estilo y scripts. -->
-    <meta charset="UTF-8"> <!-- Usa UTF-8 para representar correctamente los caracteres. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adapta el ancho de la página al dispositivo. -->
-    <title>Detalle de categoría - NipinFinan</title> <!-- Define el título de la pestaña del navegador. -->
-    <!-- Carga las hojas CSS respetando el orden de sus ajustes. -->
-    <link rel="stylesheet" href="css/style.css"> <!-- Carga css/style.css para la presentación. -->
-</head> <!-- Cierra head y vuelve al contenedor anterior. -->
+<!-- Declara un documento HTML5. -->
+<!DOCTYPE html>
+<!-- Inicia el documento y declara su idioma para tecnología de asistencia. -->
+<html lang="es">
+<!-- Agrupa metadatos, hojas de estilo y scripts. -->
+<head>
+    <!-- Usa UTF-8 para representar correctamente los caracteres. -->
+    <meta charset="UTF-8">
+    <!-- Adapta el ancho de la página al dispositivo. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Define el título de la pestaña del navegador. -->
+    <title>Detalle de categoría - NipinFinan</title>
+    <!-- Carga css/style.css para la presentación. -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-<body> <!-- Inicia el contenido de la página. -->
+<!-- Inicia el contenido de la página. -->
+<body>
 
-<!-- ========== ENCABEZADO Y NAVEGACION ========== -->
-<header> <!-- Inicia el encabezado del sitio. -->
-    <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-        <a href="index.html" class="logo">NipinFinan</a> <!-- Define un enlace hacia la dirección indicada en href. -->
+<!-- Inicia el encabezado del sitio. -->
+<header>
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div class="contenedor">
+        <!-- Define un enlace hacia la dirección indicada en href. -->
+        <a href="index.html" class="logo">NipinFinan</a>
 
-        <!-- Agrupa los enlaces de navegación del sitio. -->
-        <nav> <!-- Agrupa los enlaces de navegación principal. -->
-            <ul class="nav-lista"> <!-- Organiza los elementos como una lista. -->
-                <li><a href="index.html">Inicio</a></li> <!-- Define un enlace hacia la dirección indicada en href. -->
-                <li><a href="listado_tabla.html">Movimientos</a></li> <!-- Define un enlace hacia la dirección indicada en href. -->
-                <li><a href="listado_box.html">Categorías</a></li> <!-- Define un enlace hacia la dirección indicada en href. -->
-                <li><a href="comprar.html">Registrar</a></li> <!-- Define un enlace hacia la dirección indicada en href. -->
-            </ul> <!-- Cierra ul y vuelve al contenedor anterior. -->
-        </nav> <!-- Cierra nav y vuelve al contenedor anterior. -->
+        <!-- Agrupa los enlaces de navegación principal. -->
+        <nav>
+            <!-- Organiza los elementos como una lista. -->
+            <ul class="nav-lista">
+                <!-- Define un enlace hacia la dirección indicada en href. -->
+                <li><a href="index.html">Inicio</a></li>
+                <!-- Define un enlace hacia la dirección indicada en href. -->
+                <li><a href="listado_tabla.html">Movimientos</a></li>
+                <!-- Define un enlace hacia la dirección indicada en href. -->
+                <li><a href="listado_box.html">Categorías</a></li>
+                <!-- Define un enlace hacia la dirección indicada en href. -->
+                <li><a href="comprar.html">Registrar</a></li>
+            </ul>
+        </nav>
 
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-</header> <!-- Cierra header y vuelve al contenedor anterior. -->
+    </div>
+</header>
 
+<!-- Marca el contenido principal de la aplicación. -->
+<main class="contenedor pagina" data-categoria-antigua>
+    <!-- Define un título que organiza la lectura y navegación accesible. -->
+    <h1>Detalle de categoría</h1>
+    <!-- Define un enlace hacia la dirección indicada en href. -->
+    <p><a href="index.html#/categorias" class="boton">Ver mis categorías y elegir un detalle</a></p>
+    <!-- Muestra esta ayuda cuando JavaScript está desactivado. -->
+    <noscript><p>Activá JavaScript para consultar los importes y el historial de tus categorías.</p></noscript>
+</main>
 
-<!-- ========== CONTENIDO PRINCIPAL ========== -->
-<main class="contenedor pagina" data-categoria-antigua> <!-- Marca el contenido principal de la aplicación. -->
-    <h1>Detalle de categoría</h1> <!-- Define un título que organiza la lectura y navegación accesible. -->
-    <p><a href="index.html#/categorias" class="boton">Ver mis categorías y elegir un detalle</a></p> <!-- Define un enlace hacia la dirección indicada en href. -->
-    <!-- Explica la necesidad de JavaScript cuando está desactivado. -->
-    <noscript><p>Activá JavaScript para consultar los importes y el historial de tus categorías.</p></noscript> <!-- Muestra esta ayuda cuando JavaScript está desactivado. -->
-</main> <!-- Cierra main y vuelve al contenedor anterior. -->
+<!-- Inicia el pie de página. -->
+<footer>
+    <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
+    <div class="contenedor">
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>NipinFinan - Finanzas personales</p>
+        <!-- Presenta un párrafo informativo o de estado. -->
+        <p>© 2026</p>
+    </div>
+</footer>
 
+<!-- Carga js/navegacion.js; defer espera al HTML y conserva el orden de ejecución. -->
+<script src="js/navegacion.js" defer></script>
 
-<!-- ========== PIE DE PAGINA ========== -->
-<footer> <!-- Inicia el pie de página. -->
-    <div class="contenedor"> <!-- Agrupa contenido para su distribución CSS o control desde JavaScript. -->
-        <p>NipinFinan - Finanzas personales</p> <!-- Presenta un párrafo informativo o de estado. -->
-        <p>© 2026</p> <!-- Presenta un párrafo informativo o de estado. -->
-    </div> <!-- Cierra div y vuelve al contenedor anterior. -->
-</footer> <!-- Cierra footer y vuelve al contenedor anterior. -->
-
-<!-- ========== SCRIPTS ========== -->
-<script src="js/navegacion.js" defer></script> <!-- Carga js/navegacion.js; defer espera al HTML y conserva el orden de ejecución. -->
-
-</body> <!-- Cierra body y vuelve al contenedor anterior. -->
-</html> <!-- Cierra html y vuelve al contenedor anterior. -->
+</body>
+</html>
