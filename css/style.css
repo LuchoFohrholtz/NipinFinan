@@ -5,646 +5,646 @@
 
 /* Incluye relleno y borde dentro del tamaño declarado de cada elemento. */
 * {
-    box-sizing: border-box;
-}
+    box-sizing: border-box; /* Define si el tamaño incluye relleno y borde (border-box). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define la tipografía, el fondo y el color general de la aplicación. */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f7fa;
-    color: #1e293b;
-}
+body { /* Selecciona body para aplicar las propiedades siguientes. */
+    margin: 0; /* Define el espacio exterior (0). */
+    font-family: Arial, sans-serif; /* Define la tipografía (Arial, sans-serif). */
+    background: #f5f7fa; /* Define el fondo (#f5f7fa). */
+    color: #1e293b; /* Define el color del texto (#1e293b). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-a {
-    text-decoration: none;
-    color: #2563eb;
-}
+a { /* Selecciona a para aplicar las propiedades siguientes. */
+    text-decoration: none; /* Define la decoración del texto (none). */
+    color: #2563eb; /* Define el color del texto (#2563eb). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-h1 {
-    font-size: 38px;
-}
+h1 { /* Selecciona h1 para aplicar las propiedades siguientes. */
+    font-size: 38px; /* Define el tamaño de letra (38px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-h2 {
-    margin-bottom: 25px;
-}
+h2 { /* Selecciona h2 para aplicar las propiedades siguientes. */
+    margin-bottom: 25px; /* Configura margin-bottom (25px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el tamaño o la presentación del componente seleccionado. */
-p {
-    line-height: 1.5;
-}
+p { /* Selecciona p para aplicar las propiedades siguientes. */
+    line-height: 1.5; /* Define la separación entre líneas (1.5). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Centra el contenido y limita su ancho en pantallas grandes. */
-.contenedor {
-    width: 90%;
-    max-width: 1100px;
-    margin: auto;
-}
+.contenedor { /* Selecciona .contenedor para aplicar las propiedades siguientes. */
+    width: 90%; /* Define el ancho (90%). */
+    max-width: 1100px; /* Limita el ancho máximo (1100px). */
+    margin: auto; /* Define el espacio exterior (auto). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.pagina {
-    padding-top: 50px;
-    padding-bottom: 60px;
-}
+.pagina { /* Selecciona .pagina para aplicar las propiedades siguientes. */
+    padding-top: 50px; /* Configura padding-top (50px). */
+    padding-bottom: 60px; /* Configura padding-bottom (60px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* HEADER */
 
 /* Ajusta el tamaño o la presentación del componente seleccionado. */
-header {
-    background: white;
-    border-bottom: 1px solid #ddd;
-}
+header { /* Selecciona header para aplicar las propiedades siguientes. */
+    background: white; /* Define el fondo (white). */
+    border-bottom: 1px solid #ddd; /* Configura border-bottom (1px solid #ddd). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-header .contenedor {
-    min-height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+header .contenedor { /* Selecciona header .contenedor para aplicar las propiedades siguientes. */
+    min-height: 70px; /* Limita la altura mínima (70px). */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    align-items: center; /* Alinea los elementos en el eje transversal (center). */
+    justify-content: space-between; /* Distribuye los elementos en el eje principal (space-between). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #2563eb;
-}
+.logo { /* Selecciona .logo para aplicar las propiedades siguientes. */
+    font-size: 24px; /* Define el tamaño de letra (24px). */
+    font-weight: bold; /* Define el grosor de letra (bold). */
+    color: #2563eb; /* Define el color del texto (#2563eb). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.nav-lista {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+.nav-lista { /* Selecciona .nav-lista para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    gap: 20px; /* Separa los elementos de la distribución (20px). */
+    list-style: none; /* Configura list-style (none). */
+    margin: 0; /* Define el espacio exterior (0). */
+    padding: 0; /* Define el espacio interior (0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-nav a {
-    display: inline-block;
-    padding: 4px 0;
-    color: #475569;
-}
+nav a { /* Selecciona nav a para aplicar las propiedades siguientes. */
+    display: inline-block; /* Define cómo se distribuye o muestra el elemento (inline-block). */
+    padding: 4px 0; /* Define el espacio interior (4px 0). */
+    color: #475569; /* Define el color del texto (#475569). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Destaca el elemento al pasar el puntero. */
-nav a:hover {
-    color: #2563eb;
-}
+nav a:hover { /* Selecciona nav a:hover para aplicar las propiedades siguientes. */
+    color: #2563eb; /* Define el color del texto (#2563eb). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* BOTONES */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.boton {
-    display: inline-block;
-    padding: 12px 20px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    min-height: 24px;
-}
+.boton { /* Selecciona .boton para aplicar las propiedades siguientes. */
+    display: inline-block; /* Define cómo se distribuye o muestra el elemento (inline-block). */
+    padding: 12px 20px; /* Define el espacio interior (12px 20px). */
+    background: #2563eb; /* Define el fondo (#2563eb). */
+    color: white; /* Define el color del texto (white). */
+    border: none; /* Define el borde (none). */
+    border-radius: 6px; /* Redondea las esquinas (6px). */
+    cursor: pointer; /* Define la forma del puntero (pointer). */
+    min-height: 24px; /* Limita la altura mínima (24px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Destaca el elemento al pasar el puntero. */
-.boton:hover {
-    background: #1d4ed8;
-}
+.boton:hover { /* Selecciona .boton:hover para aplicar las propiedades siguientes. */
+    background: #1d4ed8; /* Define el fondo (#1d4ed8). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.secundario {
-    background: white;
-    color: #2563eb;
-    border: 1px solid #2563eb;
-}
+.secundario { /* Selecciona .secundario para aplicar las propiedades siguientes. */
+    background: white; /* Define el fondo (white). */
+    color: #2563eb; /* Define el color del texto (#2563eb). */
+    border: 1px solid #2563eb; /* Define el borde (1px solid #2563eb). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* INICIO */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.inicio {
-    padding: 80px 0;
-    background: #eff6ff;
-}
+.inicio { /* Selecciona .inicio para aplicar las propiedades siguientes. */
+    padding: 80px 0; /* Define el espacio interior (80px 0). */
+    background: #eff6ff; /* Define el fondo (#eff6ff). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el tamaño o la presentación del componente seleccionado. */
-.inicio-texto {
-    max-width: 650px;
-}
+.inicio-texto { /* Selecciona .inicio-texto para aplicar las propiedades siguientes. */
+    max-width: 650px; /* Limita el ancho máximo (650px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.inicio h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-}
+.inicio h1 { /* Selecciona .inicio h1 para aplicar las propiedades siguientes. */
+    font-size: 48px; /* Define el tamaño de letra (48px). */
+    margin-bottom: 20px; /* Configura margin-bottom (20px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.inicio-texto p {
-    color: #475569;
-    font-size: 18px;
-}
+.inicio-texto p { /* Selecciona .inicio-texto p para aplicar las propiedades siguientes. */
+    color: #475569; /* Define el color del texto (#475569). */
+    font-size: 18px; /* Define el tamaño de letra (18px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.etiqueta {
-    color: #2563eb !important;
-    font-size: 13px !important;
-    font-weight: bold;
-}
+.etiqueta { /* Selecciona .etiqueta para aplicar las propiedades siguientes. */
+    color: #2563eb !important; /* Define el color del texto (#2563eb !important). */
+    font-size: 13px !important; /* Define el tamaño de letra (13px !important). */
+    font-weight: bold; /* Define el grosor de letra (bold). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* SECCIONES */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.seccion {
-    padding: 60px 0;
-}
+.seccion { /* Selecciona .seccion para aplicar las propiedades siguientes. */
+    padding: 60px 0; /* Define el espacio interior (60px 0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Distribuye los elementos en columnas mediante CSS Grid. */
-.tarjetas {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+.tarjetas { /* Selecciona .tarjetas para aplicar las propiedades siguientes. */
+    display: grid; /* Define cómo se distribuye o muestra el elemento (grid). */
+    grid-template-columns: repeat(3, 1fr); /* Define las columnas de la cuadrícula (repeat(3, 1fr)). */
+    gap: 20px; /* Separa los elementos de la distribución (20px). */
+    list-style: none; /* Configura list-style (none). */
+    margin: 0; /* Define el espacio exterior (0). */
+    padding: 0; /* Define el espacio interior (0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.tarjeta {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 25px;
-}
+.tarjeta { /* Selecciona .tarjeta para aplicar las propiedades siguientes. */
+    background: white; /* Define el fondo (white). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+    padding: 25px; /* Define el espacio interior (25px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.tarjeta p {
-    color: #475569;
-}
+.tarjeta p { /* Selecciona .tarjeta p para aplicar las propiedades siguientes. */
+    color: #475569; /* Define el color del texto (#475569). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.icono {
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #dbeafe;
-    color: #2563eb;
-    border-radius: 8px;
-    font-weight: bold;
-}
+.icono { /* Selecciona .icono para aplicar las propiedades siguientes. */
+    width: 45px; /* Define el ancho (45px). */
+    height: 45px; /* Define la altura (45px). */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    align-items: center; /* Alinea los elementos en el eje transversal (center). */
+    justify-content: center; /* Distribuye los elementos en el eje principal (center). */
+    background: #dbeafe; /* Define el fondo (#dbeafe). */
+    color: #2563eb; /* Define el color del texto (#2563eb). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+    font-weight: bold; /* Define el grosor de letra (bold). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Distingue los ingresos con un verde de contraste suficiente. */
-.ingreso {
-    color: #15803d;
-}
+.ingreso { /* Selecciona .ingreso para aplicar las propiedades siguientes. */
+    color: #15803d; /* Define el color del texto (#15803d). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Distingue los gastos mediante el color rojo. */
-.gasto {
-    color: #dc2626;
-}
+.gasto { /* Selecciona .gasto para aplicar las propiedades siguientes. */
+    color: #dc2626; /* Define el color del texto (#dc2626). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* TABLA */
 
 /* Distribuye los elementos en columnas mediante CSS Grid. */
-.tabla-resumen {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin: 30px 0;
-    list-style: none;
-    padding: 0;
-}
+.tabla-resumen { /* Selecciona .tabla-resumen para aplicar las propiedades siguientes. */
+    display: grid; /* Define cómo se distribuye o muestra el elemento (grid). */
+    grid-template-columns: repeat(3, 1fr); /* Define las columnas de la cuadrícula (repeat(3, 1fr)). */
+    gap: 20px; /* Separa los elementos de la distribución (20px). */
+    margin: 30px 0; /* Define el espacio exterior (30px 0). */
+    list-style: none; /* Configura list-style (none). */
+    padding: 0; /* Define el espacio interior (0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.tabla-resumen li {
-    background: white;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
+.tabla-resumen li { /* Selecciona .tabla-resumen li para aplicar las propiedades siguientes. */
+    background: white; /* Define el fondo (white). */
+    padding: 20px; /* Define el espacio interior (20px). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.tabla-resumen span {
-    display: block;
-    color: #475569;
-    margin-bottom: 8px;
-}
+.tabla-resumen span { /* Selecciona .tabla-resumen span para aplicar las propiedades siguientes. */
+    display: block; /* Define cómo se distribuye o muestra el elemento (block). */
+    color: #475569; /* Define el color del texto (#475569). */
+    margin-bottom: 8px; /* Configura margin-bottom (8px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.tabla-resumen strong {
-    font-size: 22px;
-}
+.tabla-resumen strong { /* Selecciona .tabla-resumen strong para aplicar las propiedades siguientes. */
+    font-size: 22px; /* Define el tamaño de letra (22px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Permite desplazar horizontalmente contenido ancho sin romper el diseño. */
-.tabla-contenedor {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    overflow-x: auto;
-}
+.tabla-contenedor { /* Selecciona .tabla-contenedor para aplicar las propiedades siguientes. */
+    background: white; /* Define el fondo (white). */
+    padding: 20px; /* Define el espacio interior (20px). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+    overflow-x: auto; /* Controla el desbordamiento horizontal (auto). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el tamaño o la presentación del componente seleccionado. */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+table { /* Selecciona table para aplicar las propiedades siguientes. */
+    width: 100%; /* Define el ancho (100%). */
+    border-collapse: collapse; /* Configura border-collapse (collapse). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-th,
-td {
-    padding: 14px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
+th, /* Continúa el selector o los valores de la regla CSS. */
+td { /* Selecciona td para aplicar las propiedades siguientes. */
+    padding: 14px; /* Define el espacio interior (14px). */
+    text-align: left; /* Alinea el texto (left). */
+    border-bottom: 1px solid #ddd; /* Configura border-bottom (1px solid #ddd). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el tamaño o la presentación del componente seleccionado. */
-th {
-    background: #f8fafc;
-}
+th { /* Selecciona th para aplicar las propiedades siguientes. */
+    background: #f8fafc; /* Define el fondo (#f8fafc). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* CATEGORIAS */
 
 /* Distribuye los elementos en columnas mediante CSS Grid. */
-.categorias {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 30px;
-    list-style: none;
-    padding: 0;
-}
+.categorias { /* Selecciona .categorias para aplicar las propiedades siguientes. */
+    display: grid; /* Define cómo se distribuye o muestra el elemento (grid). */
+    grid-template-columns: repeat(3, 1fr); /* Define las columnas de la cuadrícula (repeat(3, 1fr)). */
+    gap: 20px; /* Separa los elementos de la distribución (20px). */
+    margin-top: 30px; /* Configura margin-top (30px). */
+    list-style: none; /* Configura list-style (none). */
+    padding: 0; /* Define el espacio interior (0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ordena los elementos verticalmente mediante Flexbox. */
-.categoria {
-    display: flex;
-    flex-direction: column;
-    background: white;
-    padding: 25px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    color: #1e293b;
-}
+.categoria { /* Selecciona .categoria para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    flex-direction: column; /* Define la dirección de la distribución flexible (column). */
+    background: white; /* Define el fondo (white). */
+    padding: 25px; /* Define el espacio interior (25px). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+    color: #1e293b; /* Define el color del texto (#1e293b). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Destaca el elemento al pasar el puntero. */
-.categoria:hover {
-    border-color: #2563eb;
-}
+.categoria:hover { /* Selecciona .categoria:hover para aplicar las propiedades siguientes. */
+    border-color: #2563eb; /* Define el color del borde (#2563eb). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.categoria h2 {
-    font-size: 20px;
-    margin: 15px 0 8px;
-}
+.categoria h2 { /* Selecciona .categoria h2 para aplicar las propiedades siguientes. */
+    font-size: 20px; /* Define el tamaño de letra (20px). */
+    margin: 15px 0 8px; /* Define el espacio exterior (15px 0 8px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.categoria p {
-    color: #475569;
-}
+.categoria p { /* Selecciona .categoria p para aplicar las propiedades siguientes. */
+    color: #475569; /* Define el color del texto (#475569). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.categoria strong {
-    display: block;
-    margin-top: 20px;
-    font-size: 20px;
-}
+.categoria strong { /* Selecciona .categoria strong para aplicar las propiedades siguientes. */
+    display: block; /* Define cómo se distribuye o muestra el elemento (block). */
+    margin-top: 20px; /* Configura margin-top (20px). */
+    font-size: 20px; /* Define el tamaño de letra (20px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.grande {
-    width: 80px;
-    height: 80px;
-    font-size: 25px;
-}
+.grande { /* Selecciona .grande para aplicar las propiedades siguientes. */
+    width: 80px; /* Define el ancho (80px). */
+    height: 80px; /* Define la altura (80px). */
+    font-size: 25px; /* Define el tamaño de letra (25px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* DETALLE */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.detalle {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    background: white;
-    padding: 35px;
-    margin: 30px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
+.detalle { /* Selecciona .detalle para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    align-items: center; /* Alinea los elementos en el eje transversal (center). */
+    gap: 30px; /* Separa los elementos de la distribución (30px). */
+    background: white; /* Define el fondo (white). */
+    padding: 35px; /* Define el espacio interior (35px). */
+    margin: 30px 0; /* Define el espacio exterior (30px 0). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.detalle p {
-    color: #475569;
-    max-width: 650px;
-}
+.detalle p { /* Selecciona .detalle p para aplicar las propiedades siguientes. */
+    color: #475569; /* Define el color del texto (#475569). */
+    max-width: 650px; /* Limita el ancho máximo (650px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.historial {
-    background: white;
-    padding: 25px;
-    margin-top: 30px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
+.historial { /* Selecciona .historial para aplicar las propiedades siguientes. */
+    background: white; /* Define el fondo (white). */
+    padding: 25px; /* Define el espacio interior (25px). */
+    margin-top: 30px; /* Configura margin-top (30px). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.historial-lista {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+.historial-lista { /* Selecciona .historial-lista para aplicar las propiedades siguientes. */
+    list-style: none; /* Configura list-style (none). */
+    margin: 0; /* Define el espacio exterior (0). */
+    padding: 0; /* Define el espacio interior (0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.movimiento {
-    display: flex;
-    justify-content: space-between;
-    padding: 18px 0;
-    border-top: 1px solid #ddd;
-}
+.movimiento { /* Selecciona .movimiento para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    justify-content: space-between; /* Distribuye los elementos en el eje principal (space-between). */
+    padding: 18px 0; /* Define el espacio interior (18px 0). */
+    border-top: 1px solid #ddd; /* Configura border-top (1px solid #ddd). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.movimiento p {
-    margin: 5px 0 0;
-    color: #475569;
-    font-size: 14px;
-}
+.movimiento p { /* Selecciona .movimiento p para aplicar las propiedades siguientes. */
+    margin: 5px 0 0; /* Define el espacio exterior (5px 0 0). */
+    color: #475569; /* Define el color del texto (#475569). */
+    font-size: 14px; /* Define el tamaño de letra (14px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* FORMULARIO */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.formulario {
-    max-width: 750px;
-    margin: 35px auto 0;
-    padding: 30px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
+.formulario { /* Selecciona .formulario para aplicar las propiedades siguientes. */
+    max-width: 750px; /* Limita el ancho máximo (750px). */
+    margin: 35px auto 0; /* Define el espacio exterior (35px auto 0). */
+    padding: 30px; /* Define el espacio interior (30px). */
+    background: white; /* Define el fondo (white). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 8px; /* Redondea las esquinas (8px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.tipo {
-    display: flex;
-    gap: 25px;
-    margin-bottom: 25px;
-    border: none;
-    padding: 0;
-}
+.tipo { /* Selecciona .tipo para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    gap: 25px; /* Separa los elementos de la distribución (25px). */
+    margin-bottom: 25px; /* Configura margin-bottom (25px). */
+    border: none; /* Define el borde (none). */
+    padding: 0; /* Define el espacio interior (0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.tipo legend {
-    font-weight: bold;
-    margin-bottom: 7px;
-    width: 100%;
-}
+.tipo legend { /* Selecciona .tipo legend para aplicar las propiedades siguientes. */
+    font-weight: bold; /* Define el grosor de letra (bold). */
+    margin-bottom: 7px; /* Configura margin-bottom (7px). */
+    width: 100%; /* Define el ancho (100%). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.campo {
-    margin-bottom: 20px;
-}
+.campo { /* Selecciona .campo para aplicar las propiedades siguientes. */
+    margin-bottom: 20px; /* Configura margin-bottom (20px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-.campo label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 7px;
-}
+.campo label { /* Selecciona .campo label para aplicar las propiedades siguientes. */
+    display: block; /* Define cómo se distribuye o muestra el elemento (block). */
+    font-weight: bold; /* Define el grosor de letra (bold). */
+    margin-bottom: 7px; /* Configura margin-bottom (7px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.campo input,
-.campo select,
-.campo textarea {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-}
+.campo input, /* Continúa el selector o los valores de la regla CSS. */
+.campo select, /* Continúa el selector o los valores de la regla CSS. */
+.campo textarea { /* Selecciona .campo textarea para aplicar las propiedades siguientes. */
+    width: 100%; /* Define el ancho (100%). */
+    padding: 11px; /* Define el espacio interior (11px). */
+    border: 1px solid #bbb; /* Define el borde (1px solid #bbb). */
+    border-radius: 5px; /* Redondea las esquinas (5px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Distribuye los elementos en columnas mediante CSS Grid. */
-.fila {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
+.fila { /* Selecciona .fila para aplicar las propiedades siguientes. */
+    display: grid; /* Define cómo se distribuye o muestra el elemento (grid). */
+    grid-template-columns: 1fr 1fr; /* Define las columnas de la cuadrícula (1fr 1fr). */
+    gap: 20px; /* Separa los elementos de la distribución (20px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.formulario-botones {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 25px;
-}
+.formulario-botones { /* Selecciona .formulario-botones para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    justify-content: flex-end; /* Distribuye los elementos en el eje principal (flex-end). */
+    gap: 10px; /* Separa los elementos de la distribución (10px). */
+    margin-top: 25px; /* Configura margin-top (25px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* Define los colores del componente manteniendo su contraste. */
-.mensaje-error {
-    color: #dc2626;
-}
+.mensaje-error { /* Selecciona .mensaje-error para aplicar las propiedades siguientes. */
+    color: #dc2626; /* Define el color del texto (#dc2626). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.mensaje-exito {
-    color: #15803d;
-}
+.mensaje-exito { /* Selecciona .mensaje-exito para aplicar las propiedades siguientes. */
+    color: #15803d; /* Define el color del texto (#15803d). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* RESULTADO DE LA CALCULADORA */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.resultado {
-    margin-bottom: 20px;
-    padding: 15px 20px;
-    background: #f1f5f9;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
+.resultado { /* Selecciona .resultado para aplicar las propiedades siguientes. */
+    margin-bottom: 20px; /* Configura margin-bottom (20px). */
+    padding: 15px 20px; /* Define el espacio interior (15px 20px). */
+    background: #f1f5f9; /* Define el fondo (#f1f5f9). */
+    border: 1px solid #ddd; /* Define el borde (1px solid #ddd). */
+    border-radius: 6px; /* Redondea las esquinas (6px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.resultado h3 {
-    margin-bottom: 10px;
-}
+.resultado h3 { /* Selecciona .resultado h3 para aplicar las propiedades siguientes. */
+    margin-bottom: 10px; /* Configura margin-bottom (10px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* MENSAJES DE ÉXITO / ERROR (formulario de registro) */
 
 /* Oculta el contenedor de mensajes cuando no tiene contenido. */
-#mensaje:empty {
-    display: none;
-}
+#mensaje:empty { /* Selecciona #mensaje:empty para aplicar las propiedades siguientes. */
+    display: none; /* Define cómo se distribuye o muestra el elemento (none). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.mensaje {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    border-radius: 6px;
-}
+.mensaje { /* Selecciona .mensaje para aplicar las propiedades siguientes. */
+    margin-bottom: 20px; /* Configura margin-bottom (20px). */
+    padding: 12px 15px; /* Define el espacio interior (12px 15px). */
+    border-radius: 6px; /* Redondea las esquinas (6px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.mensaje.exito {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #86efac;
-}
+.mensaje.exito { /* Selecciona .mensaje.exito para aplicar las propiedades siguientes. */
+    background: #dcfce7; /* Define el fondo (#dcfce7). */
+    color: #166534; /* Define el color del texto (#166534). */
+    border: 1px solid #86efac; /* Define el borde (1px solid #86efac). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.mensaje.error {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
+.mensaje.error { /* Selecciona .mensaje.error para aplicar las propiedades siguientes. */
+    background: #fee2e2; /* Define el fondo (#fee2e2). */
+    color: #991b1b; /* Define el color del texto (#991b1b). */
+    border: 1px solid #fca5a5; /* Define el borde (1px solid #fca5a5). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* SESIÓN (login, registro y estado en el header) */
 
 /* hidden siempre oculta, aunque la clase tenga display (por ejemplo .fila) */
 /* Oculta los elementos marcados con hidden aunque otra clase use display. */
-[hidden] {
-    display: none !important;
-}
+[hidden] { /* Oculta los elementos marcados con hidden. */
+    display: none !important; /* Define cómo se distribuye o muestra el elemento (none !important). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Oculta el contenedor de mensajes cuando no tiene contenido. */
-.mensaje:empty {
-    display: none;
-}
+.mensaje:empty { /* Selecciona .mensaje:empty para aplicar las propiedades siguientes. */
+    display: none; /* Define cómo se distribuye o muestra el elemento (none). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.sesion {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+.sesion { /* Selecciona .sesion para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    align-items: center; /* Alinea los elementos en el eje transversal (center). */
+    gap: 12px; /* Separa los elementos de la distribución (12px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-.sesion .boton {
-    padding: 8px 14px;
-}
+.sesion .boton { /* Selecciona .sesion .boton para aplicar las propiedades siguientes. */
+    padding: 8px 14px; /* Define el espacio interior (8px 14px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Alinea y distribuye los elementos con Flexbox. */
-.acceso-pestanas {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 30px;
-}
+.acceso-pestanas { /* Selecciona .acceso-pestanas para aplicar las propiedades siguientes. */
+    display: flex; /* Define cómo se distribuye o muestra el elemento (flex). */
+    justify-content: center; /* Distribuye los elementos en el eje principal (center). */
+    gap: 10px; /* Separa los elementos de la distribución (10px). */
+    margin-top: 30px; /* Configura margin-top (30px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el tamaño o la presentación del componente seleccionado. */
-.aviso-sesion {
-    text-align: center;
-}
+.aviso-sesion { /* Selecciona .aviso-sesion para aplicar las propiedades siguientes. */
+    text-align: center; /* Alinea el texto (center). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Define los colores del componente manteniendo su contraste. */
-.aviso-sesion p {
-    color: #475569;
-}
+.aviso-sesion p { /* Selecciona .aviso-sesion p para aplicar las propiedades siguientes. */
+    color: #475569; /* Define el color del texto (#475569). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* FOOTER */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-footer {
-    background: #0f172a;
-    color: white;
-    padding: 30px 0;
-}
+footer { /* Selecciona footer para aplicar las propiedades siguientes. */
+    background: #0f172a; /* Define el fondo (#0f172a). */
+    color: white; /* Define el color del texto (white). */
+    padding: 30px 0; /* Define el espacio interior (30px 0). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Ajusta el espacio y la presentación del componente seleccionado. */
-footer p {
-    margin: 5px 0;
-    color: #cbd5e1;
-}
+footer p { /* Selecciona footer p para aplicar las propiedades siguientes. */
+    margin: 5px 0; /* Define el espacio exterior (5px 0). */
+    color: #cbd5e1; /* Define el color del texto (#cbd5e1). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* CELULARES */
 
 /* Aplica estos ajustes cuando la pantalla tiene hasta setecientos píxeles de ancho. */
-@media (max-width: 700px) {
+@media (max-width: 700px) { /* Aplica estos estilos únicamente al tamaño de pantalla indicado. */
 
     /* Ordena los elementos verticalmente mediante Flexbox. */
-    header .contenedor {
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px 0;
-    }
+    header .contenedor { /* Selecciona header .contenedor para aplicar las propiedades siguientes. */
+        flex-direction: column; /* Define la dirección de la distribución flexible (column). */
+        gap: 15px; /* Separa los elementos de la distribución (15px). */
+        padding: 20px 0; /* Define el espacio interior (20px 0). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
     /* Distribuye los elementos en varias filas cuando falta espacio. */
-    .nav-lista {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+    .nav-lista { /* Selecciona .nav-lista para aplicar las propiedades siguientes. */
+        flex-wrap: wrap; /* Permite o evita el salto de los elementos a otra fila (wrap). */
+        justify-content: center; /* Distribuye los elementos en el eje principal (center). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
     /* Ajusta tamaño, peso o legibilidad del texto seleccionado. */
-    .inicio h1 {
-        font-size: 36px;
-    }
+    .inicio h1 { /* Selecciona .inicio h1 para aplicar las propiedades siguientes. */
+        font-size: 36px; /* Define el tamaño de letra (36px). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
     /* Apila los elementos en una sola columna para pantallas pequeñas. */
-    .tarjetas,
-    .categorias,
-    .tabla-resumen {
-        grid-template-columns: 1fr;
-    }
+    .tarjetas, /* Continúa el selector o los valores de la regla CSS. */
+    .categorias, /* Continúa el selector o los valores de la regla CSS. */
+    .tabla-resumen { /* Selecciona .tabla-resumen para aplicar las propiedades siguientes. */
+        grid-template-columns: 1fr; /* Define las columnas de la cuadrícula (1fr). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
     /* Ordena los elementos verticalmente mediante Flexbox. */
-    .detalle {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    .detalle { /* Selecciona .detalle para aplicar las propiedades siguientes. */
+        flex-direction: column; /* Define la dirección de la distribución flexible (column). */
+        align-items: flex-start; /* Alinea los elementos en el eje transversal (flex-start). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
     /* Apila los elementos en una sola columna para pantallas pequeñas. */
-    .fila {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
+    .fila { /* Selecciona .fila para aplicar las propiedades siguientes. */
+        grid-template-columns: 1fr; /* Define las columnas de la cuadrícula (1fr). */
+        gap: 0; /* Separa los elementos de la distribución (0). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
     /* Permite desplazar horizontalmente contenido ancho sin romper el diseño. */
-    .tabla-contenedor {
-        overflow-x: auto;
-    }
+    .tabla-contenedor { /* Selecciona .tabla-contenedor para aplicar las propiedades siguientes. */
+        overflow-x: auto; /* Controla el desbordamiento horizontal (auto). */
+    } /* Finaliza esta regla o grupo de estilos. */
 
-}
+} /* Finaliza esta regla o grupo de estilos. */
 
 
 /* ACCESIBILIDAD (WCAG 2.1): salto de contenido, texto solo para lectores, foco visible con teclado y página actual en la navegación */
 
 /* Mantiene el enlace de salto fuera de pantalla hasta recibir foco. */
-.salto-contenido {
-    position: absolute;
-    left: 12px;
-    top: -100px;
-    z-index: 1;
-}
+.salto-contenido { /* Selecciona .salto-contenido para aplicar las propiedades siguientes. */
+    position: absolute; /* Define el sistema de posicionamiento (absolute). */
+    left: 12px; /* Configura left (12px). */
+    top: -100px; /* Configura top (-100px). */
+    z-index: 1; /* Define el orden de superposición (1). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Muestra el enlace de salto cuando recibe foco. */
-.salto-contenido:focus {
-    top: 12px;
-}
+.salto-contenido:focus { /* Selecciona .salto-contenido:focus para aplicar las propiedades siguientes. */
+    top: 12px; /* Configura top (12px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Oculta visualmente el texto y lo conserva para lectores de pantalla. */
-.solo-lectores {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-}
+.solo-lectores { /* Selecciona .solo-lectores para aplicar las propiedades siguientes. */
+    position: absolute; /* Define el sistema de posicionamiento (absolute). */
+    width: 1px; /* Define el ancho (1px). */
+    height: 1px; /* Define la altura (1px). */
+    padding: 0; /* Define el espacio interior (0). */
+    margin: -1px; /* Define el espacio exterior (-1px). */
+    overflow: hidden; /* Controla el contenido que excede la caja (hidden). */
+    clip-path: inset(50%); /* Configura clip-path (inset(50%)). */
+    white-space: nowrap; /* Define cómo se conservan espacios y saltos de línea (nowrap). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Dibuja un contorno visible para identificar el foco de teclado. */
-:is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible {
-    outline: 3px solid #1d4ed8;
-    outline-offset: 3px;
-}
+:is(a, button, input, select, textarea, [tabindex="-1"]):focus-visible { /* Selecciona el foco visible al navegar principalmente con teclado. */
+    outline: 3px solid #1d4ed8; /* Dibuja el indicador de foco (3px solid #1d4ed8). */
+    outline-offset: 3px; /* Separa el indicador de foco del borde (3px). */
+} /* Finaliza esta regla o grupo de estilos. */
 
 /* Distingue visualmente el enlace de la página actual. */
-nav a[aria-current="page"] {
-    font-weight: bold;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-}
+nav a[aria-current="page"] { /* Selecciona nav a[aria-current="page"] para aplicar las propiedades siguientes. */
+    font-weight: bold; /* Define el grosor de letra (bold). */
+    text-decoration: underline; /* Define la decoración del texto (underline). */
+    text-underline-offset: 4px; /* Configura text-underline-offset (4px). */
+} /* Finaliza esta regla o grupo de estilos. */
